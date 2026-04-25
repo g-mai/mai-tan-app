@@ -57,6 +57,7 @@ function BetterAuthDemo() {
           </div>
 
           <button
+            type="button"
             onClick={() => {
               void authClient.signOut();
             }}
@@ -82,7 +83,7 @@ function BetterAuthDemo() {
     );
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.SubmitEvent) => {
     e.preventDefault();
     setError("");
     setLoading(true);
@@ -107,6 +108,7 @@ function BetterAuthDemo() {
         }
       }
     } catch (err) {
+      console.error(err);
       setError("An unexpected error occurred");
     } finally {
       setLoading(false);

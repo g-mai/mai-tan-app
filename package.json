@@ -21,6 +21,7 @@
     "start": "node --import ./.output/server/instrument.server.mjs .output/server/index.mjs"
   },
   "dependencies": {
+    "@better-auth/drizzle-adapter": "^1.6.9",
     "@sentry/tanstackstart-react": "^10.42.0",
     "@tailwindcss/vite": "^4.2.4",
     "@tanstack/react-devtools": "latest",
