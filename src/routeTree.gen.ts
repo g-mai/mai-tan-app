@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as TestAuthenticatedRouteImport } from './routes/test/authenticated'
 import { Route as DemoTanstackQueryRouteImport } from './routes/demo/tanstack-query'
 import { Route as DemoBetterAuthRouteImport } from './routes/demo/better-auth'
 import { Route as DemoSentryTestingRouteImport } from './routes/demo/sentry.testing'
@@ -26,6 +27,11 @@ const AboutRoute = AboutRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TestAuthenticatedRoute = TestAuthenticatedRouteImport.update({
+  id: '/test/authenticated',
+  path: '/test/authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DemoTanstackQueryRoute = DemoTanstackQueryRouteImport.update({
@@ -64,6 +70,7 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/demo/better-auth': typeof DemoBetterAuthRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
+  '/test/authenticated': typeof TestAuthenticatedRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/demo/form/address': typeof DemoFormAddressRoute
   '/demo/form/simple': typeof DemoFormSimpleRoute
@@ -74,6 +81,7 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/demo/better-auth': typeof DemoBetterAuthRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
+  '/test/authenticated': typeof TestAuthenticatedRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/demo/form/address': typeof DemoFormAddressRoute
   '/demo/form/simple': typeof DemoFormSimpleRoute
@@ -85,6 +93,7 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/demo/better-auth': typeof DemoBetterAuthRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
+  '/test/authenticated': typeof TestAuthenticatedRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/demo/form/address': typeof DemoFormAddressRoute
   '/demo/form/simple': typeof DemoFormSimpleRoute
@@ -97,6 +106,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/demo/better-auth'
     | '/demo/tanstack-query'
+    | '/test/authenticated'
     | '/api/auth/$'
     | '/demo/form/address'
     | '/demo/form/simple'
@@ -107,6 +117,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/demo/better-auth'
     | '/demo/tanstack-query'
+    | '/test/authenticated'
     | '/api/auth/$'
     | '/demo/form/address'
     | '/demo/form/simple'
@@ -117,6 +128,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/demo/better-auth'
     | '/demo/tanstack-query'
+    | '/test/authenticated'
     | '/api/auth/$'
     | '/demo/form/address'
     | '/demo/form/simple'
@@ -128,6 +140,7 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   DemoBetterAuthRoute: typeof DemoBetterAuthRoute
   DemoTanstackQueryRoute: typeof DemoTanstackQueryRoute
+  TestAuthenticatedRoute: typeof TestAuthenticatedRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   DemoFormAddressRoute: typeof DemoFormAddressRoute
   DemoFormSimpleRoute: typeof DemoFormSimpleRoute
@@ -148,6 +161,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/test/authenticated': {
+      id: '/test/authenticated'
+      path: '/test/authenticated'
+      fullPath: '/test/authenticated'
+      preLoaderRoute: typeof TestAuthenticatedRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/demo/tanstack-query': {
@@ -200,6 +220,7 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   DemoBetterAuthRoute: DemoBetterAuthRoute,
   DemoTanstackQueryRoute: DemoTanstackQueryRoute,
+  TestAuthenticatedRoute: TestAuthenticatedRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   DemoFormAddressRoute: DemoFormAddressRoute,
   DemoFormSimpleRoute: DemoFormSimpleRoute,
