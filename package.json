@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@sentry/tanstackstart-react": "^10.42.0",
-    "@tailwindcss/vite": "^4.1.18",
+    "@tailwindcss/vite": "^4.2.4",
     "@tanstack/react-devtools": "latest",
     "@tanstack/react-form": "latest",
     "@tanstack/react-query": "latest",
@@ -43,7 +43,7 @@
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "tailwind-merge": "^3.0.2",
-    "tailwindcss": "^4.1.18",
+    "tailwindcss": "^4.2.4",
     "tw-animate-css": "^1.3.6",
     "zod": "^4.3.6"
   },

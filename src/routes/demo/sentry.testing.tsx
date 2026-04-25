@@ -269,7 +269,7 @@ function ProgressBar({ loading }: { loading: boolean }) {
       />
       <div className="flex-1 h-2 bg-[#2D2640] rounded-full overflow-hidden">
         <div
-          className="h-full bg-gradient-to-r from-[#7553FF] to-[#B3A1FF] rounded-full transition-all duration-500"
+          className="h-full bg-linear-to-r from-[#7553FF] to-[#B3A1FF] rounded-full transition-all duration-500"
           style={{ width: loading ? "60%" : "100%" }}
         />
       </div>
@@ -424,7 +424,7 @@ function RouteComponent() {
         {showWarning && (
           <div className="mb-8 flex items-center gap-3 bg-[#E5A000]/10 border border-[#E5A000]/30 rounded-xl px-6 py-4">
             <svg
-              className="w-6 h-6 text-[#E5A000] flex-shrink-0"
+              className="w-6 h-6 text-[#E5A000] shrink-0"
               fill="none"
               strokeLinecap="round"
               strokeLinejoin="round"
