@@ -1,13 +1,22 @@
+import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { authClient } from "#/lib/auth-client";
+import { getSession } from "#/lib/auth-functions";
 
 export const Route = createFileRoute("/demo/better-auth")({
   component: BetterAuthDemo,
 });
 
 function BetterAuthDemo() {
-  const { data: session, isPending } = authClient.useSession();
+  const { data: session, isPending } = useQuery({
+    queryKey: ["session"],
+    queryFn: async () => {
+      const session = await getSession();
+
+      return session;
+    },
+  });
   const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

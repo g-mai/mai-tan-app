@@ -1,9 +1,22 @@
-import * as auth from "./auth-schema";
+import * as authSchema from "./auth-schema";
 
-export const user = auth.user;
-export const account = auth.account;
-export const session = auth.session;
-export const verification = auth.verification;
+// import * as appSchema from "./app-schema";
 
-export const schema = { user, account, session, verification };
-export default schema;
+export { authSchema };
+
+export const {
+  user,
+  session,
+  account,
+  verification,
+  organization,
+  member,
+  team,
+  teamMember,
+  invitation,
+} = authSchema;
+
+export const schema = {
+  ...authSchema,
+  // ...appSchema,
+} as const;

@@ -1,6 +1,6 @@
 {
-  "id": "4e5944a4-6113-4561-ae35-f59c5c8daf01",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "5c70bc05-e372-46ca-9335-d01560257564",
+  "prevId": "4e5944a4-6113-4561-ae35-f59c5c8daf01",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -394,6 +394,13 @@
           "type": "text",
           "primaryKey": false,
           "notNull": false
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "''"
         }
       },
       "indexes": {
@@ -756,6 +763,27 @@
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
+        },
+        "first_name": {
+          "name": "first_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "''"
+        },
+        "last_name": {
+          "name": "last_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "''"
+        },
+        "favourite_organization": {
+          "name": "favourite_organization",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "''"
         }
       },
       "indexes": {},

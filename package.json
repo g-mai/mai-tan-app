@@ -17,6 +17,8 @@
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
     "db:pull": "drizzle-kit pull",
+    "db:seed": "tsx --env-file=.env src/db/seed.ts",
+    "db:reset": "tsx --env-file=.env src/db/seed.ts --reset",
     "db:studio": "drizzle-kit studio",
     "start": "node --import ./.output/server/instrument.server.mjs .output/server/index.mjs"
   },

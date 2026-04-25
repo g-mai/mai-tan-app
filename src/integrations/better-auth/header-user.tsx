@@ -1,12 +1,23 @@
+import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { authClient } from "#/lib/auth-client";
+import { getSession } from "#/lib/auth-functions";
 
 export default function BetterAuthHeader() {
-  const { data: session, isPending } = authClient.useSession();
+  const { data: session, isPending } = useQuery({
+    queryKey: ["session"],
+    queryFn: async () => {
+      const session = await getSession();
+
+      return session;
+    },
+  });
 
   if (isPending) {
     return (
-      <div className="h-8 w-8 bg-neutral-100 dark:bg-neutral-800 animate-pulse" />
+      <div className="h-8 w-18 bg-neutral-100 dark:bg-neutral-800 animate-pulse">
+        <span className="sr-only">Loading...</span>
+      </div>
     );
   }
 
