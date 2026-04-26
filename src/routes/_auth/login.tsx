@@ -1,14 +1,76 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
+import { z } from "zod";
+import { useAppForm } from "#/hooks/form";
+import { useLogin } from "#/hooks/useLogin";
 
 export const Route = createFileRoute("/_auth/login")({
   component: RouteComponent,
 });
 
+const formSchema = z.object({
+  email: z.email("Invalid email addresssss"),
+  password: z.string().min(6),
+});
+
 function RouteComponent() {
+  const loginMutation = useLogin();
+  const form = useAppForm({
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+    validators: { onSubmit: formSchema },
+    onSubmit: async ({ value }) => {
+      loginMutation.mutate(value);
+    },
+  });
+
   return (
-    <div>
-      <h1>Login page</h1>
-      <Link to="/test/authenticated">Test if authenticated</Link>
+    <div className="flex justify-center py-10 px-4">
+      <div className="w-full max-w-md p-6">
+        <h1 className="text-lg font-semibold leading-none tracking-tight">
+          Sign in to your account
+        </h1>
+        <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-2 mb-6">
+          Enter your email and password to login to your account
+        </p>
+
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            form.handleSubmit();
+          }}
+          className="grid gap-4"
+        >
+          <form.AppField name="email">
+            {(field) => (
+              <field.TextField label="Email" placeholder="Enter your email" />
+            )}
+          </form.AppField>
+          <form.AppField name="password">
+            {(field) => (
+              <field.PasswordField
+                label="Password"
+                placeholder="Enter your password"
+              />
+            )}
+          </form.AppField>
+          <form.AppForm>
+            <form.SubscribeButton label="Sign In" />
+          </form.AppForm>
+        </form>
+
+        {/* <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-6">
+          Don't have an account?{" "}
+          <Link
+            to="/_auth/signup"
+            className="text-blue-600 hover:underline dark:text-blue-400"
+          >
+            Sign up
+          </Link>
+        </p> */}
+      </div>
     </div>
   );
 }
