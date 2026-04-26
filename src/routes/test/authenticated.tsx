@@ -1,12 +1,12 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import { getSession } from "@/lib/auth-functions";
+import { getSession } from "#/lib/better-auth/auth-functions";
 
 export const Route = createFileRoute("/test/authenticated")({
   beforeLoad: async () => {
     const session = await getSession();
 
     if (!session) {
-      throw redirect({ to: "/demo/better-auth" });
+      throw redirect({ to: "/login" });
     }
 
     return { user: session.user };

@@ -6,7 +6,7 @@ import {
   user as userTable,
 } from "#/db/schema";
 import { seedConfig } from "#/db/seed-config";
-import { auth } from "#/lib/auth";
+import { auth } from "#/lib/better-auth/auth";
 
 const { users, organizations } = seedConfig;
 

@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { authClient } from "#/lib/auth-client";
-import { getSession } from "#/lib/auth-functions";
+import { authClient } from "#/lib/better-auth/auth-client";
+import { getSession } from "#/lib/better-auth/auth-functions";
 
 export const Route = createFileRoute("/demo/better-auth")({
   component: BetterAuthDemo,

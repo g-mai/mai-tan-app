@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
-import { authClient } from "#/lib/auth-client";
-import { getSession } from "#/lib/auth-functions";
+import { authClient } from "#/lib/better-auth/auth-client";
+import { getSession } from "#/lib/better-auth/auth-functions";
 
 export default function BetterAuthHeader() {
   const { data: session, isPending } = useQuery({
@@ -22,6 +22,7 @@ export default function BetterAuthHeader() {
   }
 
   if (session?.user) {
+    console.log("Session:", session);
     return (
       <div className="flex items-center gap-2">
         {session.user.image ? (
