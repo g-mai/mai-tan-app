@@ -6,7 +6,9 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
+import { getSessionFromCtx } from "better-auth/api";
 import { Toaster } from "sonner";
+import { getSession } from "#/lib/better-auth/auth-functions";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import TanStackQueryDevtools from "../integrations/tanstack-query/devtools";
@@ -40,6 +42,13 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
     ],
   }),
   shellComponent: RootDocument,
+  beforeLoad: async () => {
+    const session = await getSession();
+
+    return {
+      session,
+    };
+  },
 });
 
 function RootDocument({ children }: { children: React.ReactNode }) {

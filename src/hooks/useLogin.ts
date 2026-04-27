@@ -1,37 +1,79 @@
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "@tanstack/react-router";
 import { toast } from "sonner";
+import { z } from "zod";
+import { useAppForm } from "#/hooks/form";
 import { authClient } from "#/lib/better-auth/auth-client";
 
 export const useLogin = () => {
   const router = useRouter();
+  const loginFormSchema = z.object({
+    email: z.email("Invalid email addresssss"),
+    password: z.string().min(6),
+  });
 
-  return useMutation({
-    mutationFn: async (data: { email: string; password: string }) => {
-      const result = await authClient.signIn.email({
-        email: data.email,
-        password: data.password,
-      });
-      console.log("Login result:", result);
+  type LoginFormData = z.infer<typeof loginFormSchema>;
 
-      if (result.error) {
-        const err = result.error;
-        throw { ...err, email: data.email };
-      }
+  const { mutate, isPending, isSuccess, isError } = useMutation({
+    mutationFn: async (values: LoginFormData) => {
+      const { data: signInData, error: signInError } =
+        await authClient.signIn.email({
+          email: values.email,
+          password: values.password,
+        });
 
-      return result;
+      if (signInError) throw signInError;
+
+      return signInData;
     },
     onSuccess: () => {
-      toast.success("Logged in successfully!");
       router.navigate({ to: "/" });
+      toast.success("Successfully logged in!");
     },
-    onError: (error: Error & { email?: string }) => {
-      // do something with the error
-      console.error("Login failed:", error);
-      toast.error(error.message, {
+    onError: (error) => {
+      console.error("Login error:", error);
+      const message = error.message || "An error occurred during login.";
+      toast.error(message, {
         duration: 5000,
         position: "top-center",
       });
+
+      // if (error. === 403 && error.code === "EMAIL_NOT_VERIFIED") {
+      //   const email = form.getValues("email");
+      //   sendVerificationEmail({
+      //     email,
+      //     callbackURL: "/login",
+      //   });
+      //   form.setError("email", {
+      //     type: "manual",
+      //     message: "Email not verified. Please check your mailbox.",
+      //   });
+      // } else {
+      //   form.setError("email", {
+      //     type: "manual",
+      //   });
+      //   form.setError("currentPassword", {
+      //     type: "manual",
+      //   });
+      // }
     },
   });
+
+  const form = useAppForm({
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+    validators: { onSubmit: loginFormSchema },
+    onSubmit: async ({ value }) => {
+      mutate(value);
+    },
+  });
+
+  return {
+    form,
+    isPending,
+    isSuccess,
+    isError,
+  };
 };

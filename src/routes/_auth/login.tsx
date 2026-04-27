@@ -1,29 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { z } from "zod";
-import { useAppForm } from "#/hooks/form";
 import { useLogin } from "#/hooks/useLogin";
 
 export const Route = createFileRoute("/_auth/login")({
   component: RouteComponent,
 });
 
-const formSchema = z.object({
-  email: z.email("Invalid email addresssss"),
-  password: z.string().min(6),
-});
-
 function RouteComponent() {
-  const loginMutation = useLogin();
-  const form = useAppForm({
-    defaultValues: {
-      email: "",
-      password: "",
-    },
-    validators: { onSubmit: formSchema },
-    onSubmit: async ({ value }) => {
-      loginMutation.mutate(value);
-    },
-  });
+  const { form, isPending, isSuccess, isError } = useLogin();
 
   return (
     <div className="flex justify-center py-10 px-4">
@@ -57,14 +40,14 @@ function RouteComponent() {
             )}
           </form.AppField>
           <form.AppForm>
-            <form.SubscribeButton label="Sign In" />
+            <form.SubscribeButton label={isPending ? "Loading..." : "Login"} />
           </form.AppForm>
         </form>
 
         {/* <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-6">
           Don't have an account?{" "}
           <Link
-            to="/_auth/signup"
+            to="/signup"
             className="text-blue-600 hover:underline dark:text-blue-400"
           >
             Sign up

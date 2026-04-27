@@ -1,24 +1,15 @@
-import { useQuery } from "@tanstack/react-query";
-import { Link } from "@tanstack/react-router";
+import { Link, useRouter } from "@tanstack/react-router";
 import { authClient } from "#/lib/better-auth/auth-client";
-import { getSession } from "#/lib/better-auth/auth-functions";
+import { Route as RootRoute } from "#/routes/__root";
 
 export default function BetterAuthHeader() {
-  const { data: session, isPending } = useQuery({
-    queryKey: ["session"],
-    queryFn: async () => {
-      const session = await getSession();
+  const { session } = RootRoute.useRouteContext();
+  const router = useRouter();
 
-      return session;
-    },
-  });
-
-  if (isPending) {
-    return (
-      <div className="h-8 w-18 bg-neutral-100 dark:bg-neutral-800 animate-pulse">
-        <span className="sr-only">Loading...</span>
-      </div>
-    );
+  async function handleSignOut() {
+    await authClient.signOut();
+    router.invalidate();
+    router.navigate({ to: "/" });
   }
 
   if (session?.user) {
@@ -37,7 +28,7 @@ export default function BetterAuthHeader() {
         <button
           type="button"
           onClick={() => {
-            void authClient.signOut();
+            handleSignOut();
           }}
           className="flex-1 h-9 px-4 text-sm font-medium bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-50 border border-neutral-300 dark:border-neutral-700 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors"
         >
@@ -49,10 +40,10 @@ export default function BetterAuthHeader() {
 
   return (
     <Link
-      to="/demo/better-auth"
+      to="/login"
       className="h-9 px-4 text-sm font-medium bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-50 border border-neutral-300 dark:border-neutral-700 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors inline-flex items-center"
     >
-      Sign in
+      Login
     </Link>
   );
 }

@@ -1,6 +1,9 @@
+import { redirect, useRouter } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { getRequestHeaders } from "@tanstack/react-start/server";
 import { auth } from "#/lib/better-auth/auth";
+
+type Session = Awaited<ReturnType<typeof getSession>>;
 
 export const getSession = createServerFn({ method: "GET" }).handler(
   async () => {
@@ -10,16 +13,14 @@ export const getSession = createServerFn({ method: "GET" }).handler(
     return session;
   },
 );
+export function ensureSession(beforeLoadCtx: {
+  context: { session: Session };
+}) {
+  const session = beforeLoadCtx.context.session;
 
-export const ensureSession = createServerFn({ method: "GET" }).handler(
-  async () => {
-    const headers = getRequestHeaders();
-    const session = await auth.api.getSession({ headers });
+  if (!session) {
+    throw redirect({ to: "/login" });
+  }
 
-    if (!session) {
-      throw new Error("Unauthorized");
-    }
-
-    return session;
-  },
-);
+  return session;
+}

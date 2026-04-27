@@ -80,7 +80,7 @@ export default function Header() {
                   Address Form
                 </a>
                 <a
-                  href="/demo/better-auth"
+                  href="/login"
                   className="block rounded-lg px-3 py-2 text-sm text-(--sea-ink-soft) no-underline transition hover:bg-(--link-bg-hover) hover:text-(--sea-ink)"
                 >
                   Better Auth
