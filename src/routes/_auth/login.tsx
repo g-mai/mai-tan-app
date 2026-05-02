@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useLogin } from "#/hooks/useLogin";
 
 export const Route = createFileRoute("/_auth/login")({
@@ -44,15 +44,15 @@ function RouteComponent() {
           </form.AppForm>
         </form>
 
-        {/* <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-6">
+        <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-6">
           Don't have an account?{" "}
           <Link
-            to="/signup"
+            to="/register"
             className="text-blue-600 hover:underline dark:text-blue-400"
           >
-            Sign up
+            Register
           </Link>
-        </p> */}
+        </p>
       </div>
     </div>
   );

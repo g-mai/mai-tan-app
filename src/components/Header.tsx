@@ -6,7 +6,7 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 border-b border-(--line) bg-(--header-bg) px-4 backdrop-blur-lg">
       <div className="flex items-center">
-        <nav className="page-wrap flex flex-wrap items-center gap-x-3 gap-y-2 py-3 sm:py-4">
+        <nav className="page-wrap flex flex-wrap flex-1 items-center gap-x-3 gap-y-2 py-3 sm:py-4">
           <h2 className="m-0 shrink-0 text-base font-semibold tracking-tight">
             <Link
               to="/"
@@ -68,22 +68,10 @@ export default function Header() {
               </summary>
               <div className="mt-2 min-w-56 rounded-xl border border-(--line) bg-(--header-bg) p-2 shadow-lg sm:absolute sm:right-0">
                 <a
-                  href="/demo/form/simple"
-                  className="block rounded-lg px-3 py-2 text-sm text-(--sea-ink-soft) no-underline transition hover:bg-(--link-bg-hover) hover:text-(--sea-ink)"
-                >
-                  Simple Form
-                </a>
-                <a
-                  href="/demo/form/address"
-                  className="block rounded-lg px-3 py-2 text-sm text-(--sea-ink-soft) no-underline transition hover:bg-(--link-bg-hover) hover:text-(--sea-ink)"
-                >
-                  Address Form
-                </a>
-                <a
                   href="/login"
                   className="block rounded-lg px-3 py-2 text-sm text-(--sea-ink-soft) no-underline transition hover:bg-(--link-bg-hover) hover:text-(--sea-ink)"
                 >
-                  Better Auth
+                  Better Auth - Login
                 </a>
                 <a
                   href="/demo/sentry/testing"

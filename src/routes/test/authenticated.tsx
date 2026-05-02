@@ -3,8 +3,8 @@ import { ensureSession } from "#/lib/better-auth/auth-functions";
 
 export const Route = createFileRoute("/test/authenticated")({
   beforeLoad: (ctx) => {
-    const session = ensureSession(ctx);
-    return { user: session.user };
+    const { user } = ensureSession(ctx);
+    return { user };
   },
   component: RouteComponent,
 });

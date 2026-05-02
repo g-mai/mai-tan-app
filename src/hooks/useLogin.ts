@@ -3,9 +3,9 @@ import { useRouter } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { z } from "zod";
 import { useAppForm } from "#/hooks/form";
-import { authClient } from "#/lib/better-auth/auth-client";
+import { signIn } from "#/lib/better-auth/auth-client";
 
-export const useLogin = () => {
+export function useLogin() {
   const router = useRouter();
   const loginFormSchema = z.object({
     email: z.email("Invalid email addresssss"),
@@ -16,11 +16,10 @@ export const useLogin = () => {
 
   const { mutate, isPending, isSuccess, isError } = useMutation({
     mutationFn: async (values: LoginFormData) => {
-      const { data: signInData, error: signInError } =
-        await authClient.signIn.email({
-          email: values.email,
-          password: values.password,
-        });
+      const { data: signInData, error: signInError } = await signIn.email({
+        email: values.email,
+        password: values.password,
+      });
 
       if (signInError) throw signInError;
 
@@ -76,4 +75,4 @@ export const useLogin = () => {
     isSuccess,
     isError,
   };
-};
+}

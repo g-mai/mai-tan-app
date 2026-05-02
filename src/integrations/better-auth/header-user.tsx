@@ -1,5 +1,5 @@
 import { Link, useRouter } from "@tanstack/react-router";
-import { authClient } from "#/lib/better-auth/auth-client";
+import { signOut } from "#/lib/better-auth/auth-client";
 import { Route as RootRoute } from "#/routes/__root";
 
 export default function BetterAuthHeader() {
@@ -7,7 +7,7 @@ export default function BetterAuthHeader() {
   const router = useRouter();
 
   async function handleSignOut() {
-    await authClient.signOut();
+    await signOut();
     router.invalidate();
     router.navigate({ to: "/" });
   }
