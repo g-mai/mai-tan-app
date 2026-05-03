@@ -8,6 +8,21 @@ export const Route = createFileRoute("/_auth/register")({
 function RouteComponent() {
   const { form, isPending, isSuccess, isError } = useRegister();
 
+  if (isSuccess) {
+    return (
+      <div className="flex justify-center py-10 px-4">
+        <div className="w-full max-w-md p-6">
+          <h1 className="text-lg font-semibold leading-none tracking-tight">
+            Account Created Successfully
+          </h1>
+          <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-2 mb-6">
+            Check your email for a verification link to activate your account.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex justify-center py-10 px-4">
       <div className="w-full max-w-md p-6">

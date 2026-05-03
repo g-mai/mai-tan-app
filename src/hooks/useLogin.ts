@@ -36,25 +36,6 @@ export function useLogin() {
         duration: 5000,
         position: "top-center",
       });
-
-      // if (error. === 403 && error.code === "EMAIL_NOT_VERIFIED") {
-      //   const email = form.getValues("email");
-      //   sendVerificationEmail({
-      //     email,
-      //     callbackURL: "/login",
-      //   });
-      //   form.setError("email", {
-      //     type: "manual",
-      //     message: "Email not verified. Please check your mailbox.",
-      //   });
-      // } else {
-      //   form.setError("email", {
-      //     type: "manual",
-      //   });
-      //   form.setError("currentPassword", {
-      //     type: "manual",
-      //   });
-      // }
     },
   });
 

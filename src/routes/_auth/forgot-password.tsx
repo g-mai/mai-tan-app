@@ -1,21 +1,44 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useLogin } from "#/hooks/useLogin";
+import { Button } from "#/components/ui/button";
+import { useForgotPassword } from "#/hooks/useForgotPassword";
 
-export const Route = createFileRoute("/_auth/login")({
+export const Route = createFileRoute("/_auth/forgot-password")({
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const { form, isPending, isSuccess, isError } = useLogin();
+  const { form, isPending, isSuccess, isError, handleReset } =
+    useForgotPassword();
+
+  if (isSuccess) {
+    return (
+      <div className="flex justify-center py-10 px-4">
+        <div className="w-full max-w-md p-6">
+          <h1 className="text-lg font-semibold leading-none tracking-tight">
+            Password Reset Email Sent
+          </h1>
+          <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-2 mb-6">
+            We've sent you an email with instructions to reset your password.
+            Please check your inbox and follow the instructions.
+          </p>
+
+          <Button variant="outline" onClick={handleReset}>
+            Send again
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex justify-center py-10 px-4">
       <div className="w-full max-w-md p-6">
         <h1 className="text-lg font-semibold leading-none tracking-tight">
-          Sign in to your account
+          Forgot your password?
         </h1>
         <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-2 mb-6">
-          Enter your email and password to login to your account
+          Enter your email address below and we'll send you a link to reset your
+          password.
         </p>
 
         <form
@@ -31,21 +54,7 @@ function RouteComponent() {
               <field.TextField label="Email" placeholder="Enter your email" />
             )}
           </form.AppField>
-          <form.AppField name="password">
-            {(field) => (
-              <field.PasswordField
-                label="Password"
-                placeholder="Enter your password"
-              />
-            )}
-          </form.AppField>
 
-          <Link
-            to="/forgot-password"
-            className="-mt-2 w-full text-xs text-right text-blue-700 hover:underline dark:text-blue-400"
-          >
-            Forgot password?
-          </Link>
           <form.AppForm>
             <form.SubscribeButton label={isPending ? "Loading..." : "Login"} />
           </form.AppForm>
