@@ -4,6 +4,7 @@ import { organization as organizationPlugin } from "better-auth/plugins";
 import { tanstackStartCookies } from "better-auth/tanstack-start";
 import { db } from "#/db";
 import { authSchema } from "#/db/schema";
+import { sendResetPasswordEmail, sendVerifyEmail } from "../resend/emails";
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -34,16 +35,50 @@ export const auth = betterAuth({
         defaultValue: "",
       },
     },
-    // changeEmail: {
-    //   enabled: true,
-    //   sendChangeEmailVerification: async ({ user, url, token }, request) => {
-    //     console.log('Sending change email verification email to', user.email)
-    //     // await sendVerifyEmail({ user, url, token });
-    //   }
-    // }
+    changeEmail: {
+      enabled: true,
+      sendChangeEmailVerification: async (
+        {
+          user,
+          url,
+          token,
+        }: { user: { email: string }; url: string; token: string },
+        request: unknown,
+      ) => {
+        console.log("Sending change email verification email to", user.email);
+        // await sendVerifyEmail({ user, url, token });
+      },
+    },
   },
   emailAndPassword: {
     enabled: true,
+    requireEmailVerification: true,
+    sendResetPassword: async ({ user, url, token }, request) => {
+      console.log("Preparing to send reset password email to:", user.email);
+      await sendResetPasswordEmail({
+        user: user as Parameters<typeof sendResetPasswordEmail>[0]["user"],
+        url,
+        token,
+      });
+    },
+    onPasswordReset: async ({ user }, request) => {
+      console.log(`Password reset successful for user: ${user.email}`);
+    },
+  },
+  emailVerification: {
+    sendVerificationEmail: async ({ user, url, token }, request) => {
+      if (process.env.SKIP_VERIFICATION_EMAIL === "true") {
+        // Skipping verification email (seed mode)
+        return;
+      }
+      console.log("Preparing to send verification email to:", user.email);
+      await sendVerifyEmail({
+        user: user as Parameters<typeof sendVerifyEmail>[0]["user"],
+        url,
+        token,
+      });
+    },
+    autoSignInAfterVerification: true,
   },
   plugins: [
     organizationPlugin({

@@ -2,7 +2,7 @@ import { useRouter } from "@tanstack/react-router";
 import { createMiddleware } from "@tanstack/react-start";
 import { getSession } from "@/lib/better-auth/auth-functions";
 
-const authMiddleware = createMiddleware({ type: "function" }).server(
+export const authMiddleware = createMiddleware({ type: "function" }).server(
   async ({ next }) => {
     const router = useRouter();
     const session = await getSession();
@@ -14,5 +14,3 @@ const authMiddleware = createMiddleware({ type: "function" }).server(
     return next({ context: { session } });
   },
 );
-
-export default authMiddleware;

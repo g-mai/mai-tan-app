@@ -13,6 +13,7 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TestAuthenticatedRouteImport } from './routes/test/authenticated'
 import { Route as DemoTanstackQueryRouteImport } from './routes/demo/tanstack-query'
+import { Route as AuthResetPasswordRouteImport } from './routes/_auth/reset-password'
 import { Route as AuthRegisterRouteImport } from './routes/_auth/register'
 import { Route as AuthLoginRouteImport } from './routes/_auth/login'
 import { Route as DemoSentryTestingRouteImport } from './routes/demo/sentry.testing'
@@ -36,6 +37,11 @@ const TestAuthenticatedRoute = TestAuthenticatedRouteImport.update({
 const DemoTanstackQueryRoute = DemoTanstackQueryRouteImport.update({
   id: '/demo/tanstack-query',
   path: '/demo/tanstack-query',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthResetPasswordRoute = AuthResetPasswordRouteImport.update({
+  id: '/_auth/reset-password',
+  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRegisterRoute = AuthRegisterRouteImport.update({
@@ -64,6 +70,7 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/login': typeof AuthLoginRoute
   '/register': typeof AuthRegisterRoute
+  '/reset-password': typeof AuthResetPasswordRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/test/authenticated': typeof TestAuthenticatedRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -74,6 +81,7 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/login': typeof AuthLoginRoute
   '/register': typeof AuthRegisterRoute
+  '/reset-password': typeof AuthResetPasswordRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/test/authenticated': typeof TestAuthenticatedRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -85,6 +93,7 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/_auth/login': typeof AuthLoginRoute
   '/_auth/register': typeof AuthRegisterRoute
+  '/_auth/reset-password': typeof AuthResetPasswordRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/test/authenticated': typeof TestAuthenticatedRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -97,6 +106,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/login'
     | '/register'
+    | '/reset-password'
     | '/demo/tanstack-query'
     | '/test/authenticated'
     | '/api/auth/$'
@@ -107,6 +117,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/login'
     | '/register'
+    | '/reset-password'
     | '/demo/tanstack-query'
     | '/test/authenticated'
     | '/api/auth/$'
@@ -117,6 +128,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/_auth/login'
     | '/_auth/register'
+    | '/_auth/reset-password'
     | '/demo/tanstack-query'
     | '/test/authenticated'
     | '/api/auth/$'
@@ -128,6 +140,7 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   AuthLoginRoute: typeof AuthLoginRoute
   AuthRegisterRoute: typeof AuthRegisterRoute
+  AuthResetPasswordRoute: typeof AuthResetPasswordRoute
   DemoTanstackQueryRoute: typeof DemoTanstackQueryRoute
   TestAuthenticatedRoute: typeof TestAuthenticatedRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
@@ -162,6 +175,13 @@ declare module '@tanstack/react-router' {
       path: '/demo/tanstack-query'
       fullPath: '/demo/tanstack-query'
       preLoaderRoute: typeof DemoTanstackQueryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_auth/reset-password': {
+      id: '/_auth/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof AuthResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_auth/register': {
@@ -200,6 +220,7 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   AuthLoginRoute: AuthLoginRoute,
   AuthRegisterRoute: AuthRegisterRoute,
+  AuthResetPasswordRoute: AuthResetPasswordRoute,
   DemoTanstackQueryRoute: DemoTanstackQueryRoute,
   TestAuthenticatedRoute: TestAuthenticatedRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
