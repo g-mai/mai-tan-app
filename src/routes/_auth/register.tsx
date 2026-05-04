@@ -60,15 +60,12 @@ function RouteComponent() {
           </form.AppField>
           <form.AppField name="password">
             {(field) => (
-              <field.PasswordField label="Password" placeholder="********" />
+              <field.PasswordField label="Password" placeholder="***" />
             )}
           </form.AppField>
           <form.AppField name="confirmPassword">
             {(field) => (
-              <field.PasswordField
-                label="Confirm Password"
-                placeholder="********"
-              />
+              <field.PasswordField label="Confirm Password" placeholder="***" />
             )}
           </form.AppField>
           <form.AppForm>

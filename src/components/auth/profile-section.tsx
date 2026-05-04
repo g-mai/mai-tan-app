@@ -1,8 +1,8 @@
+import { Card, CardContent, CardHeader, CardTitle } from "#/components/ui/card";
 import { useUpdateProfile } from "#/hooks/auth/useUpdateProfile";
 import type { User } from "#/types/auth-types";
-import { Card, CardHeader, CardTitle, CardContent } from "#/components/ui/card";
-import { UserAvatar } from "./user-avatar";
 import { Button } from "../ui/button";
+import { UserAvatar } from "./user-avatar";
 
 export function ProfileSection({ user }: { user: User }) {
   const { form, isPending, isSuccess, isError } = useUpdateProfile({
