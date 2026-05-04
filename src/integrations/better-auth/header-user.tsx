@@ -13,7 +13,6 @@ export default function BetterAuthHeader() {
   }
 
   if (session?.user) {
-    console.log("Session:", session);
     return (
       <div className="flex items-center gap-2">
         {session.user.image ? (

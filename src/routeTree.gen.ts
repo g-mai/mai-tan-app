@@ -10,9 +10,11 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as ProtectedRouteImport } from './routes/_protected'
+import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as TestAuthenticatedRouteImport } from './routes/test/authenticated'
 import { Route as DemoTanstackQueryRouteImport } from './routes/demo/tanstack-query'
+import { Route as ProtectedAuthenticatedRouteImport } from './routes/_protected/authenticated'
 import { Route as AuthResetPasswordRouteImport } from './routes/_auth/reset-password'
 import { Route as AuthRegisterRouteImport } from './routes/_auth/register'
 import { Route as AuthLoginRouteImport } from './routes/_auth/login'
@@ -25,14 +27,17 @@ const AboutRoute = AboutRouteImport.update({
   path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProtectedRoute = ProtectedRouteImport.update({
+  id: '/_protected',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/_auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TestAuthenticatedRoute = TestAuthenticatedRouteImport.update({
-  id: '/test/authenticated',
-  path: '/test/authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DemoTanstackQueryRoute = DemoTanstackQueryRouteImport.update({
@@ -40,25 +45,30 @@ const DemoTanstackQueryRoute = DemoTanstackQueryRouteImport.update({
   path: '/demo/tanstack-query',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProtectedAuthenticatedRoute = ProtectedAuthenticatedRouteImport.update({
+  id: '/authenticated',
+  path: '/authenticated',
+  getParentRoute: () => ProtectedRoute,
+} as any)
 const AuthResetPasswordRoute = AuthResetPasswordRouteImport.update({
-  id: '/_auth/reset-password',
+  id: '/reset-password',
   path: '/reset-password',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthRoute,
 } as any)
 const AuthRegisterRoute = AuthRegisterRouteImport.update({
-  id: '/_auth/register',
+  id: '/register',
   path: '/register',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthRoute,
 } as any)
 const AuthLoginRoute = AuthLoginRouteImport.update({
-  id: '/_auth/login',
+  id: '/login',
   path: '/login',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthRoute,
 } as any)
 const AuthForgotPasswordRoute = AuthForgotPasswordRouteImport.update({
-  id: '/_auth/forgot-password',
+  id: '/forgot-password',
   path: '/forgot-password',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthRoute,
 } as any)
 const DemoSentryTestingRoute = DemoSentryTestingRouteImport.update({
   id: '/demo/sentry/testing',
@@ -78,8 +88,8 @@ export interface FileRoutesByFullPath {
   '/login': typeof AuthLoginRoute
   '/register': typeof AuthRegisterRoute
   '/reset-password': typeof AuthResetPasswordRoute
+  '/authenticated': typeof ProtectedAuthenticatedRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
-  '/test/authenticated': typeof TestAuthenticatedRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/demo/sentry/testing': typeof DemoSentryTestingRoute
 }
@@ -90,21 +100,23 @@ export interface FileRoutesByTo {
   '/login': typeof AuthLoginRoute
   '/register': typeof AuthRegisterRoute
   '/reset-password': typeof AuthResetPasswordRoute
+  '/authenticated': typeof ProtectedAuthenticatedRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
-  '/test/authenticated': typeof TestAuthenticatedRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/demo/sentry/testing': typeof DemoSentryTestingRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_auth': typeof AuthRouteWithChildren
+  '/_protected': typeof ProtectedRouteWithChildren
   '/about': typeof AboutRoute
   '/_auth/forgot-password': typeof AuthForgotPasswordRoute
   '/_auth/login': typeof AuthLoginRoute
   '/_auth/register': typeof AuthRegisterRoute
   '/_auth/reset-password': typeof AuthResetPasswordRoute
+  '/_protected/authenticated': typeof ProtectedAuthenticatedRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
-  '/test/authenticated': typeof TestAuthenticatedRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/demo/sentry/testing': typeof DemoSentryTestingRoute
 }
@@ -117,8 +129,8 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/reset-password'
+    | '/authenticated'
     | '/demo/tanstack-query'
-    | '/test/authenticated'
     | '/api/auth/$'
     | '/demo/sentry/testing'
   fileRoutesByTo: FileRoutesByTo
@@ -129,33 +141,32 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/reset-password'
+    | '/authenticated'
     | '/demo/tanstack-query'
-    | '/test/authenticated'
     | '/api/auth/$'
     | '/demo/sentry/testing'
   id:
     | '__root__'
     | '/'
+    | '/_auth'
+    | '/_protected'
     | '/about'
     | '/_auth/forgot-password'
     | '/_auth/login'
     | '/_auth/register'
     | '/_auth/reset-password'
+    | '/_protected/authenticated'
     | '/demo/tanstack-query'
-    | '/test/authenticated'
     | '/api/auth/$'
     | '/demo/sentry/testing'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthRoute: typeof AuthRouteWithChildren
+  ProtectedRoute: typeof ProtectedRouteWithChildren
   AboutRoute: typeof AboutRoute
-  AuthForgotPasswordRoute: typeof AuthForgotPasswordRoute
-  AuthLoginRoute: typeof AuthLoginRoute
-  AuthRegisterRoute: typeof AuthRegisterRoute
-  AuthResetPasswordRoute: typeof AuthResetPasswordRoute
   DemoTanstackQueryRoute: typeof DemoTanstackQueryRoute
-  TestAuthenticatedRoute: typeof TestAuthenticatedRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   DemoSentryTestingRoute: typeof DemoSentryTestingRoute
 }
@@ -169,18 +180,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_protected': {
+      id: '/_protected'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof ProtectedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_auth': {
+      id: '/_auth'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/test/authenticated': {
-      id: '/test/authenticated'
-      path: '/test/authenticated'
-      fullPath: '/test/authenticated'
-      preLoaderRoute: typeof TestAuthenticatedRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/demo/tanstack-query': {
@@ -190,33 +208,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DemoTanstackQueryRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_protected/authenticated': {
+      id: '/_protected/authenticated'
+      path: '/authenticated'
+      fullPath: '/authenticated'
+      preLoaderRoute: typeof ProtectedAuthenticatedRouteImport
+      parentRoute: typeof ProtectedRoute
+    }
     '/_auth/reset-password': {
       id: '/_auth/reset-password'
       path: '/reset-password'
       fullPath: '/reset-password'
       preLoaderRoute: typeof AuthResetPasswordRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AuthRoute
     }
     '/_auth/register': {
       id: '/_auth/register'
       path: '/register'
       fullPath: '/register'
       preLoaderRoute: typeof AuthRegisterRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AuthRoute
     }
     '/_auth/login': {
       id: '/_auth/login'
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof AuthLoginRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AuthRoute
     }
     '/_auth/forgot-password': {
       id: '/_auth/forgot-password'
       path: '/forgot-password'
       fullPath: '/forgot-password'
       preLoaderRoute: typeof AuthForgotPasswordRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AuthRoute
     }
     '/demo/sentry/testing': {
       id: '/demo/sentry/testing'
@@ -235,15 +260,40 @@ declare module '@tanstack/react-router' {
   }
 }
 
-const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  AboutRoute: AboutRoute,
+interface AuthRouteChildren {
+  AuthForgotPasswordRoute: typeof AuthForgotPasswordRoute
+  AuthLoginRoute: typeof AuthLoginRoute
+  AuthRegisterRoute: typeof AuthRegisterRoute
+  AuthResetPasswordRoute: typeof AuthResetPasswordRoute
+}
+
+const AuthRouteChildren: AuthRouteChildren = {
   AuthForgotPasswordRoute: AuthForgotPasswordRoute,
   AuthLoginRoute: AuthLoginRoute,
   AuthRegisterRoute: AuthRegisterRoute,
   AuthResetPasswordRoute: AuthResetPasswordRoute,
+}
+
+const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
+
+interface ProtectedRouteChildren {
+  ProtectedAuthenticatedRoute: typeof ProtectedAuthenticatedRoute
+}
+
+const ProtectedRouteChildren: ProtectedRouteChildren = {
+  ProtectedAuthenticatedRoute: ProtectedAuthenticatedRoute,
+}
+
+const ProtectedRouteWithChildren = ProtectedRoute._addFileChildren(
+  ProtectedRouteChildren,
+)
+
+const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
+  AuthRoute: AuthRouteWithChildren,
+  ProtectedRoute: ProtectedRouteWithChildren,
+  AboutRoute: AboutRoute,
   DemoTanstackQueryRoute: DemoTanstackQueryRoute,
-  TestAuthenticatedRoute: TestAuthenticatedRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   DemoSentryTestingRoute: DemoSentryTestingRoute,
 }

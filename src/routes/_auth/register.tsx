@@ -41,40 +41,33 @@ function RouteComponent() {
           }}
           className="grid gap-4"
         >
-          <form.AppField name="firstName">
-            {(field) => (
-              <field.TextField
-                label="First Name"
-                placeholder="Enter your first name"
-              />
-            )}
-          </form.AppField>
-          <form.AppField name="lastName">
-            {(field) => (
-              <field.TextField
-                label="Last Name"
-                placeholder="Enter your last name"
-              />
-            )}
-          </form.AppField>
+          <div className="flex gap-2">
+            <form.AppField name="firstName">
+              {(field) => (
+                <field.TextField label="First Name" placeholder="John" />
+              )}
+            </form.AppField>
+            <form.AppField name="lastName">
+              {(field) => (
+                <field.TextField label="Last Name" placeholder="Smith" />
+              )}
+            </form.AppField>
+          </div>
           <form.AppField name="email">
             {(field) => (
-              <field.TextField label="Email" placeholder="Enter your email" />
+              <field.TextField label="Email" placeholder="john@email.com" />
             )}
           </form.AppField>
           <form.AppField name="password">
             {(field) => (
-              <field.PasswordField
-                label="Password"
-                placeholder="Enter your password"
-              />
+              <field.PasswordField label="Password" placeholder="********" />
             )}
           </form.AppField>
           <form.AppField name="confirmPassword">
             {(field) => (
               <field.PasswordField
                 label="Confirm Password"
-                placeholder="Confirm your password"
+                placeholder="********"
               />
             )}
           </form.AppField>

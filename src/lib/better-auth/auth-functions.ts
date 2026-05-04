@@ -2,8 +2,7 @@ import { redirect } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { getRequestHeaders } from "@tanstack/react-start/server";
 import { auth } from "#/lib/better-auth/auth";
-
-type Session = Awaited<ReturnType<typeof getSession>>;
+import type { Session } from "#/types/auth-types";
 
 export const getSession = createServerFn({ method: "GET" }).handler(
   async () => {
@@ -14,7 +13,7 @@ export const getSession = createServerFn({ method: "GET" }).handler(
   },
 );
 export function ensureSession(beforeLoadCtx: {
-  context: { session: Session };
+  context: { session: Session | null };
 }) {
   const session = beforeLoadCtx.context.session;
 

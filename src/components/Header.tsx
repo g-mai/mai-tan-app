@@ -86,7 +86,7 @@ export default function Header() {
                   TanStack Query
                 </a>
                 <a
-                  href="/test/authenticated"
+                  href="/authenticated"
                   className="block rounded-lg px-3 py-2 text-sm text-(--sea-ink-soft) no-underline transition hover:bg-(--link-bg-hover) hover:text-(--sea-ink)"
                 >
                   Test authenticated route
