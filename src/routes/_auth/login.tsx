@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useLogin } from "#/hooks/useLogin";
+import { useLogin } from "#/hooks/auth/useLogin";
 
 export const Route = createFileRoute("/_auth/login")({
   component: RouteComponent,
@@ -9,7 +9,7 @@ function RouteComponent() {
   const { form, isPending, isSuccess, isError } = useLogin();
 
   return (
-    <div className="flex justify-center py-10 px-4">
+    <div className="flex justify-center">
       <div className="w-full max-w-md p-6">
         <h1 className="text-lg font-semibold leading-none tracking-tight">
           Sign in to your account
@@ -28,15 +28,12 @@ function RouteComponent() {
         >
           <form.AppField name="email">
             {(field) => (
-              <field.TextField label="Email" placeholder="Enter your email" />
+              <field.TextField label="Email" placeholder="john@email.com" />
             )}
           </form.AppField>
           <form.AppField name="password">
             {(field) => (
-              <field.PasswordField
-                label="Password"
-                placeholder="Enter your password"
-              />
+              <field.PasswordField label="Password" placeholder="********" />
             )}
           </form.AppField>
 

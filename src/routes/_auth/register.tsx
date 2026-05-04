@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useRegister } from "#/hooks/useRegister";
+import { useRegister } from "#/hooks/auth/useRegister";
 
 export const Route = createFileRoute("/_auth/register")({
   component: RouteComponent,
@@ -10,7 +10,7 @@ function RouteComponent() {
 
   if (isSuccess) {
     return (
-      <div className="flex justify-center py-10 px-4">
+      <div className="flex justify-center">
         <div className="w-full max-w-md p-6">
           <h1 className="text-lg font-semibold leading-none tracking-tight">
             Account Created Successfully
@@ -24,7 +24,7 @@ function RouteComponent() {
   }
 
   return (
-    <div className="flex justify-center py-10 px-4">
+    <div className="flex justify-center">
       <div className="w-full max-w-md p-6">
         <h1 className="text-lg font-semibold leading-none tracking-tight">
           Create an account

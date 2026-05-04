@@ -3,7 +3,7 @@ import { useRouter } from "@tanstack/react-router";
 import { toast } from "sonner";
 import z from "zod";
 import { signUp } from "#/lib/better-auth/auth-client";
-import { useAppForm } from "./form";
+import { useAppForm } from "#/hooks/form";
 
 export function useRegister() {
   const router = useRouter();

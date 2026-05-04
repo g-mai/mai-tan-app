@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "#/components/ui/button";
-import { useForgotPassword } from "#/hooks/useForgotPassword";
+import { useForgotPassword } from "#/hooks/auth/useForgotPassword";
 
 export const Route = createFileRoute("/_auth/forgot-password")({
   component: RouteComponent,
@@ -12,7 +12,7 @@ function RouteComponent() {
 
   if (isSuccess) {
     return (
-      <div className="flex justify-center py-10 px-4">
+      <div className="flex justify-center">
         <div className="w-full max-w-md p-6">
           <h1 className="text-lg font-semibold leading-none tracking-tight">
             Password Reset Email Sent
@@ -31,7 +31,7 @@ function RouteComponent() {
   }
 
   return (
-    <div className="flex justify-center py-10 px-4">
+    <div className="flex justify-center">
       <div className="w-full max-w-md p-6">
         <h1 className="text-lg font-semibold leading-none tracking-tight">
           Forgot your password?

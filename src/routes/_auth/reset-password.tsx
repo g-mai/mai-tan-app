@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useSearch } from "@tanstack/react-router";
 import { z } from "zod";
 import { Button } from "#/components/ui/button";
-import { useResetPassword } from "#/hooks/useResetPassword";
+import { useResetPassword } from "#/hooks/auth/useResetPassword";
 
 const resetPasswordSearchSchema = z.object({
   token: z.string().catch(""),

@@ -1,12 +1,10 @@
 import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { z } from "zod";
 import { useAppForm } from "#/hooks/form";
 import { requestPasswordReset } from "#/lib/better-auth/auth-client";
 
 export function useForgotPassword() {
-  const router = useRouter();
   const forgotPasswordFormSchema = z.object({
     email: z.email("Invalid email addresssss"),
   });

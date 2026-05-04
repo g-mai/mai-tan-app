@@ -6,14 +6,11 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
-import { getSessionFromCtx } from "better-auth/api";
 import { Toaster } from "sonner";
 import { getSession } from "#/lib/better-auth/auth-functions";
-import Footer from "../components/Footer";
-import Header from "../components/Header";
+import type { Session } from "#/types/auth-types";
 import TanStackQueryDevtools from "../integrations/tanstack-query/devtools";
 import appCss from "../styles.css?url";
-import type { Session } from "#/types/auth-types";
 
 interface MyRouterContext {
   queryClient: QueryClient;
@@ -63,9 +60,8 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body className="font-sans antialiased wrap-anywhere selection:bg-[rgba(79,184,178,0.24)] min-h-screen">
-        <Header />
         {children}
-        <Footer />
+
         <Toaster />
         <TanStackDevtools
           config={{
