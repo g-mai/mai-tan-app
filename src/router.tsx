@@ -3,7 +3,7 @@ import {
   Link,
 } from "@tanstack/react-router";
 import { setupRouterSsrQueryIntegration } from "@tanstack/react-router-ssr-query";
-import { captureOwnerStack } from "react";
+// import { captureOwnerStack } from "react";
 import { getContext } from "./integrations/tanstack-query/root-provider";
 import { routeTree } from "./routeTree.gen";
 
@@ -27,7 +27,10 @@ export function getRouter() {
 
   const router = createTanStackRouter({
     routeTree,
-    context,
+    context: {
+      ...context,
+      session: undefined,
+    },
     defaultNotFoundComponent: DefaultNotFound,
     scrollRestoration: true,
     defaultPreload: "intent",

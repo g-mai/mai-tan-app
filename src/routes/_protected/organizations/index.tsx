@@ -1,8 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { listOrganizations } from "#/lib/better-auth/org-functions";
-import { Card, CardContent, CardHeader, CardTitle } from "#/components/ui/card";
 import { OrganizationLogo } from "#/components/shared/organization-logo";
 import { PageTitle } from "#/components/shared/PageTitle";
+import { Card, CardContent, CardHeader, CardTitle } from "#/components/ui/card";
+import { listOrganizations } from "#/lib/better-auth/org-functions";
 
 export const Route = createFileRoute("/_protected/organizations/")({
   component: RouteComponent,

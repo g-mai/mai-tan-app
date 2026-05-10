@@ -25,6 +25,7 @@ import { Route as ProtectedOrganizationsIndexRouteImport } from './routes/_prote
 import { Route as DemoSentryTestingRouteImport } from './routes/demo/sentry.testing'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as ProtectedTeamsNewRouteImport } from './routes/_protected/teams/new'
+import { Route as ProtectedTeamsIdRouteImport } from './routes/_protected/teams/$id'
 import { Route as ProtectedOrganizationsNewRouteImport } from './routes/_protected/organizations/new'
 import { Route as ProtectedOrganizationsIdRouteImport } from './routes/_protected/organizations/$id'
 
@@ -107,6 +108,11 @@ const ProtectedTeamsNewRoute = ProtectedTeamsNewRouteImport.update({
   path: '/teams/new',
   getParentRoute: () => ProtectedRouteRoute,
 } as any)
+const ProtectedTeamsIdRoute = ProtectedTeamsIdRouteImport.update({
+  id: '/teams/$id',
+  path: '/teams/$id',
+  getParentRoute: () => ProtectedRouteRoute,
+} as any)
 const ProtectedOrganizationsNewRoute =
   ProtectedOrganizationsNewRouteImport.update({
     id: '/organizations/new',
@@ -132,6 +138,7 @@ export interface FileRoutesByFullPath {
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/organizations/$id': typeof ProtectedOrganizationsIdRoute
   '/organizations/new': typeof ProtectedOrganizationsNewRoute
+  '/teams/$id': typeof ProtectedTeamsIdRoute
   '/teams/new': typeof ProtectedTeamsNewRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/demo/sentry/testing': typeof DemoSentryTestingRoute
@@ -150,6 +157,7 @@ export interface FileRoutesByTo {
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/organizations/$id': typeof ProtectedOrganizationsIdRoute
   '/organizations/new': typeof ProtectedOrganizationsNewRoute
+  '/teams/$id': typeof ProtectedTeamsIdRoute
   '/teams/new': typeof ProtectedTeamsNewRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/demo/sentry/testing': typeof DemoSentryTestingRoute
@@ -171,6 +179,7 @@ export interface FileRoutesById {
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/_protected/organizations/$id': typeof ProtectedOrganizationsIdRoute
   '/_protected/organizations/new': typeof ProtectedOrganizationsNewRoute
+  '/_protected/teams/$id': typeof ProtectedTeamsIdRoute
   '/_protected/teams/new': typeof ProtectedTeamsNewRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/demo/sentry/testing': typeof DemoSentryTestingRoute
@@ -191,6 +200,7 @@ export interface FileRouteTypes {
     | '/demo/tanstack-query'
     | '/organizations/$id'
     | '/organizations/new'
+    | '/teams/$id'
     | '/teams/new'
     | '/api/auth/$'
     | '/demo/sentry/testing'
@@ -209,6 +219,7 @@ export interface FileRouteTypes {
     | '/demo/tanstack-query'
     | '/organizations/$id'
     | '/organizations/new'
+    | '/teams/$id'
     | '/teams/new'
     | '/api/auth/$'
     | '/demo/sentry/testing'
@@ -229,6 +240,7 @@ export interface FileRouteTypes {
     | '/demo/tanstack-query'
     | '/_protected/organizations/$id'
     | '/_protected/organizations/new'
+    | '/_protected/teams/$id'
     | '/_protected/teams/new'
     | '/api/auth/$'
     | '/demo/sentry/testing'
@@ -360,6 +372,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedTeamsNewRouteImport
       parentRoute: typeof ProtectedRouteRoute
     }
+    '/_protected/teams/$id': {
+      id: '/_protected/teams/$id'
+      path: '/teams/$id'
+      fullPath: '/teams/$id'
+      preLoaderRoute: typeof ProtectedTeamsIdRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
     '/_protected/organizations/new': {
       id: '/_protected/organizations/new'
       path: '/organizations/new'
@@ -400,6 +419,7 @@ interface ProtectedRouteRouteChildren {
   ProtectedSettingsRoute: typeof ProtectedSettingsRoute
   ProtectedOrganizationsIdRoute: typeof ProtectedOrganizationsIdRoute
   ProtectedOrganizationsNewRoute: typeof ProtectedOrganizationsNewRoute
+  ProtectedTeamsIdRoute: typeof ProtectedTeamsIdRoute
   ProtectedTeamsNewRoute: typeof ProtectedTeamsNewRoute
   ProtectedOrganizationsIndexRoute: typeof ProtectedOrganizationsIndexRoute
   ProtectedTeamsIndexRoute: typeof ProtectedTeamsIndexRoute
@@ -410,6 +430,7 @@ const ProtectedRouteRouteChildren: ProtectedRouteRouteChildren = {
   ProtectedSettingsRoute: ProtectedSettingsRoute,
   ProtectedOrganizationsIdRoute: ProtectedOrganizationsIdRoute,
   ProtectedOrganizationsNewRoute: ProtectedOrganizationsNewRoute,
+  ProtectedTeamsIdRoute: ProtectedTeamsIdRoute,
   ProtectedTeamsNewRoute: ProtectedTeamsNewRoute,
   ProtectedOrganizationsIndexRoute: ProtectedOrganizationsIndexRoute,
   ProtectedTeamsIndexRoute: ProtectedTeamsIndexRoute,
