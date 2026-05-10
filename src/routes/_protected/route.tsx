@@ -1,7 +1,7 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
-import { ensureSession } from "#/lib/better-auth/auth-functions";
-import Header from "#/components/Header";
 import Footer from "#/components/Footer";
+import Header from "#/components/Header";
+import { ensureSession } from "#/lib/better-auth/auth-functions";
 
 export const Route = createFileRoute("/_protected")({
   beforeLoad: (ctx) => {
