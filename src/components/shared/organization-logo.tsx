@@ -14,11 +14,11 @@ export function OrganizationLogo({
 }) {
   return (
     <Image
-      src={logoUrl || "default-org.svg"}
+      src={logoUrl || "/default-org.svg"}
       layout="constrained"
       width={width}
       height={height}
-      alt="User Avatar"
+      alt="Organization Logo"
       className={cn("max-w-none rounded-md", className)}
     />
   );

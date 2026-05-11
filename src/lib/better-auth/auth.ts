@@ -91,6 +91,52 @@ export const auth = betterAuth({
               required: false,
               defaultValue: "",
             },
+            website: {
+              type: "string",
+              input: true,
+              required: false,
+              defaultValue: "",
+            },
+            address: {
+              type: "string",
+              input: true,
+              required: false,
+              defaultValue: "",
+            },
+            postCode: {
+              type: "string",
+              input: true,
+              required: false,
+              defaultValue: "",
+            },
+            country: {
+              type: "string",
+              input: true,
+              required: false,
+              defaultValue: "",
+            },
+            phone: {
+              type: "string",
+              input: true,
+              required: false,
+              defaultValue: "",
+            },
+          },
+        },
+        team: {
+          additionalFields: {
+            description: {
+              type: "string",
+              input: true,
+              required: false,
+              defaultValue: "",
+            },
+            color: {
+              type: "string",
+              input: true,
+              required: false,
+              defaultValue: "#17967f",
+            },
           },
         },
       },

@@ -95,6 +95,11 @@ export const organization = pgTable(
     createdAt: timestamp("created_at").notNull(),
     metadata: text("metadata"),
     description: text("description").default(""),
+    website: text("website").default(""),
+    address: text("address").default(""),
+    postCode: text("post_code").default(""),
+    country: text("country").default(""),
+    phone: text("phone").default(""),
   },
   (table) => [uniqueIndex("organization_slug_uidx").on(table.slug)],
 );
@@ -111,6 +116,8 @@ export const team = pgTable(
     updatedAt: timestamp("updated_at").$onUpdate(
       () => /* @__PURE__ */ new Date(),
     ),
+    description: text("description").default(""),
+    color: text("color").default("#17967f"),
   },
   (table) => [index("team_organizationId_idx").on(table.organizationId)],
 );

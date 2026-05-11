@@ -5,10 +5,11 @@ import {
   team as teamTable,
   user as userTable,
 } from "#/db/schema";
-import { seedConfig } from "#/db/seed-config";
+import { seedData } from "#/db/seed-data";
 import { auth } from "#/lib/better-auth/auth";
+import { teamMember as teamMemberTable } from "#/db/schema";
 
-const { users, organizations } = seedConfig;
+const { users, organizations } = seedData;
 
 // TODO: add users to teams and organizations
 
@@ -22,6 +23,8 @@ async function seed(dropAllTable = false) {
     process.env.SKIP_VERIFICATION_EMAIL = "true";
 
     const seededUsers = [];
+    const seededOrgs = [];
+    const seededTeams = [];
 
     // Seed users
     for (const user of users) {
@@ -39,8 +42,8 @@ async function seed(dropAllTable = false) {
         throw new Error("Failed to seed user");
       }
 
-      seededUsers.push(newUser.user);
-
+      const seededUser = { ...newUser.user, ...user };
+      seededUsers.push(seededUser);
       console.log("Seeded user:", newUser.user.name);
 
       // verify user email
@@ -51,34 +54,61 @@ async function seed(dropAllTable = false) {
         })
         .where(eq(userTable.id, newUser.user.id));
     }
+    const usersByName = new Map(seededUsers.map((u) => [u.firstName, u]));
 
     // Seed organizations and teams
     for (const org of organizations) {
-      const index = organizations.indexOf(org);
-      const owner = seededUsers[index] || seededUsers[0];
+      const owner = usersByName.get(org.owner)!;
       const seededOrg = await auth.api.createOrganization({
         body: {
           name: org.name,
           slug: org.slug,
           userId: owner.id,
+          address: org.address,
+          country: org.country,
+          description: org.description,
+          postCode: org.postCode,
+          website: org.website,
+          phone: org.phone,
         },
       });
 
       if (!seededOrg) {
         throw new Error("Failed to seed organization");
       }
+      seededOrgs.push(seededOrg);
 
       console.log("Seeded organization:", seededOrg.name);
+
+      for (const name of org.users) {
+        const user = usersByName.get(name)!;
+        await auth.api.addMember({
+          body: {
+            organizationId: seededOrg.id,
+            userId: user.id,
+            role: "member",
+          },
+        });
+      }
 
       for (const team of org.teams) {
         const seededTeam = await auth.api.createTeam({
           body: {
             name: team.name,
-            organizationId: seededOrg?.id,
+            organizationId: seededOrg.id,
+            description: team.description,
           },
         });
-
         console.log("Seeded team:", seededTeam.name);
+        for (const name of team.users) {
+          const user = usersByName.get(name)!;
+          await db.insert(teamMemberTable).values({
+            id: crypto.randomUUID(),
+            teamId: seededTeam.id,
+            userId: user.id,
+            createdAt: new Date(),
+          });
+        }
       }
     }
   } catch (error) {
