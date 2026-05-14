@@ -13,7 +13,7 @@ function RouteComponent() {
   const { user, session } = Route.useRouteContext();
 
   return (
-    <div className="w-2xl">
+    <div className="w-2xl flex flex-col gap-4">
       <PageTitle
         title="Settings"
         subtitle="Manage your account settings and preferences"
