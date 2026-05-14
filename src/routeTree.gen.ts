@@ -9,13 +9,13 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as AboutRouteImport } from './routes/about'
 import { Route as ProtectedRouteRouteImport } from './routes/_protected/route'
 import { Route as AuthRouteRouteImport } from './routes/_auth/route'
-import { Route as IndexRouteImport } from './routes/index'
+import { Route as ProtectedIndexRouteImport } from './routes/_protected/index'
 import { Route as DemoTanstackQueryRouteImport } from './routes/demo/tanstack-query'
 import { Route as ProtectedSettingsRouteImport } from './routes/_protected/settings'
 import { Route as ProtectedAuthenticatedRouteImport } from './routes/_protected/authenticated'
+import { Route as ProtectedAboutRouteImport } from './routes/_protected/about'
 import { Route as AuthResetPasswordRouteImport } from './routes/_auth/reset-password'
 import { Route as AuthRegisterRouteImport } from './routes/_auth/register'
 import { Route as AuthLoginRouteImport } from './routes/_auth/login'
@@ -29,11 +29,6 @@ import { Route as ProtectedTeamsTeamIdRouteImport } from './routes/_protected/te
 import { Route as ProtectedOrganizationsNewRouteImport } from './routes/_protected/organizations/new'
 import { Route as ProtectedOrganizationsOrgIdRouteImport } from './routes/_protected/organizations/$orgId'
 
-const AboutRoute = AboutRouteImport.update({
-  id: '/about',
-  path: '/about',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ProtectedRouteRoute = ProtectedRouteRouteImport.update({
   id: '/_protected',
   getParentRoute: () => rootRouteImport,
@@ -42,10 +37,10 @@ const AuthRouteRoute = AuthRouteRouteImport.update({
   id: '/_auth',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
+const ProtectedIndexRoute = ProtectedIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => ProtectedRouteRoute,
 } as any)
 const DemoTanstackQueryRoute = DemoTanstackQueryRouteImport.update({
   id: '/demo/tanstack-query',
@@ -60,6 +55,11 @@ const ProtectedSettingsRoute = ProtectedSettingsRouteImport.update({
 const ProtectedAuthenticatedRoute = ProtectedAuthenticatedRouteImport.update({
   id: '/authenticated',
   path: '/authenticated',
+  getParentRoute: () => ProtectedRouteRoute,
+} as any)
+const ProtectedAboutRoute = ProtectedAboutRouteImport.update({
+  id: '/about',
+  path: '/about',
   getParentRoute: () => ProtectedRouteRoute,
 } as any)
 const AuthResetPasswordRoute = AuthResetPasswordRouteImport.update({
@@ -127,12 +127,12 @@ const ProtectedOrganizationsOrgIdRoute =
   } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/about': typeof AboutRoute
+  '/': typeof ProtectedIndexRoute
   '/forgot-password': typeof AuthForgotPasswordRoute
   '/login': typeof AuthLoginRoute
   '/register': typeof AuthRegisterRoute
   '/reset-password': typeof AuthResetPasswordRoute
+  '/about': typeof ProtectedAboutRoute
   '/authenticated': typeof ProtectedAuthenticatedRoute
   '/settings': typeof ProtectedSettingsRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
@@ -146,12 +146,12 @@ export interface FileRoutesByFullPath {
   '/teams/': typeof ProtectedTeamsIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/about': typeof AboutRoute
+  '/': typeof ProtectedIndexRoute
   '/forgot-password': typeof AuthForgotPasswordRoute
   '/login': typeof AuthLoginRoute
   '/register': typeof AuthRegisterRoute
   '/reset-password': typeof AuthResetPasswordRoute
+  '/about': typeof ProtectedAboutRoute
   '/authenticated': typeof ProtectedAuthenticatedRoute
   '/settings': typeof ProtectedSettingsRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
@@ -166,17 +166,17 @@ export interface FileRoutesByTo {
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
   '/_auth': typeof AuthRouteRouteWithChildren
   '/_protected': typeof ProtectedRouteRouteWithChildren
-  '/about': typeof AboutRoute
   '/_auth/forgot-password': typeof AuthForgotPasswordRoute
   '/_auth/login': typeof AuthLoginRoute
   '/_auth/register': typeof AuthRegisterRoute
   '/_auth/reset-password': typeof AuthResetPasswordRoute
+  '/_protected/about': typeof ProtectedAboutRoute
   '/_protected/authenticated': typeof ProtectedAuthenticatedRoute
   '/_protected/settings': typeof ProtectedSettingsRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
+  '/_protected/': typeof ProtectedIndexRoute
   '/_protected/organizations/$orgId': typeof ProtectedOrganizationsOrgIdRoute
   '/_protected/organizations/new': typeof ProtectedOrganizationsNewRoute
   '/_protected/teams/$teamId': typeof ProtectedTeamsTeamIdRoute
@@ -190,11 +190,11 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/about'
     | '/forgot-password'
     | '/login'
     | '/register'
     | '/reset-password'
+    | '/about'
     | '/authenticated'
     | '/settings'
     | '/demo/tanstack-query'
@@ -209,11 +209,11 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/about'
     | '/forgot-password'
     | '/login'
     | '/register'
     | '/reset-password'
+    | '/about'
     | '/authenticated'
     | '/settings'
     | '/demo/tanstack-query'
@@ -227,17 +227,17 @@ export interface FileRouteTypes {
     | '/teams'
   id:
     | '__root__'
-    | '/'
     | '/_auth'
     | '/_protected'
-    | '/about'
     | '/_auth/forgot-password'
     | '/_auth/login'
     | '/_auth/register'
     | '/_auth/reset-password'
+    | '/_protected/about'
     | '/_protected/authenticated'
     | '/_protected/settings'
     | '/demo/tanstack-query'
+    | '/_protected/'
     | '/_protected/organizations/$orgId'
     | '/_protected/organizations/new'
     | '/_protected/teams/$teamId'
@@ -249,10 +249,8 @@ export interface FileRouteTypes {
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
   ProtectedRouteRoute: typeof ProtectedRouteRouteWithChildren
-  AboutRoute: typeof AboutRoute
   DemoTanstackQueryRoute: typeof DemoTanstackQueryRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   DemoSentryTestingRoute: typeof DemoSentryTestingRoute
@@ -260,13 +258,6 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/about': {
-      id: '/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AboutRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/_protected': {
       id: '/_protected'
       path: ''
@@ -281,12 +272,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
+    '/_protected/': {
+      id: '/_protected/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof ProtectedIndexRouteImport
+      parentRoute: typeof ProtectedRouteRoute
     }
     '/demo/tanstack-query': {
       id: '/demo/tanstack-query'
@@ -307,6 +298,13 @@ declare module '@tanstack/react-router' {
       path: '/authenticated'
       fullPath: '/authenticated'
       preLoaderRoute: typeof ProtectedAuthenticatedRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
+    '/_protected/about': {
+      id: '/_protected/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof ProtectedAboutRouteImport
       parentRoute: typeof ProtectedRouteRoute
     }
     '/_auth/reset-password': {
@@ -415,8 +413,10 @@ const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
 )
 
 interface ProtectedRouteRouteChildren {
+  ProtectedAboutRoute: typeof ProtectedAboutRoute
   ProtectedAuthenticatedRoute: typeof ProtectedAuthenticatedRoute
   ProtectedSettingsRoute: typeof ProtectedSettingsRoute
+  ProtectedIndexRoute: typeof ProtectedIndexRoute
   ProtectedOrganizationsOrgIdRoute: typeof ProtectedOrganizationsOrgIdRoute
   ProtectedOrganizationsNewRoute: typeof ProtectedOrganizationsNewRoute
   ProtectedTeamsTeamIdRoute: typeof ProtectedTeamsTeamIdRoute
@@ -426,8 +426,10 @@ interface ProtectedRouteRouteChildren {
 }
 
 const ProtectedRouteRouteChildren: ProtectedRouteRouteChildren = {
+  ProtectedAboutRoute: ProtectedAboutRoute,
   ProtectedAuthenticatedRoute: ProtectedAuthenticatedRoute,
   ProtectedSettingsRoute: ProtectedSettingsRoute,
+  ProtectedIndexRoute: ProtectedIndexRoute,
   ProtectedOrganizationsOrgIdRoute: ProtectedOrganizationsOrgIdRoute,
   ProtectedOrganizationsNewRoute: ProtectedOrganizationsNewRoute,
   ProtectedTeamsTeamIdRoute: ProtectedTeamsTeamIdRoute,
@@ -441,10 +443,8 @@ const ProtectedRouteRouteWithChildren = ProtectedRouteRoute._addFileChildren(
 )
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
   AuthRouteRoute: AuthRouteRouteWithChildren,
   ProtectedRouteRoute: ProtectedRouteRouteWithChildren,
-  AboutRoute: AboutRoute,
   DemoTanstackQueryRoute: DemoTanstackQueryRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   DemoSentryTestingRoute: DemoSentryTestingRoute,

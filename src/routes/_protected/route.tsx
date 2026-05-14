@@ -2,6 +2,15 @@ import { createFileRoute, Outlet } from "@tanstack/react-router";
 import Footer from "#/components/Footer";
 import Header from "#/components/Header";
 import { ensureSession } from "#/lib/better-auth/auth-functions";
+import { AppSidebar } from "#/components/app-sidebar";
+import {
+  SidebarProvider,
+  SidebarInset,
+  SidebarTrigger,
+} from "#/components/ui/sidebar";
+import { Separator } from "@/components/ui/separator";
+import ThemeToggle from "#/components/ThemeToggle";
+import BetterAuthHeader from "#/integrations/better-auth/header-user";
 
 export const Route = createFileRoute("/_protected")({
   beforeLoad: (ctx) => {
@@ -12,13 +21,33 @@ export const Route = createFileRoute("/_protected")({
 });
 
 function ProtectedLayout() {
+  // return (
+  //   <div className="min-h-screen flex flex-col">
+  //     <Header />
+  //     <main className="flex-1 p-8 max-w-5xl m-auto">
+  //       <Outlet />
+  //     </main>
+  //     <Footer />
+  //   </div>
+  // );
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
-      <main className="flex-1 p-8 max-w-5xl m-auto">
-        <Outlet />
-      </main>
-      <Footer />
-    </div>
+    <SidebarProvider>
+      <AppSidebar />
+      <SidebarInset>
+        <header className="flex h-16 shrink-0 items-center gap-2 border-b">
+          <div className="flex items-center gap-2 px-3">
+            <SidebarTrigger />
+            <Separator orientation="vertical" className="mr-2 h-4" />
+            <Header />
+            {/*<ThemeToggle />
+            <BetterAuthHeader />*/}
+          </div>
+        </header>
+        <main className="flex-1 p-8 max-w-5xl m-auto">
+          <Outlet />
+        </main>
+        <Footer />
+      </SidebarInset>
+    </SidebarProvider>
   );
 }
