@@ -34,14 +34,13 @@ export function NavMain({
   const location = useLocation();
   return (
     <SidebarGroup>
+      <SidebarGroupLabel>Platform</SidebarGroupLabel>
       <SidebarMenuButton isActive={location.pathname === "/"} asChild>
-        <Link to="/" activeProps={{ className: "underline" }}>
+        <Link to="/" activeProps={{ className: "underline bg-sidebar-accent" }}>
           <Home />
           Home
         </Link>
       </SidebarMenuButton>
-
-      <SidebarGroupLabel>Platform</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => (
           <Collapsible
@@ -68,7 +67,9 @@ export function NavMain({
                       >
                         <Link
                           to={subItem.url}
-                          activeProps={{ className: "underline" }}
+                          activeProps={{
+                            className: "underline bg-sidebar-accent",
+                          }}
                         >
                           <span>{subItem.title}</span>
                         </Link>

@@ -1,0 +1,49 @@
+packages:
+  # Root package — the app itself.
+  - "."
+
+# Delay installs of freshly published packages to give the ecosystem time
+# to detect and yank compromised releases.
+minimumReleaseAge: 2880
+
+# In pnpm 11, make the release-age gate fail closed:
+# - do not fall back to too-new versions
+# - do not ignore packages whose registry metadata lacks publish time
+minimumReleaseAgeStrict: true
+minimumReleaseAgeIgnoreMissingTime: false
+
+# Resolve subdependencies from versions that were already published when the
+# selected direct dependencies were published. This reduces surprise transitive
+# upgrades on fresh installs.
+resolutionMode: time-based
+
+# Refuse transitive dependencies that try to pull code from git URLs or direct
+# tarball URLs. Keep transitive installs on the configured registry.
+blockExoticSubdeps: true
+
+# Keep installs lockfile-driven and fail fast if scripts are run against a
+# stale dependency tree.
+preferFrozenLockfile: true
+verifyDepsBeforeRun: error
+
+# Fail the install when a dependency introduces an unreviewed build script.
+# Approved dependency build scripts are listed below in allowBuilds.
+strictDepBuilds: true
+
+# Keep pnpm's integrity and content checks explicit.
+verifyStoreIntegrity: true
+strictStorePkgContentCheck: true
+
+# Make unusual tarball sources visible in lockfile reviews.
+lockfileIncludeTarballUrl: true
+
+# Be conservative when adding new dependencies in the future.
+savePrefix: "~"
+
+# Fail if a package's trust signal regresses across releases.
+trustPolicy: no-downgrade
+strictSsl: true
+
+allowBuilds:
+  esbuild: true
+  lightningcss: true
