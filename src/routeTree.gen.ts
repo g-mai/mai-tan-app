@@ -25,9 +25,9 @@ import { Route as ProtectedOrganizationsIndexRouteImport } from './routes/_prote
 import { Route as DemoSentryTestingRouteImport } from './routes/demo/sentry.testing'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as ProtectedTeamsNewRouteImport } from './routes/_protected/teams/new'
-import { Route as ProtectedTeamsIdRouteImport } from './routes/_protected/teams/$id'
+import { Route as ProtectedTeamsTeamIdRouteImport } from './routes/_protected/teams/$teamId'
 import { Route as ProtectedOrganizationsNewRouteImport } from './routes/_protected/organizations/new'
-import { Route as ProtectedOrganizationsIdRouteImport } from './routes/_protected/organizations/$id'
+import { Route as ProtectedOrganizationsOrgIdRouteImport } from './routes/_protected/organizations/$orgId'
 
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
@@ -108,9 +108,9 @@ const ProtectedTeamsNewRoute = ProtectedTeamsNewRouteImport.update({
   path: '/teams/new',
   getParentRoute: () => ProtectedRouteRoute,
 } as any)
-const ProtectedTeamsIdRoute = ProtectedTeamsIdRouteImport.update({
-  id: '/teams/$id',
-  path: '/teams/$id',
+const ProtectedTeamsTeamIdRoute = ProtectedTeamsTeamIdRouteImport.update({
+  id: '/teams/$teamId',
+  path: '/teams/$teamId',
   getParentRoute: () => ProtectedRouteRoute,
 } as any)
 const ProtectedOrganizationsNewRoute =
@@ -119,10 +119,10 @@ const ProtectedOrganizationsNewRoute =
     path: '/organizations/new',
     getParentRoute: () => ProtectedRouteRoute,
   } as any)
-const ProtectedOrganizationsIdRoute =
-  ProtectedOrganizationsIdRouteImport.update({
-    id: '/organizations/$id',
-    path: '/organizations/$id',
+const ProtectedOrganizationsOrgIdRoute =
+  ProtectedOrganizationsOrgIdRouteImport.update({
+    id: '/organizations/$orgId',
+    path: '/organizations/$orgId',
     getParentRoute: () => ProtectedRouteRoute,
   } as any)
 
@@ -136,9 +136,9 @@ export interface FileRoutesByFullPath {
   '/authenticated': typeof ProtectedAuthenticatedRoute
   '/settings': typeof ProtectedSettingsRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
-  '/organizations/$id': typeof ProtectedOrganizationsIdRoute
+  '/organizations/$orgId': typeof ProtectedOrganizationsOrgIdRoute
   '/organizations/new': typeof ProtectedOrganizationsNewRoute
-  '/teams/$id': typeof ProtectedTeamsIdRoute
+  '/teams/$teamId': typeof ProtectedTeamsTeamIdRoute
   '/teams/new': typeof ProtectedTeamsNewRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/demo/sentry/testing': typeof DemoSentryTestingRoute
@@ -155,9 +155,9 @@ export interface FileRoutesByTo {
   '/authenticated': typeof ProtectedAuthenticatedRoute
   '/settings': typeof ProtectedSettingsRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
-  '/organizations/$id': typeof ProtectedOrganizationsIdRoute
+  '/organizations/$orgId': typeof ProtectedOrganizationsOrgIdRoute
   '/organizations/new': typeof ProtectedOrganizationsNewRoute
-  '/teams/$id': typeof ProtectedTeamsIdRoute
+  '/teams/$teamId': typeof ProtectedTeamsTeamIdRoute
   '/teams/new': typeof ProtectedTeamsNewRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/demo/sentry/testing': typeof DemoSentryTestingRoute
@@ -177,9 +177,9 @@ export interface FileRoutesById {
   '/_protected/authenticated': typeof ProtectedAuthenticatedRoute
   '/_protected/settings': typeof ProtectedSettingsRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
-  '/_protected/organizations/$id': typeof ProtectedOrganizationsIdRoute
+  '/_protected/organizations/$orgId': typeof ProtectedOrganizationsOrgIdRoute
   '/_protected/organizations/new': typeof ProtectedOrganizationsNewRoute
-  '/_protected/teams/$id': typeof ProtectedTeamsIdRoute
+  '/_protected/teams/$teamId': typeof ProtectedTeamsTeamIdRoute
   '/_protected/teams/new': typeof ProtectedTeamsNewRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/demo/sentry/testing': typeof DemoSentryTestingRoute
@@ -198,9 +198,9 @@ export interface FileRouteTypes {
     | '/authenticated'
     | '/settings'
     | '/demo/tanstack-query'
-    | '/organizations/$id'
+    | '/organizations/$orgId'
     | '/organizations/new'
-    | '/teams/$id'
+    | '/teams/$teamId'
     | '/teams/new'
     | '/api/auth/$'
     | '/demo/sentry/testing'
@@ -217,9 +217,9 @@ export interface FileRouteTypes {
     | '/authenticated'
     | '/settings'
     | '/demo/tanstack-query'
-    | '/organizations/$id'
+    | '/organizations/$orgId'
     | '/organizations/new'
-    | '/teams/$id'
+    | '/teams/$teamId'
     | '/teams/new'
     | '/api/auth/$'
     | '/demo/sentry/testing'
@@ -238,9 +238,9 @@ export interface FileRouteTypes {
     | '/_protected/authenticated'
     | '/_protected/settings'
     | '/demo/tanstack-query'
-    | '/_protected/organizations/$id'
+    | '/_protected/organizations/$orgId'
     | '/_protected/organizations/new'
-    | '/_protected/teams/$id'
+    | '/_protected/teams/$teamId'
     | '/_protected/teams/new'
     | '/api/auth/$'
     | '/demo/sentry/testing'
@@ -372,11 +372,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedTeamsNewRouteImport
       parentRoute: typeof ProtectedRouteRoute
     }
-    '/_protected/teams/$id': {
-      id: '/_protected/teams/$id'
-      path: '/teams/$id'
-      fullPath: '/teams/$id'
-      preLoaderRoute: typeof ProtectedTeamsIdRouteImport
+    '/_protected/teams/$teamId': {
+      id: '/_protected/teams/$teamId'
+      path: '/teams/$teamId'
+      fullPath: '/teams/$teamId'
+      preLoaderRoute: typeof ProtectedTeamsTeamIdRouteImport
       parentRoute: typeof ProtectedRouteRoute
     }
     '/_protected/organizations/new': {
@@ -386,11 +386,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedOrganizationsNewRouteImport
       parentRoute: typeof ProtectedRouteRoute
     }
-    '/_protected/organizations/$id': {
-      id: '/_protected/organizations/$id'
-      path: '/organizations/$id'
-      fullPath: '/organizations/$id'
-      preLoaderRoute: typeof ProtectedOrganizationsIdRouteImport
+    '/_protected/organizations/$orgId': {
+      id: '/_protected/organizations/$orgId'
+      path: '/organizations/$orgId'
+      fullPath: '/organizations/$orgId'
+      preLoaderRoute: typeof ProtectedOrganizationsOrgIdRouteImport
       parentRoute: typeof ProtectedRouteRoute
     }
   }
@@ -417,9 +417,9 @@ const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
 interface ProtectedRouteRouteChildren {
   ProtectedAuthenticatedRoute: typeof ProtectedAuthenticatedRoute
   ProtectedSettingsRoute: typeof ProtectedSettingsRoute
-  ProtectedOrganizationsIdRoute: typeof ProtectedOrganizationsIdRoute
+  ProtectedOrganizationsOrgIdRoute: typeof ProtectedOrganizationsOrgIdRoute
   ProtectedOrganizationsNewRoute: typeof ProtectedOrganizationsNewRoute
-  ProtectedTeamsIdRoute: typeof ProtectedTeamsIdRoute
+  ProtectedTeamsTeamIdRoute: typeof ProtectedTeamsTeamIdRoute
   ProtectedTeamsNewRoute: typeof ProtectedTeamsNewRoute
   ProtectedOrganizationsIndexRoute: typeof ProtectedOrganizationsIndexRoute
   ProtectedTeamsIndexRoute: typeof ProtectedTeamsIndexRoute
@@ -428,9 +428,9 @@ interface ProtectedRouteRouteChildren {
 const ProtectedRouteRouteChildren: ProtectedRouteRouteChildren = {
   ProtectedAuthenticatedRoute: ProtectedAuthenticatedRoute,
   ProtectedSettingsRoute: ProtectedSettingsRoute,
-  ProtectedOrganizationsIdRoute: ProtectedOrganizationsIdRoute,
+  ProtectedOrganizationsOrgIdRoute: ProtectedOrganizationsOrgIdRoute,
   ProtectedOrganizationsNewRoute: ProtectedOrganizationsNewRoute,
-  ProtectedTeamsIdRoute: ProtectedTeamsIdRoute,
+  ProtectedTeamsTeamIdRoute: ProtectedTeamsTeamIdRoute,
   ProtectedTeamsNewRoute: ProtectedTeamsNewRoute,
   ProtectedOrganizationsIndexRoute: ProtectedOrganizationsIndexRoute,
   ProtectedTeamsIndexRoute: ProtectedTeamsIndexRoute,

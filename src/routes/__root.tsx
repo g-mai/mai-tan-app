@@ -32,6 +32,11 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
       {
         title: "Mai Tan App",
       },
+      {
+        name: "description",
+        content:
+          "A better auth starter kit built with TanStack Router and React",
+      },
     ],
     links: [
       {

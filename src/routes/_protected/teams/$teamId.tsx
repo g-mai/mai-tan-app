@@ -1,10 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { getTeam } from "#/lib/better-auth/org-functions";
 
-export const Route = createFileRoute("/_protected/teams/$id")({
+export const Route = createFileRoute("/_protected/teams/$teamId")({
   component: RouteComponent,
-  loader: async ({ params }) => {
-    const team = await getTeam({ data: { id: params.id } });
+  loader: async ({ context, params }) => {
+    // TODO: send context to getTeam, to check user permissions
+    const team = await getTeam({
+      data: {
+        id: params.teamId,
+        session: context.session,
+        user: context.user,
+      },
+    });
     return team;
   },
   errorComponent: (props) => {

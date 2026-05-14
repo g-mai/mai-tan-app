@@ -26,7 +26,11 @@ function RouteComponent() {
         subtitle="View and manage your organizations"
       />
       {data.map((org) => (
-        <Link to="/organizations/$id" params={{ id: org.id }} key={org.id}>
+        <Link
+          to="/organizations/$orgId"
+          params={{ orgId: org.id }}
+          key={org.id}
+        >
           <Card className="min-w-sm cursor-pointer">
             <CardHeader>
               <div className="flex items-center gap-4">

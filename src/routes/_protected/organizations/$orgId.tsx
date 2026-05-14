@@ -1,20 +1,20 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { PageTitle } from "#/components/shared/PageTitle";
 import { OrganizationLogo } from "#/components/shared/organization-logo";
-import { getOrganization } from "#/lib/better-auth/org-functions";
+import { PageTitle } from "#/components/shared/PageTitle";
 import {
   Card,
   CardContent,
+  CardDescription,
   CardHeader,
   CardTitle,
-  CardDescription,
 } from "#/components/ui/card";
 import { Separator } from "#/components/ui/separator";
+import { getOrganization } from "#/lib/better-auth/org-functions";
 
-export const Route = createFileRoute("/_protected/organizations/$id")({
+export const Route = createFileRoute("/_protected/organizations/$orgId")({
   component: RouteComponent,
   loader: async ({ params }) => {
-    const org = await getOrganization({ data: { id: params.id } });
+    const org = await getOrganization({ data: { id: params.orgId } });
     return org;
   },
   errorComponent: (props) => {
@@ -119,8 +119,8 @@ function RouteComponent() {
               {org.teams.map((team, i) => (
                 <li key={team.id}>
                   <Link
-                    to="/teams/$id"
-                    params={{ id: team.id }}
+                    to="/teams/$teamId"
+                    params={{ teamId: team.id }}
                     className="block"
                   >
                     {i > 0 && <Separator />}

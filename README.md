@@ -1,242 +1,151 @@
-Welcome to your new TanStack Start app!
+# Mai Tan App - B2B SaaS Starter kit
 
-# Getting Started
+A production-ready, feature-complete starter kit for building multi-tenant B2B SaaS applications. Built with Tanstack Start, Better Auth, Drizzle ORM, and shadcn/ui.
 
-To run this application:
+## Features
+
+- **Multi-tenant organizations** - Better Auth organizations plugin with teams, members, roles, and session-persisted context
+- **Type-safe forms** - React Hook Form + Zod + TanStack Query mutations
+
+## Tech Stack
+
+### Core
+
+- **Tanstack Start** - Full stack framework
+- **React** - Latest React with server components
+- **TypeScript** - Static typing
+- **Tailwind CSS** - Utility-first CSS framework
+
+### Authentication & Database
+
+- **Better Auth** - Modern auth with organizations plugin
+- **Drizzle ORM** - Type-safe database toolkit
+- **PostgreSQL** - Production database
+
+### UI & Components
+
+- **shadcn/ui** - Radix UI + Tailwind components
+- **Lucide React** - Icon library
+- **Sonner** - Toast notifications
+
+### Integrations
+
+- **Resend** - Transactional email delivery
+- **React Email** - Email starter kit components
+
+### State & Forms
+
+- **TanStack Query** - Server state management
+- **React Hook Form** - Form handling
+- **Zod** - Schema validation
+
+## Quick Start
+
+### Prerequisites
+
+- Node.js 18+
+- pnpm (recommended) or npm
+- PostgreSQL database
+
+### Installation
 
 ```bash
+# Clone the repository
+git clone <your-repo-url>
+cd mai-tan-app
+
+# Install dependencies
 pnpm install
-pnpm run dev
+
+# Set up environment variables (see SETUP.md for details)
+cp .env.example .env.local
+
+# Run database migrations
+pnpm db:push
+
+# Start development server
+pnpm dev
 ```
 
-# Building For Production
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-To build this application for production:
+For detailed setup instructions including PostgreSQL, Resend, and ImageKit configuration, see [SETUP.md](SETUP.md).
+
+## Project Structure
+
+```
+src/
+├── app/
+│   ├── (auth)/              # Public auth pages (login, register, etc.)
+│   ├── (protected)/         # Private pages with sidebar layout
+│   │   ├── organizations/   # Organization management
+│   │   └── settings/        # User settings
+│   ├── docs/                # Public documentation
+│   └── api/                 # API routes
+│
+├── features/                # Feature-based modules
+│   ├── auth/                # Authentication feature
+│   │   ├── components/      # Auth-specific components
+│   │   ├── hooks/           # TanStack Query hooks
+│   │   ├── lib/             # Auth config and helpers
+│   │   ├── emails/          # Email starter kits
+│   │   └── validation/      # Zod schemas
+│   ├── organizations/       # Organizations feature
+│   └── documentation/       # Docs feature with markdown files
+│
+├── components/
+│   ├── ui/                  # shadcn/ui components
+│   ├── layout/              # Layout components (sidebar, nav, breadcrumbs)
+│   └── shared/              # Shared utilities (avatars, forms, etc.)
+│
+├── lib/
+│   └── db/                  # Database config and schema
+│
+└── hooks/                   # Global custom hooks
+```
+
+## Available Scripts
+
+### Development
 
 ```bash
-pnpm run build
+pnpm dev          # Start dev server with Turbopack
+pnpm build        # Production build
+pnpm start        # Start production server
 ```
 
-## Testing
-
-This project uses [Vitest](https://vitest.dev/) for testing. You can run the tests with:
+### Linting
 
 ```bash
-pnpm run test
+pnpm lint         # Run ESLint
+pnpm lint:fix     # Auto-fix ESLint issues
 ```
 
-## Styling
-
-This project uses [Tailwind CSS](https://tailwindcss.com/) for styling.
-
-### Removing Tailwind CSS
-
-If you prefer not to use Tailwind CSS:
-
-1. Remove the demo pages in `src/routes/demo/`
-2. Replace the Tailwind import in `src/styles.css` with your own styles
-3. Remove `tailwindcss()` from the plugins array in `vite.config.ts`
-4. Uninstall the packages: `pnpm install @tailwindcss/vite tailwindcss -D`
-
-## Linting & Formatting
-
-This project uses [Biome](https://biomejs.dev/) for linting and formatting. The following scripts are available:
+### Database
 
 ```bash
-pnpm run lint
-pnpm run format
-pnpm run check
+pnpm db:generate  # Generate migrations from schema
+pnpm db:migrate   # Run pending migrations
+pnpm db:push      # Push schema to database (dev only)
 ```
 
-## Shadcn
-
-Add components using the latest version of [Shadcn](https://ui.shadcn.com/).
+### UI Components
 
 ```bash
-pnpm dlx shadcn@latest add button
+npx shadcn@latest add <component>  # Add shadcn/ui component
 ```
 
-## Setting up Better Auth
+## Contributing
 
-1. Generate and set the `BETTER_AUTH_SECRET` environment variable in your `.env.local`:
+This is a starter kit project designed to be forked and customized. Feel free to:
 
-   ```bash
-   npx -y @better-auth/cli secret
-   ```
+- Remove features you don't need
+- Add your own features following the established patterns
+- Customize the design and theming
+- Adapt the architecture to your needs
 
-2. Visit the [Better Auth documentation](https://www.better-auth.com) to unlock the full potential of authentication in your app.
+## License
 
-### Adding a Database (Optional)
+MIT License - feel free to use this starter kit for your projects.
 
-Better Auth can work in stateless mode, but to persist user data, add a database:
-
-```typescript
-// src/lib/auth.ts
-import { betterAuth } from "better-auth";
-import { Pool } from "pg";
-
-export const auth = betterAuth({
-  database: new Pool({
-    connectionString: process.env.DATABASE_URL,
-  }),
-  // ... rest of config
-});
-```
-
-Then run migrations:
-
-```bash
-npx -y @better-auth/cli migrate
-```
-
-## Routing
-
-This project uses [TanStack Router](https://tanstack.com/router) with file-based routing. Routes are managed as files in `src/routes`.
-
-### Adding A Route
-
-To add a new route to your application just add a new file in the `./src/routes` directory.
-
-TanStack will automatically generate the content of the route file for you.
-
-Now that you have two routes you can use a `Link` component to navigate between them.
-
-### Adding Links
-
-To use SPA (Single Page Application) navigation you will need to import the `Link` component from `@tanstack/react-router`.
-
-```tsx
-import { Link } from "@tanstack/react-router";
-```
-
-Then anywhere in your JSX you can use it like so:
-
-```tsx
-<Link to="/about">About</Link>
-```
-
-This will create a link that will navigate to the `/about` route.
-
-More information on the `Link` component can be found in the [Link documentation](https://tanstack.com/router/v1/docs/framework/react/api/router/linkComponent).
-
-### Using A Layout
-
-In the File Based Routing setup the layout is located in `src/routes/__root.tsx`. Anything you add to the root route will appear in all the routes. The route content will appear in the JSX where you render `{children}` in the `shellComponent`.
-
-Here is an example layout that includes a header:
-
-```tsx
-import { HeadContent, Scripts, createRootRoute } from "@tanstack/react-router";
-
-export const Route = createRootRoute({
-  head: () => ({
-    meta: [
-      { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "My App" },
-    ],
-  }),
-  shellComponent: ({ children }) => (
-    <html lang="en">
-      <head>
-        <HeadContent />
-      </head>
-      <body>
-        <header>
-          <nav>
-            <Link to="/">Home</Link>
-            <Link to="/about">About</Link>
-          </nav>
-        </header>
-        {children}
-        <Scripts />
-      </body>
-    </html>
-  ),
-});
-```
-
-More information on layouts can be found in the [Layouts documentation](https://tanstack.com/router/latest/docs/framework/react/guide/routing-concepts#layouts).
-
-## Server Functions
-
-TanStack Start provides server functions that allow you to write server-side code that seamlessly integrates with your client components.
-
-```tsx
-import { createServerFn } from "@tanstack/react-start";
-
-const getServerTime = createServerFn({
-  method: "GET",
-}).handler(async () => {
-  return new Date().toISOString();
-});
-
-// Use in a component
-function MyComponent() {
-  const [time, setTime] = useState("");
-
-  useEffect(() => {
-    getServerTime().then(setTime);
-  }, []);
-
-  return <div>Server time: {time}</div>;
-}
-```
-
-## API Routes
-
-You can create API routes by using the `server` property in your route definitions:
-
-```tsx
-import { createFileRoute } from "@tanstack/react-router";
-import { json } from "@tanstack/react-start";
-
-export const Route = createFileRoute("/api/hello")({
-  server: {
-    handlers: {
-      GET: () => json({ message: "Hello, World!" }),
-    },
-  },
-});
-```
-
-## Data Fetching
-
-There are multiple ways to fetch data in your application. You can use TanStack Query to fetch data from a server. But you can also use the `loader` functionality built into TanStack Router to load the data for a route before it's rendered.
-
-For example:
-
-```tsx
-import { createFileRoute } from "@tanstack/react-router";
-
-export const Route = createFileRoute("/people")({
-  loader: async () => {
-    const response = await fetch("https://swapi.dev/api/people");
-    return response.json();
-  },
-  component: PeopleComponent,
-});
-
-function PeopleComponent() {
-  const data = Route.useLoaderData();
-  return (
-    <ul>
-      {data.results.map((person) => (
-        <li key={person.name}>{person.name}</li>
-      ))}
-    </ul>
-  );
-}
-```
-
-Loaders simplify your data fetching logic dramatically. Check out more information in the [Loader documentation](https://tanstack.com/router/latest/docs/framework/react/guide/data-loading#loader-parameters).
-
-# Demo files
-
-Files prefixed with `demo` can be safely deleted. They are there to provide a starting point for you to play around with the features you've installed.
-
-# Learn More
-
-You can learn more about all of the offerings from TanStack in the [TanStack documentation](https://tanstack.com).
-
-For TanStack Start specific documentation, visit [TanStack Start](https://tanstack.com/start).
+---
