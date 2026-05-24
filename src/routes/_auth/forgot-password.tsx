@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "#/components/ui/button";
-import { useForgotPassword } from "#/hooks/auth/useForgotPassword";
+import { useForgotPassword } from "#/features/auth/hooks/useForgotPassword";
 
 export const Route = createFileRoute("/_auth/forgot-password")({
   component: RouteComponent,

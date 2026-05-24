@@ -75,12 +75,11 @@ For detailed setup instructions including PostgreSQL, Resend, and ImageKit confi
 
 ```
 src/
-├── app/
-│   ├── (auth)/              # Public auth pages (login, register, etc.)
-│   ├── (protected)/         # Private pages with sidebar layout
+├── routes/
+│   ├── _auth/               # Public auth pages (login, register, etc.)
+│   ├── _protected/          # Private pages with sidebar layout
 │   │   ├── organizations/   # Organization management
-│   │   └── settings/        # User settings
-│   ├── docs/                # Public documentation
+│   │   └── teams/           # User settings
 │   └── api/                 # API routes
 │
 ├── features/                # Feature-based modules
@@ -90,16 +89,16 @@ src/
 │   │   ├── lib/             # Auth config and helpers
 │   │   ├── emails/          # Email starter kits
 │   │   └── validation/      # Zod schemas
-│   ├── organizations/       # Organizations feature
-│   └── documentation/       # Docs feature with markdown files
+│   ├── organizations/       # Organizations and teams feature
+│   └── layout/              # Layout related features (sidebar, nav, etc.)
 │
 ├── components/
 │   ├── ui/                  # shadcn/ui components
-│   ├── layout/              # Layout components (sidebar, nav, breadcrumbs)
-│   └── shared/              # Shared utilities (avatars, forms, etc.)
+│   └── shared/              # Shared components (avatars, forms, etc.)
 │
 ├── lib/
 │   └── db/                  # Database config and schema
+│   └── resend/              # Resend config and helpers
 │
 └── hooks/                   # Global custom hooks
 ```

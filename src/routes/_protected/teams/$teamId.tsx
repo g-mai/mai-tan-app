@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { getTeam } from "#/lib/better-auth/org-functions";
+import { getTeam } from "#/features/organizations/lib/org.functions";
 
 export const Route = createFileRoute("/_protected/teams/$teamId")({
   component: RouteComponent,

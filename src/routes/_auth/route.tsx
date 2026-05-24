@@ -1,5 +1,5 @@
 import { createFileRoute, Link, Outlet } from "@tanstack/react-router";
-import Footer from "#/components/Footer";
+import Footer from "#/features/layout/components/footer";
 import { Card } from "@/components/ui/card";
 
 export const Route = createFileRoute("/_auth")({

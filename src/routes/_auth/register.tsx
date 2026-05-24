@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useRegister } from "#/hooks/auth/useRegister";
+import { useRegister } from "#/features/auth/hooks/useRegister";
 
 export const Route = createFileRoute("/_auth/register")({
   component: RouteComponent,

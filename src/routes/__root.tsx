@@ -7,9 +7,9 @@ import {
 } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { Toaster } from "sonner";
-import { getSession } from "#/lib/better-auth/auth-functions";
-import type { Session } from "#/types/auth-types";
-import TanStackQueryDevtools from "../integrations/tanstack-query/devtools";
+import { getSession } from "#/features/auth/lib/auth.functions";
+import type { Session } from "#/features/auth/types";
+import TanStackQueryDevtools from "#/lib/query/devtools";
 import appCss from "../styles.css?url";
 
 interface MyRouterContext {

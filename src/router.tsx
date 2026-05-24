@@ -4,7 +4,7 @@ import {
 } from "@tanstack/react-router";
 import { setupRouterSsrQueryIntegration } from "@tanstack/react-router-ssr-query";
 // import { captureOwnerStack } from "react";
-import { getContext } from "./integrations/tanstack-query/root-provider";
+import { getContext } from "#/lib/query/root-provider";
 import { routeTree } from "./routeTree.gen";
 
 export function getRouter() {

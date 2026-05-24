@@ -1,6 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { OrganizationLogo } from "#/components/shared/organization-logo";
-import { PageTitle } from "#/components/shared/PageTitle";
+import { PageTitle } from "#/components/shared/page-title";
 import {
   Card,
   CardContent,
@@ -9,7 +8,8 @@ import {
   CardTitle,
 } from "#/components/ui/card";
 import { Separator } from "#/components/ui/separator";
-import { getOrganization } from "#/lib/better-auth/org-functions";
+import { OrganizationLogo } from "#/features/organizations/components/organization-logo";
+import { getOrganization } from "#/features/organizations/lib/org.functions";
 
 export const Route = createFileRoute("/_protected/organizations/$orgId")({
   component: RouteComponent,

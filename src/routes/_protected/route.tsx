@@ -1,16 +1,15 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
-import Footer from "#/components/Footer";
-import Header from "#/components/Header";
-import { ensureSession } from "#/lib/better-auth/auth-functions";
-import { AppSidebar } from "#/components/layout/app-sidebar";
 import {
-  SidebarProvider,
   SidebarInset,
+  SidebarProvider,
   SidebarTrigger,
 } from "#/components/ui/sidebar";
+import { ensureSession } from "#/features/auth/lib/auth.functions";
+import { AppSidebar } from "#/features/layout/components/app-sidebar";
+import Footer from "#/features/layout/components/footer";
+import BetterAuthHeader from "#/features/layout/components/header-user";
+import ThemeToggle from "#/features/layout/components/theme-toggle";
 import { Separator } from "@/components/ui/separator";
-import ThemeToggle from "#/components/ThemeToggle";
-import BetterAuthHeader from "#/integrations/better-auth/header-user";
 
 export const Route = createFileRoute("/_protected")({
   beforeLoad: (ctx) => {

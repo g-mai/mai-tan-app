@@ -1,9 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { ChangeEmailSection } from "#/components/auth/change-email-section";
-import { ChangePasswordSection } from "#/components/auth/change-password-section";
-import { ProfileSection } from "#/components/auth/profile-section";
-import { PageTitle } from "#/components/shared/PageTitle";
+import { PageTitle } from "#/components/shared/page-title";
 import { Card, CardContent, CardHeader, CardTitle } from "#/components/ui/card";
+import { ChangeEmailSection } from "#/features/auth/components/change-email-section";
+import { ChangePasswordSection } from "#/features/auth/components/change-password-section";
+import { ProfileSection } from "#/features/auth/components/profile-section";
 
 export const Route = createFileRoute("/_protected/settings")({
   component: RouteComponent,
