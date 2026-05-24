@@ -4,13 +4,21 @@ import { Card, CardContent, CardHeader, CardTitle } from "#/components/ui/card";
 import { ChangeEmailSection } from "#/features/auth/components/change-email-section";
 import { ChangePasswordSection } from "#/features/auth/components/change-password-section";
 import { ProfileSection } from "#/features/auth/components/profile-section";
+import { ActiveSessionsSection } from "#/features/auth/components/active-sessions-section";
+import { getAllSessions } from "#/features/auth/lib/auth.functions";
 
 export const Route = createFileRoute("/_protected/settings")({
   component: RouteComponent,
+  loader: async () => {
+    const sessions = await getAllSessions();
+    console.log("SESSIONS", sessions);
+    return sessions;
+  },
 });
 
 function RouteComponent() {
   const { user, session } = Route.useRouteContext();
+  const sessions = Route.useLoaderData();
 
   return (
     <div className="w-2xl flex flex-col gap-4">
@@ -28,6 +36,10 @@ function RouteComponent() {
           <ChangePasswordSection />
         </CardContent>
       </Card>
+      <ActiveSessionsSection
+        sessions={sessions}
+        currentSessionId={session.id}
+      />
     </div>
   );
 }

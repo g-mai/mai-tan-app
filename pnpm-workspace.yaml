@@ -40,8 +40,6 @@ lockfileIncludeTarballUrl: true
 # Be conservative when adding new dependencies in the future.
 savePrefix: "~"
 
-# Fail if a package's trust signal regresses across releases.
-trustPolicy: no-downgrade
 strictSsl: true
 
 allowBuilds:

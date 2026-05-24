@@ -23,3 +23,11 @@ export function ensureSession(beforeLoadCtx: {
 
   return session;
 }
+
+export const getAllSessions = createServerFn({ method: "GET" }).handler(
+  async () => {
+    const headers = getRequestHeaders();
+    const sessions = await auth.api.listSessions({ headers });
+    return sessions;
+  },
+);
