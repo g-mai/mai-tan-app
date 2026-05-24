@@ -1,6 +1,6 @@
 # Session & Authentication
 
-> All session utilities live in `src/lib/better-auth/auth-functions.ts`.
+> All session utilities live in `src/features/auth/lib/auth.functions.ts`.
 
 ## Overview
 
@@ -23,7 +23,7 @@ Use `ensureSession` in a route's `beforeLoad` to require authentication. It read
 
 ```ts
 import { createFileRoute } from "@tanstack/react-router";
-import { ensureSession } from "#/lib/better-auth/auth-functions";
+import { ensureSession } from "#/features/auth/lib/auth.functions";
 
 export const Route = createFileRoute("/dashboard")({
   beforeLoad: (ctx) => {

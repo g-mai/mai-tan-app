@@ -1,51 +1,62 @@
-# Mai Tan App - B2B SaaS Starter kit
+# Mai Tan App - B2B SaaS Starter Kit
 
-A production-ready, feature-complete starter kit for building multi-tenant B2B SaaS applications. Built with Tanstack Start, Better Auth, Drizzle ORM, and shadcn/ui.
+A production-ready, feature-complete starter kit for building multi-tenant B2B SaaS applications. Built with TanStack Start, Better Auth, Drizzle ORM, and shadcn/ui.
 
 ## Features
 
-- **Multi-tenant organizations** - Better Auth organizations plugin with teams, members, roles, and session-persisted context
-- **Type-safe forms** - React Hook Form + Zod + TanStack Query mutations
+- **Multi-tenant organizations** — Better Auth organizations plugin with teams, members, roles, and session-persisted context
+- **Type-safe forms** — `@tanstack/react-form` + Zod + TanStack Query mutations
+- **Full-stack SSR** — Server-side rendering with TanStack Start, dehydrated/rehydrated query cache
+- **Email flows** — Transactional email via Resend (verification, password reset)
+- **Observability** — Sentry error tracking integrated via `@sentry/tanstackstart-react`
+- **Theme toggle** — Light/dark mode with `next-themes`, no flash on load
 
 ## Tech Stack
 
 ### Core
 
-- **Tanstack Start** - Full stack framework
-- **React** - Latest React with server components
-- **TypeScript** - Static typing
-- **Tailwind CSS** - Utility-first CSS framework
+- **TanStack Start** — Full-stack SSR React framework
+- **React 19** — Latest React
+- **TypeScript** — Static typing
+- **Tailwind CSS v4** — Utility-first CSS
 
 ### Authentication & Database
 
-- **Better Auth** - Modern auth with organizations plugin
-- **Drizzle ORM** - Type-safe database toolkit
-- **PostgreSQL** - Production database
+- **Better Auth** — Modern auth with organizations plugin
+- **Drizzle ORM** — Type-safe database toolkit
+- **PostgreSQL** — Production database (local via Docker Compose)
 
 ### UI & Components
 
-- **shadcn/ui** - Radix UI + Tailwind components
-- **Lucide React** - Icon library
-- **Sonner** - Toast notifications
+- **shadcn/ui** — Radix UI + Tailwind components
+- **Lucide React** — Icon library
+- **Sonner** — Toast notifications
 
 ### Integrations
 
-- **Resend** - Transactional email delivery
-- **React Email** - Email starter kit components
+- **Resend** — Transactional email delivery
+- **React Email** — Email template components
+- **Sentry** — Error monitoring and observability
 
 ### State & Forms
 
-- **TanStack Query** - Server state management
-- **React Hook Form** - Form handling
-- **Zod** - Schema validation
+- **TanStack Query** — Server state management
+- **@tanstack/react-form** — Form handling
+- **Zod** — Schema validation
+
+### Tooling
+
+- **Biome** — Linter and formatter (replaces ESLint + Prettier)
+- **Vitest** — Unit testing
+- **Docker Compose** — Local PostgreSQL
 
 ## Quick Start
 
 ### Prerequisites
 
 - Node.js 18+
-- pnpm (recommended) or npm
-- PostgreSQL database
+- pnpm 11+
+- Docker (for local PostgreSQL via Docker Compose)
 
 ### Installation
 
@@ -57,50 +68,63 @@ cd mai-tan-app
 # Install dependencies
 pnpm install
 
-# Set up environment variables (see SETUP.md for details)
-cp .env.example .env.local
+# Set up environment variables
+cp .env.example .env
 
-# Run database migrations
-pnpm db:push
-
-# Start development server
+# Start dev server (also starts Docker postgres automatically)
 pnpm dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-For detailed setup instructions including PostgreSQL, Resend, and ImageKit configuration, see [SETUP.md](SETUP.md).
+### Environment Variables
+
+Required variables in `.env`:
+
+| Variable | Description |
+|---|---|
+| `POSTGRES_USER` | PostgreSQL user |
+| `POSTGRES_PASSWORD` | PostgreSQL password |
+| `POSTGRES_DB` | PostgreSQL database name |
+| `DATABASE_URL` | Full connection string |
+| `BETTER_AUTH_SECRET` | Secret for Better Auth session signing |
+| `RESEND_API_KEY` | Resend API key for email delivery |
+| `SKIP_VERIFICATION_EMAIL` | Set to `true` to skip email verification during seeding |
 
 ## Project Structure
 
 ```
 src/
 ├── routes/
-│   ├── _auth/               # Public auth pages (login, register, etc.)
-│   ├── _protected/          # Private pages with sidebar layout
-│   │   ├── organizations/   # Organization management
-│   │   └── teams/           # User settings
-│   └── api/                 # API routes
+│   ├── __root.tsx             # Root shell, loads session, sets theme
+│   ├── _auth/                 # Public auth pages (login, register, forgot/reset password)
+│   ├── _protected/            # Authenticated pages with sidebar layout
+│   │   ├── organizations/     # Organization list, detail, creation
+│   │   ├── teams/             # Team list, detail, creation
+│   │   └── settings.tsx       # User settings
+│   ├── demo/                  # Demo/testing routes (Sentry, TanStack Query)
+│   └── api/auth/$.ts          # Better Auth catch-all API handler
 │
-├── features/                # Feature-based modules
-│   ├── auth/                # Authentication feature
-│   │   ├── components/      # Auth-specific components
-│   │   ├── hooks/           # TanStack Query hooks
-│   │   ├── lib/             # Auth config and helpers
-│   │   ├── emails/          # Email starter kits
-│   │   └── validation/      # Zod schemas
-│   ├── organizations/       # Organizations and teams feature
-│   └── layout/              # Layout related features (sidebar, nav, etc.)
+├── features/                  # Feature-based modules
+│   ├── auth/                  # Authentication
+│   │   ├── components/        # Auth-specific UI components
+│   │   ├── hooks/             # TanStack Query mutation hooks
+│   │   ├── lib/               # auth.ts (server) and auth-client.ts (client)
+│   │   ├── emails/            # React Email templates
+│   │   └── validation/        # Zod schemas
+│   ├── organizations/         # Organizations and teams
+│   └── layout/                # Sidebar, nav, layout components
 │
 ├── components/
-│   ├── ui/                  # shadcn/ui components
-│   └── shared/              # Shared components (avatars, forms, etc.)
+│   ├── ui/                    # shadcn/ui components
+│   └── shared/                # Shared components (form fields, page titles, etc.)
 │
 ├── lib/
-│   └── db/                  # Database config and schema
-│   └── resend/              # Resend config and helpers
+│   ├── db/                    # Drizzle config, schema, seed
+│   ├── resend/                # Resend client and email helpers
+│   └── utils.ts               # cn() utility
 │
-└── hooks/                   # Global custom hooks
+└── hooks/                     # Global custom hooks (useAppForm)
 ```
 
 ## Available Scripts
@@ -108,35 +132,54 @@ src/
 ### Development
 
 ```bash
-pnpm dev          # Start dev server with Turbopack
+pnpm dev          # Start dev server (also starts Docker postgres via docker compose up -d)
 pnpm build        # Production build
 pnpm start        # Start production server
+pnpm preview      # Preview production build locally
 ```
 
-### Linting
+### Linting & Formatting
 
 ```bash
-pnpm lint         # Run ESLint
-pnpm lint:fix     # Auto-fix ESLint issues
+pnpm check        # Run Biome lint + format check (preferred before committing)
+pnpm lint         # Run Biome linter only
+pnpm format       # Run Biome formatter only
+```
+
+### Testing
+
+```bash
+pnpm test         # Run all tests with Vitest
 ```
 
 ### Database
 
 ```bash
-pnpm db:generate  # Generate migrations from schema
-pnpm db:migrate   # Run pending migrations
-pnpm db:push      # Push schema to database (dev only)
+pnpm db:generate       # Generate Drizzle migrations from schema
+pnpm db:migrate        # Run pending migrations
+pnpm db:push           # Push schema directly to DB (dev only)
+pnpm db:seed           # Seed the database
+pnpm db:reset          # Reset and re-seed the database
+pnpm db:studio         # Open Drizzle Studio
+pnpm db:auth-generate  # Regenerate Better Auth schema
 ```
 
 ### UI Components
 
 ```bash
-npx shadcn@latest add <component>  # Add shadcn/ui component
+npx shadcn@latest add <component>  # Add a shadcn/ui component
 ```
+
+## Architecture Notes
+
+- **Import alias**: `#/*` maps to `./src/*` — use `#/` for all internal imports.
+- **Route tree**: Auto-generated into `src/routeTree.gen.ts` — never edit manually.
+- **Auth client**: Import `signIn`, `signOut`, `useSession`, `organization`, etc. from `src/features/auth/lib/auth-client.ts`.
+- **Forms**: Use `useAppForm` from `src/hooks/use-app-form.ts` instead of raw `useForm`.
 
 ## Contributing
 
-This is a starter kit project designed to be forked and customized. Feel free to:
+This is a starter kit designed to be forked and customized:
 
 - Remove features you don't need
 - Add your own features following the established patterns
@@ -145,6 +188,4 @@ This is a starter kit project designed to be forked and customized. Feel free to
 
 ## License
 
-MIT License - feel free to use this starter kit for your projects.
-
----
+MIT License — free to use for your projects.

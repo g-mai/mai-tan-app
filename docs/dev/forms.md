@@ -1,14 +1,12 @@
 # Forms
 
-AI Slop, obviously only 80% correct. TO BE RIVISITED
-
 Forms in this project use three coordinated layers:
 
 1. **Zod schema** — single source of truth for shape and rules, shared between client and server
 2. **`createServerFn`** — server-side handler that re-validates and persists data
 3. **`useAppForm`** — client form state, wired to Zod for live validation and to the server function on submit
 
-Field rendering uses the custom components in `src/components/FormComponents.tsx`, which are built on the shadcn `Field`/`FieldLabel`/`FieldError` primitives from `src/components/ui/field.tsx`.
+Field rendering uses the custom components in `src/components/shared/form-components.tsx`, which are built on the shadcn `Field`/`FieldLabel`/`FieldError` primitives from `src/components/ui/field.tsx`.
 
 ---
 
@@ -17,14 +15,15 @@ Field rendering uses the custom components in `src/components/FormComponents.tsx
 ```
 src/
   hooks/
-    form-context.ts        # createFormHookContexts (one-time setup, do not touch)
-    form.ts                # createFormHook — registers field + form components
+    use-form-context.ts   # createFormHookContexts (one-time setup, do not touch)
+    use-app-form.ts       # createFormHook — registers field + form components
   components/
-    FormComponents.tsx     # Reusable field components (TextField, TextArea, etc.)
-    ui/field.tsx           # shadcn Field primitives used inside FormComponents
+    shared/
+      form-components.tsx # Reusable field components (TextField, PasswordField, etc.)
+    ui/field.tsx          # shadcn Field primitives used inside form-components
   routes/
     your-feature/
-      your-form.tsx        # Schema + createServerFn + useAppForm + JSX
+      your-form.tsx       # Schema + createServerFn + useAppForm + JSX
 ```
 
 ---
@@ -33,7 +32,7 @@ src/
 
 These files exist and should only be changed when adding new reusable field component types.
 
-### `src/hooks/form-context.ts`
+### `src/hooks/use-form-context.ts`
 
 ```ts
 import { createFormHookContexts } from "@tanstack/react-form";
@@ -44,20 +43,19 @@ export const { fieldContext, useFieldContext, formContext, useFormContext } =
 
 `createFormHookContexts` creates the React contexts that connect `useAppForm` → `form.AppField` → your field component. Every custom field component calls `useFieldContext()` to access the field state.
 
-### `src/hooks/form.ts`
+### `src/hooks/use-app-form.ts`
 
 ```ts
 import { createFormHook } from "@tanstack/react-form";
 import {
-  TextField,
-  TextArea,
-  Select,
+  PasswordField,
   SubscribeButton,
-} from "../components/FormComponents";
-import { fieldContext, formContext } from "./form-context";
+  TextField,
+} from "#/components/shared/form-components";
+import { fieldContext, formContext } from "./use-form-context";
 
 export const { useAppForm } = createFormHook({
-  fieldComponents: { TextField, TextArea, Select },
+  fieldComponents: { TextField, PasswordField },
   formComponents: { SubscribeButton },
   fieldContext,
   formContext,
@@ -68,7 +66,7 @@ export const { useAppForm } = createFormHook({
 
 ---
 
-## Field Components (`src/components/FormComponents.tsx`)
+## Field Components (`src/components/shared/form-components.tsx`)
 
 Each component calls `useFieldContext<T>()` to access the current field's state, and renders using the shadcn `Field` primitives.
 
@@ -76,7 +74,7 @@ Each component calls `useFieldContext<T>()` to access the current field's state,
 
 ```tsx
 import { useStore } from "@tanstack/react-form";
-import { useFieldContext } from "#/hooks/form-context";
+import { useFieldContext } from "#/hooks/use-form-context";
 import {
   Field,
   FieldLabel,
@@ -127,27 +125,23 @@ Key points:
 
 ### Available components
 
-| Component         | Field type | Notes                                                  |
-| ----------------- | ---------- | ------------------------------------------------------ |
-| `TextField`       | `string`   | Single-line text input                                 |
-| `PasswordField`   | `string`   | Single-line password input                             |
-| `TextArea`        | `string`   | Multi-line, accepts `rows` prop                        |
-| `Select`          | `string`   | Accepts `values: { label, value }[]` and `placeholder` |
-| `Slider`          | `number`   | —                                                      |
-| `Switch`          | `boolean`  | —                                                      |
-| `SubscribeButton` | —          | Form-level, reads `isSubmitting`                       |
+| Component         | Field type | Notes                            |
+| ----------------- | ---------- | -------------------------------- |
+| `TextField`       | `string`   | Single-line text input           |
+| `PasswordField`   | `string`   | Single-line password input       |
+| `SubscribeButton` | —          | Form-level, reads `isSubmitting` |
 
 ### Adding a new field type
 
-1. Create the component in `FormComponents.tsx` calling `useFieldContext<YourType>()`
+1. Create the component in `src/components/shared/form-components.tsx` calling `useFieldContext<YourType>()`
 2. Export it
-3. Register it in `src/hooks/form.ts` under `fieldComponents`
+3. Register it in `src/hooks/use-app-form.ts` under `fieldComponents`
 
 ---
 
 ## Per-Form Structure
 
-Everything below lives in the route file. The order matters for readability: schema → server function → component.
+Everything below lives in the route file (or a dedicated hook). The order matters for readability: schema → server function → component.
 
 ### 1. Define the Zod schema
 
@@ -214,7 +208,7 @@ This is safer than throwing because:
 ### 3. Wire up `useAppForm`
 
 ```tsx
-import { useAppForm } from "#/hooks/form";
+import { useAppForm } from "#/hooks/use-app-form";
 import { toast } from "sonner";
 
 function MyForm() {
@@ -290,12 +284,7 @@ return (
     </form.AppField>
 
     <form.AppField name="description">
-      {(field) => (
-        <field.TextArea
-          label="Description"
-          rows={4}
-        />
-      )}
+      {(field) => <field.TextField label="Description" />}
     </form.AppField>
 
     <div className="flex justify-end">
@@ -322,15 +311,15 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { toast } from "sonner";
 
-import { useAppForm } from "#/hooks/form";
-import { db } from "#/db";
-import { posts } from "#/db/schema";
+import { useAppForm } from "#/hooks/use-app-form";
+import { db } from "#/lib/db";
+import { posts } from "#/lib/db/schema";
 
 // ── 1. Schema ──────────────────────────────────────────────────────────────────
 
 const schema = z.object({
   title: z.string().min(1, "Title is required").max(100),
-  description: z.string().min(1, "Description is required"),
+  body: z.string().min(1, "Body is required"),
 });
 
 // ── 2. Server function ─────────────────────────────────────────────────────────
@@ -352,7 +341,7 @@ export const Route = createFileRoute("/posts/new")({
 
 function NewPostForm() {
   const form = useAppForm({
-    defaultValues: { title: "", description: "" },
+    defaultValues: { title: "", body: "" },
     validators: { onBlur: schema },
     onSubmit: async ({ value }) => {
       try {
@@ -382,12 +371,9 @@ function NewPostForm() {
         )}
       </form.AppField>
 
-      <form.AppField name="description">
+      <form.AppField name="body">
         {(field) => (
-          <field.TextArea
-            label="Description"
-            rows={4}
-          />
+          <field.TextField label="Body" />
         )}
       </form.AppField>
 
