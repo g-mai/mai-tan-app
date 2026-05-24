@@ -45,5 +45,6 @@ trustPolicy: no-downgrade
 strictSsl: true
 
 allowBuilds:
+  "@sentry/cli": true
   esbuild: true
   lightningcss: true
