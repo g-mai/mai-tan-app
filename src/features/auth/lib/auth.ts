@@ -137,6 +137,12 @@ export const auth = betterAuth({
               required: false,
               defaultValue: "#17967f",
             },
+            logo: {
+              type: "string",
+              input: true,
+              required: false,
+              defaultValue: "",
+            },
           },
         },
       },

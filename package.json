@@ -24,6 +24,8 @@
     "start": "node --import ./.output/server/instrument.server.mjs .output/server/index.mjs"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "~3.1053.0",
+    "@aws-sdk/s3-request-presigner": "~3.1053.0",
     "@better-auth/drizzle-adapter": "^1.6.9",
     "@sentry/tanstackstart-react": "^10.42.0",
     "@tailwindcss/vite": "^4.2.4",
