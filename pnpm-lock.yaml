@@ -71,6 +71,9 @@ importers:
       lucide-react:
         specifier: ^0.577.0
         version: 0.577.0(react@19.2.5)
+      nanoid:
+        specifier: ~5.1.11
+        version: 5.1.11
       next-themes:
         specifier: ^0.4.6
         version: 0.4.6(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
@@ -4188,6 +4191,11 @@ packages:
   nanoid@3.3.11:
     resolution: {integrity: sha512-N8SpfPUnUp1bK+PMYW8qSWdl9U+wwNWI4QKxOYDy9JAro3WMX7p2OeVRF9v+347pnakNevPmiHhNmZ2HbFA76w==, tarball: https://registry.npmjs.org/nanoid/-/nanoid-3.3.11.tgz}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
+    hasBin: true
+
+  nanoid@5.1.11:
+    resolution: {integrity: sha512-v+KEsUv2ps74PaSKv0gHTxTCgMXOIfBEbaqa6w6ISIGC7ZsvHN4N9oJ8d4cmf0n5oTzQz2SLmThbQWhjd/8eKg==, tarball: https://registry.npmjs.org/nanoid/-/nanoid-5.1.11.tgz}
+    engines: {node: ^18 || >=20}
     hasBin: true
 
   nanostores@1.3.0:
@@ -8921,6 +8929,8 @@ snapshots:
 
   nanoid@3.3.11: {}
 
+  nanoid@5.1.11: {}
+
   nanostores@1.3.0: {}
 
   negotiator@0.6.3: {}
@@ -9776,6 +9786,7 @@ time:
   drizzle-orm@0.45.2: '2026-03-27T17:06:27.140Z'
   jsdom@28.1.0: '2026-02-15T04:11:42.935Z'
   lucide-react@0.577.0: '2026-03-04T09:27:02.253Z'
+  nanoid@5.1.11: '2026-04-30T22:06:42.984Z'
   next-themes@0.4.6: '2025-03-11T21:02:05.882Z'
   pg@8.20.0: '2026-03-04T23:48:49.439Z'
   radix-ui@1.4.3: '2025-08-13T20:48:33.499Z'
