@@ -118,6 +118,7 @@ export const team = pgTable(
     ),
     description: text("description").default(""),
     color: text("color").default("#17967f"),
+    logo: text("logo").default(""),
   },
   (table) => [index("team_organizationId_idx").on(table.organizationId)],
 );

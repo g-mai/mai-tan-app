@@ -1,10 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PageTitle } from "#/components/shared/page-title";
 import { Card, CardContent, CardHeader, CardTitle } from "#/components/ui/card";
+import { ActiveSessionsSection } from "#/features/auth/components/active-sessions-section";
 import { ChangeEmailSection } from "#/features/auth/components/change-email-section";
 import { ChangePasswordSection } from "#/features/auth/components/change-password-section";
 import { ProfileSection } from "#/features/auth/components/profile-section";
-import { ActiveSessionsSection } from "#/features/auth/components/active-sessions-section";
 import { getAllSessions } from "#/features/auth/lib/auth.functions";
 
 export const Route = createFileRoute("/_protected/settings")({

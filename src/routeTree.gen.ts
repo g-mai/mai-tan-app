@@ -13,6 +13,7 @@ import { Route as ProtectedRouteRouteImport } from './routes/_protected/route'
 import { Route as AuthRouteRouteImport } from './routes/_auth/route'
 import { Route as ProtectedIndexRouteImport } from './routes/_protected/index'
 import { Route as DemoTanstackQueryRouteImport } from './routes/demo/tanstack-query'
+import { Route as DemoR2RouteImport } from './routes/demo/r2'
 import { Route as ProtectedSettingsRouteImport } from './routes/_protected/settings'
 import { Route as ProtectedAuthenticatedRouteImport } from './routes/_protected/authenticated'
 import { Route as ProtectedAboutRouteImport } from './routes/_protected/about'
@@ -45,6 +46,11 @@ const ProtectedIndexRoute = ProtectedIndexRouteImport.update({
 const DemoTanstackQueryRoute = DemoTanstackQueryRouteImport.update({
   id: '/demo/tanstack-query',
   path: '/demo/tanstack-query',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DemoR2Route = DemoR2RouteImport.update({
+  id: '/demo/r2',
+  path: '/demo/r2',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProtectedSettingsRoute = ProtectedSettingsRouteImport.update({
@@ -135,6 +141,7 @@ export interface FileRoutesByFullPath {
   '/about': typeof ProtectedAboutRoute
   '/authenticated': typeof ProtectedAuthenticatedRoute
   '/settings': typeof ProtectedSettingsRoute
+  '/demo/r2': typeof DemoR2Route
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/organizations/$orgId': typeof ProtectedOrganizationsOrgIdRoute
   '/organizations/new': typeof ProtectedOrganizationsNewRoute
@@ -154,6 +161,7 @@ export interface FileRoutesByTo {
   '/about': typeof ProtectedAboutRoute
   '/authenticated': typeof ProtectedAuthenticatedRoute
   '/settings': typeof ProtectedSettingsRoute
+  '/demo/r2': typeof DemoR2Route
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/organizations/$orgId': typeof ProtectedOrganizationsOrgIdRoute
   '/organizations/new': typeof ProtectedOrganizationsNewRoute
@@ -175,6 +183,7 @@ export interface FileRoutesById {
   '/_protected/about': typeof ProtectedAboutRoute
   '/_protected/authenticated': typeof ProtectedAuthenticatedRoute
   '/_protected/settings': typeof ProtectedSettingsRoute
+  '/demo/r2': typeof DemoR2Route
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/_protected/': typeof ProtectedIndexRoute
   '/_protected/organizations/$orgId': typeof ProtectedOrganizationsOrgIdRoute
@@ -197,6 +206,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/authenticated'
     | '/settings'
+    | '/demo/r2'
     | '/demo/tanstack-query'
     | '/organizations/$orgId'
     | '/organizations/new'
@@ -216,6 +226,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/authenticated'
     | '/settings'
+    | '/demo/r2'
     | '/demo/tanstack-query'
     | '/organizations/$orgId'
     | '/organizations/new'
@@ -236,6 +247,7 @@ export interface FileRouteTypes {
     | '/_protected/about'
     | '/_protected/authenticated'
     | '/_protected/settings'
+    | '/demo/r2'
     | '/demo/tanstack-query'
     | '/_protected/'
     | '/_protected/organizations/$orgId'
@@ -251,6 +263,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
   ProtectedRouteRoute: typeof ProtectedRouteRouteWithChildren
+  DemoR2Route: typeof DemoR2Route
   DemoTanstackQueryRoute: typeof DemoTanstackQueryRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   DemoSentryTestingRoute: typeof DemoSentryTestingRoute
@@ -284,6 +297,13 @@ declare module '@tanstack/react-router' {
       path: '/demo/tanstack-query'
       fullPath: '/demo/tanstack-query'
       preLoaderRoute: typeof DemoTanstackQueryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/demo/r2': {
+      id: '/demo/r2'
+      path: '/demo/r2'
+      fullPath: '/demo/r2'
+      preLoaderRoute: typeof DemoR2RouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_protected/settings': {
@@ -445,6 +465,7 @@ const ProtectedRouteRouteWithChildren = ProtectedRouteRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   AuthRouteRoute: AuthRouteRouteWithChildren,
   ProtectedRouteRoute: ProtectedRouteRouteWithChildren,
+  DemoR2Route: DemoR2Route,
   DemoTanstackQueryRoute: DemoTanstackQueryRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   DemoSentryTestingRoute: DemoSentryTestingRoute,

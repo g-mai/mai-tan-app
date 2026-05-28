@@ -11,6 +11,7 @@ Tasks are grouped by area. Each item is scoped to a single, shippable unit of wo
 File upload infrastructure is shared across user avatars, organization logos, and team logos. The storage backend decision should be made first, then all three upload tasks can be implemented consistently.
 
 > **Storage decision pending.** Three options to evaluate:
+>
 > - **AWS S3** — industry standard, mature SDKs, fits well in any cloud setup
 > - **Cloudflare R2** — S3-compatible API, no egress fees, good choice if already on Cloudflare
 > - **Uploadthing** — purpose-built for full-stack JS apps, minimal setup, handles resizing and delivery
