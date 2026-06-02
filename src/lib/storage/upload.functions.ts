@@ -4,6 +4,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { nanoid } from "nanoid";
 import z from "zod";
 import { authMiddleware } from "#/features/auth/middleware";
+import { env } from "#/lib/env";
 import { r2 } from "#/lib/storage/r2";
 
 const getPresignedUploadUrlSchema = z.object({
@@ -22,7 +23,7 @@ export const getPresignedUploadUrl = createServerFn({
     try {
       const { prefix, entityId, fileType, fileSize } = data;
       // TODO: validation: check file size limits, allowed file types, etc.
-      const bucketName = process.env.R2_BUCKET_NAME;
+      const bucketName = env.R2_BUCKET_NAME;
       const fileExtension = fileType.split("/")[1];
       const key = `${prefix}/${entityId}/${nanoid()}.${fileExtension}`;
       const signedUrl = await getSignedUrl(
@@ -36,7 +37,7 @@ export const getPresignedUploadUrl = createServerFn({
       );
       return {
         uploadUrl: signedUrl,
-        publicUrl: `${process.env.R2_PUBLIC_URL}/${key}`,
+        publicUrl: `${env.R2_PUBLIC_URL}/${key}`,
       };
     } catch (error) {
       console.error("Error generating presigned URL:", error);

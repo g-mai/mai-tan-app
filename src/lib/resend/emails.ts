@@ -1,9 +1,10 @@
 import { Resend } from "resend";
 import { ResetPasswordEmailTemplate } from "#/features/auth/emails/reset-password-email";
 import { VerificationEmailTemplate } from "#/features/auth/emails/verification-email";
+import { env } from "#/lib/env";
 import type { User } from "@/features/auth/types";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = new Resend(env.RESEND_API_KEY);
 
 export async function sendVerifyEmail(
   { user, url, token }: { user: User; url: string; token: string },
@@ -12,7 +13,7 @@ export async function sendVerifyEmail(
   console.log("Sending verification email to:", user.email);
   try {
     const { data, error } = await resend.emails.send({
-      from: process.env.FROM_ADDRESS_EMAIL || "From Email <from@email.com>",
+      from: env.FROM_ADDRESS_EMAIL,
       to: [user.email],
       subject: "Verify Your Email Address",
       react: VerificationEmailTemplate({ user, url, token }),
@@ -38,7 +39,7 @@ export async function sendResetPasswordEmail(
   console.log("Sending reset password email to:", user.email);
   try {
     const { data, error } = await resend.emails.send({
-      from: process.env.FROM_ADDRESS_EMAIL || "From Email <from@email.com>",
+      from: env.FROM_ADDRESS_EMAIL,
       to: [user.email],
       subject: "Reset Your Password",
       react: ResetPasswordEmailTemplate({ user, url, token }),
