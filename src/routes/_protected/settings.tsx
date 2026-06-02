@@ -11,7 +11,6 @@ export const Route = createFileRoute("/_protected/settings")({
   component: RouteComponent,
   loader: async () => {
     const sessions = await getAllSessions();
-    console.log("SESSIONS", sessions);
     return sessions;
   },
 });

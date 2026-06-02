@@ -1,5 +1,6 @@
+import { useRouter } from "@tanstack/react-router";
+import { toast } from "sonner";
 import { ImageUpload } from "#/components/shared/image-upload";
-import { Button } from "#/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "#/components/ui/card";
 import { useUpdateProfile } from "#/features/auth/hooks/useUpdateProfile";
 import { updateUser } from "#/features/auth/lib/auth-client";
@@ -11,17 +12,23 @@ export function ProfileSection({ user }: { user: User }) {
     firstName: user.firstName,
     lastName: user.lastName,
   });
+  const router = useRouter();
 
-  // TODO: finish this!
   async function handleImageUpload(url: string) {
-    console.log("New image URL:", url);
     const { data, error } = await updateUser({ image: url });
     if (error) {
       console.error("Failed to update user image:", error);
-      alert("Failed to update profile image. Please try again.");
+      toast.error("Failed to update profile image. Please try again.", {
+        duration: 5000,
+        position: "top-center",
+      });
     } else {
-      console.log("User image updated successfully:", data);
-      // Optionally show a success message or update local state
+      // invalidate router data to update user object in session
+      await router.invalidate();
+      toast.success("Profile image updated successfully!", {
+        duration: 5000,
+        position: "top-center",
+      });
     }
   }
 
@@ -34,13 +41,11 @@ export function ProfileSection({ user }: { user: User }) {
         <div className="flex gap-4 space-y-6">
           <div className="mb-0 flex min-w-35 flex-col items-center gap-4">
             <UserAvatar user={{ ...user }} height={120} width={120} />
-            {/* <Button variant="secondary">Upload WIP</Button> */}
             <ImageUpload
               currentImageUrl={user.image}
               prefix="avatars"
               entityId={user.id}
               onUploadComplete={handleImageUpload}
-              size={120}
             />
           </div>
 

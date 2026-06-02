@@ -1,4 +1,7 @@
-import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { useRef, useState } from "react";
+import { toast } from "sonner";
+import { Button } from "#/components/ui/button";
 import { getPresignedUploadUrl } from "#/lib/storage/upload.functions";
 
 interface imageUploadProps {
@@ -6,8 +9,6 @@ interface imageUploadProps {
   onUploadComplete: (url: string) => void;
   prefix: "avatars" | "orgs" | "teams";
   entityId: string;
-  shape?: "circle" | "square"; // default: 'square'
-  size?: number; // display size in px, default: 80
   disabled?: boolean; // lock for non-admins
 }
 
@@ -16,20 +17,12 @@ export function ImageUpload({
   onUploadComplete,
   prefix,
   entityId,
-  shape = "square",
-  size = 80,
   disabled = false,
 }: imageUploadProps) {
-  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileChange = async (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    setIsUploading(true);
-    try {
+  const { mutate, isPending, isSuccess, isError } = useMutation({
+    mutationFn: async (file: File) => {
       const { uploadUrl, publicUrl } = await getPresignedUploadUrl({
         data: {
           prefix,
@@ -45,39 +38,51 @@ export function ImageUpload({
         },
         body: file,
       });
+      return publicUrl;
+    },
+    onSuccess: (publicUrl) => {
       onUploadComplete(publicUrl);
-    } catch (error) {
+    },
+    onError: (error) => {
       console.error("Upload failed:", error);
-      alert("Failed to upload image. Please try again.");
-    } finally {
-      setIsUploading(false);
-    }
+    },
+    onSettled: (data, error) => {
+      // replace onUploadComplete with an onSettled callback
+      // so that we can handle both success and error cases in the parent component (e.g. show toast notifications)
+    },
+  });
+
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    mutate(file);
   };
 
   return (
-    <div
-      className={`relative ${shape === "circle" ? "rounded-full" : "rounded"} w-${size} h-${size} overflow-hidden bg-gray-100`}
-    >
-      {currentImageUrl ? (
-        <img
-          src={currentImageUrl}
-          alt="Current"
-          // className="object-cover w-full h-full"
-          width={size}
-          height={size}
-        />
-      ) : (
-        <div className="flex items-center justify-center w-full h-full text-gray-400">
-          <span className="text-2xl">+</span>
-        </div>
-      )}
+    <div>
+      <Button
+        variant="secondary"
+        size="sm"
+        disabled={isPending || disabled}
+        className="w-full h-full"
+        onClick={() => fileInputRef.current?.click()}
+      >
+        {isPending
+          ? "Uploading..."
+          : currentImageUrl
+            ? "Change Image"
+            : "Upload Image"}
+      </Button>
       {!disabled && (
         <input
+          ref={fileInputRef}
           type="file"
           accept="image/*"
           onChange={handleFileChange}
-          disabled={isUploading}
-          className="absolute inset-0 opacity-0 cursor-pointer"
+          disabled={isPending}
+          className="hidden"
         />
       )}
     </div>

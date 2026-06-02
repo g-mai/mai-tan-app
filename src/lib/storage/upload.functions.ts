@@ -20,7 +20,6 @@ export const getPresignedUploadUrl = createServerFn({
   .middleware([authMiddleware])
   .handler(async ({ data }) => {
     try {
-      console.log("NanoID:", nanoid());
       const { prefix, entityId, fileType, fileSize } = data;
       // TODO: validation: check file size limits, allowed file types, etc.
       const bucketName = process.env.R2_BUCKET_NAME;
@@ -37,7 +36,7 @@ export const getPresignedUploadUrl = createServerFn({
       );
       return {
         uploadUrl: signedUrl,
-        publicUrl: `${process.env.R2_PUBLIC_URL}/${process.env.R2_BUCKET_NAME}/${key}`,
+        publicUrl: `${process.env.R2_PUBLIC_URL}/${key}`,
       };
     } catch (error) {
       console.error("Error generating presigned URL:", error);

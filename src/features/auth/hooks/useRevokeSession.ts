@@ -1,4 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { revokeSession } from "../lib/auth-client";
 
@@ -10,6 +11,7 @@ export function useRevokeSession(): {
   isSuccess: boolean;
   isError: boolean;
 } {
+  const router = useRouter();
   const { mutate, isPending, isSuccess, isError } = useMutation({
     mutationFn: async (token: string) => {
       if (!token) throw new Error("Token is required to revoke session");
@@ -24,7 +26,6 @@ export function useRevokeSession(): {
         duration: 8000,
         position: "top-center",
       });
-      window.location.reload();
     },
     onError: (error) => {
       console.log("Error revoking session:", error);
@@ -32,6 +33,10 @@ export function useRevokeSession(): {
         duration: 5000,
         position: "top-center",
       });
+    },
+    onSettled: async () => {
+      // refreshes session data in router
+      await router.invalidate();
     },
   });
 
