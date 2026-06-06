@@ -14,18 +14,29 @@ export function ProfileSection({ user }: { user: User }) {
   });
   const router = useRouter();
 
-  async function handleImageUpload(url: string) {
-    const { data, error } = await updateUser({ image: url });
-    if (error) {
-      console.error("Failed to update user image:", error);
-      toast.error("Failed to update profile image. Please try again.", {
-        duration: 5000,
-        position: "top-center",
-      });
-    } else {
+  async function handleImageUpload(
+    url: string | undefined,
+    error: Error | null,
+  ) {
+    try {
+      if (error) throw error;
+      if (!url) throw new Error("No URL returned from upload");
+
+      const { data, error: updateError } = await updateUser({ image: url });
+
+      if (updateError) {
+        throw new Error(updateError.message || "Failed to update user image");
+      }
+
       // invalidate router data to update user object in session
       await router.invalidate();
       toast.success("Profile image updated successfully!", {
+        duration: 5000,
+        position: "top-center",
+      });
+    } catch (error) {
+      console.error("Failed to update user image:", error);
+      toast.error("Failed to update profile image. Please try again.", {
         duration: 5000,
         position: "top-center",
       });

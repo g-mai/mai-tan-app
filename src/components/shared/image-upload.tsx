@@ -1,12 +1,14 @@
 import { useMutation } from "@tanstack/react-query";
-import { useRef, useState } from "react";
-import { toast } from "sonner";
+import { useRef } from "react";
 import { Button } from "#/components/ui/button";
-import { getPresignedUploadUrl } from "#/lib/storage/upload.functions";
+import {
+  getPresignedUploadImgUrl,
+  resizeToSquare,
+} from "#/lib/storage/upload-img.functions";
 
 interface imageUploadProps {
   currentImageUrl: string | null | undefined;
-  onUploadComplete: (url: string) => void;
+  onUploadComplete: (data: string | undefined, error: null | Error) => void;
   prefix: "avatars" | "orgs" | "teams";
   entityId: string;
   disabled?: boolean; // lock for non-admins
@@ -23,32 +25,29 @@ export function ImageUpload({
 
   const { mutate, isPending, isSuccess, isError } = useMutation({
     mutationFn: async (file: File) => {
-      const { uploadUrl, publicUrl } = await getPresignedUploadUrl({
+      const resized = await resizeToSquare(file);
+      const { uploadUrl, publicUrl } = await getPresignedUploadImgUrl({
         data: {
           prefix,
           entityId,
-          fileType: file.type,
-          fileSize: file.size,
+          fileType: resized.type,
+          fileSize: resized.size,
         },
       });
       await fetch(uploadUrl, {
         method: "PUT",
-        headers: {
-          "Content-Type": file.type,
-        },
-        body: file,
+        body: resized,
       });
       return publicUrl;
     },
     onSuccess: (publicUrl) => {
-      onUploadComplete(publicUrl);
+      // TODO: if currentImageUrl exist, delete old picture
     },
     onError: (error) => {
       console.error("Upload failed:", error);
     },
     onSettled: (data, error) => {
-      // replace onUploadComplete with an onSettled callback
-      // so that we can handle both success and error cases in the parent component (e.g. show toast notifications)
+      onUploadComplete(data, error as Error | null);
     },
   });
 

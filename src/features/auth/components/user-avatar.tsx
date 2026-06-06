@@ -22,7 +22,7 @@ export function UserAvatar({
       width={width}
       height={height}
       alt={`${user.name}'s avatar`}
-      className={`rounded-2xl ${className}`}
+      className={`rounded-2xl ${className} aspect-square object-cover`}
     />
   );
 }
