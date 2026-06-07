@@ -1,4 +1,4 @@
-import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { DeleteObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { createServerFn } from "@tanstack/react-start";
 import { getRequestHeaders } from "@tanstack/react-start/server";
@@ -9,7 +9,7 @@ import { auth } from "#/features/auth/lib/auth";
 import { authMiddleware } from "#/features/auth/middleware";
 import type { Session } from "#/features/auth/types";
 import { db } from "#/lib/db";
-import { authSchema, team } from "#/lib/db/schema";
+import { team } from "#/lib/db/schema";
 import { env } from "#/lib/env";
 import { r2 } from "#/lib/storage/r2";
 
@@ -66,28 +66,35 @@ export const getPresignedUploadImgUrl = createServerFn({
     }
   });
 
-export async function resizeToSquare(file: File, size = 300): Promise<File> {
-  const bitmap = await createImageBitmap(file);
-  const side = Math.min(bitmap.width, bitmap.height);
-  const offsetX = (bitmap.width - side) / 2;
-  const offsetY = (bitmap.height - side) / 2;
-  const canvas = document.createElement("canvas");
-  canvas.width = size;
-  canvas.height = size;
-  const ctx = canvas.getContext("2d");
-  if (!ctx) throw new Error("Could not get canvas context");
-  ctx.drawImage(bitmap, offsetX, offsetY, side, side, 0, 0, size, size);
-  return new Promise((resolve, reject) =>
-    canvas.toBlob(
-      (blob) =>
-        blob
-          ? resolve(new File([blob], file.name, { type: "image/webp" }))
-          : reject(new Error("Canvas toBlob failed")),
-      "image/webp",
-      0.85,
-    ),
-  );
-}
+const deleteImageSchema = z.object({
+  imageUrl: z.string(),
+  prefix: z.enum(["avatars", "orgs", "teams"]),
+  entityId: z.string(),
+});
+
+export const deleteImage = createServerFn({
+  method: "POST",
+})
+  .inputValidator(deleteImageSchema)
+  .middleware([authMiddleware])
+  .handler(async ({ data, context }) => {
+    try {
+      const { imageUrl, prefix, entityId } = data;
+      const session = context.session;
+
+      // extract prefix and entityId from URL for authorization check
+      const url = new URL(imageUrl);
+
+      await checkUploadAuthorization(prefix, entityId, session);
+
+      const bucketName = env.R2_BUCKET_NAME;
+      const key = url.pathname.substring(1); // remove leading '/'
+      await r2.send(new DeleteObjectCommand({ Bucket: bucketName, Key: key }));
+    } catch (error) {
+      console.error("Error deleting image:", error);
+      throw new Error("Failed to delete image");
+    }
+  });
 
 async function checkUploadAuthorization(
   prefix: z.infer<typeof getPresignedUploadImgUrlSchema>["prefix"],
@@ -120,6 +127,7 @@ async function checkUploadAuthorization(
       .limit(1);
 
     // drizzle Relational Queries v2 - WIP
+    // TODO: check back on drizzle 1.0 launch if better-auth started supporting it
     // const teamData = db.query.team.findFirst({
     //   where: {
     //     id: entityId,

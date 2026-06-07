@@ -2,9 +2,10 @@ import { useMutation } from "@tanstack/react-query";
 import { useRef } from "react";
 import { Button } from "#/components/ui/button";
 import {
+  deleteImage,
   getPresignedUploadImgUrl,
-  resizeToSquare,
 } from "#/lib/storage/upload-img.functions";
+import { resizeImgToSquare } from "#/lib/utils";
 
 interface imageUploadProps {
   currentImageUrl: string | null | undefined;
@@ -25,7 +26,7 @@ export function ImageUpload({
 
   const { mutate, isPending, isSuccess, isError } = useMutation({
     mutationFn: async (file: File) => {
-      const resized = await resizeToSquare(file);
+      const resized = await resizeImgToSquare(file);
       const { uploadUrl, publicUrl } = await getPresignedUploadImgUrl({
         data: {
           prefix,
@@ -42,6 +43,15 @@ export function ImageUpload({
     },
     onSuccess: (publicUrl) => {
       // TODO: if currentImageUrl exist, delete old picture
+      if (currentImageUrl) {
+        deleteImage({
+          data: {
+            imageUrl: currentImageUrl,
+            prefix,
+            entityId,
+          },
+        });
+      }
     },
     onError: (error) => {
       console.error("Upload failed:", error);
