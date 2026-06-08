@@ -28,7 +28,7 @@ export function useRevokeSession(): {
       });
     },
     onError: (error) => {
-      console.log("Error revoking session:", error);
+      console.error("Error revoking session:", error);
       toast.error(error.message, {
         duration: 5000,
         position: "top-center",

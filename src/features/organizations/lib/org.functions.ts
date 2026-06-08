@@ -1,8 +1,11 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getRequestHeaders } from "@tanstack/react-start/server";
+import { eq } from "drizzle-orm";
 import z from "zod";
 import { auth } from "#/features/auth/lib/auth";
 import type { SessionData, User } from "#/features/auth/types";
+import { db } from "#/lib/db";
+import { member, organization, team, teamMember } from "#/lib/db/schema";
 
 export const listOrganizations = createServerFn({ method: "GET" }).handler(
   async () => {
@@ -46,9 +49,51 @@ export const getTeam = createServerFn({ method: "GET" })
     const teams = await auth.api.listUserTeams({
       headers: getRequestHeaders(),
     });
-    console.log("TEAMS FOUND!", teams);
-    console.log("data", data);
     const team = teams.find((t) => t.id === data.id);
     if (!team) throw new Error("Team not found");
     return team;
+  });
+
+const getFullTeamSchema = z.object({
+  id: z.string(),
+  user: z.custom<User>(),
+  session: z.custom<SessionData>(),
+});
+
+export const getFullTeam = createServerFn({ method: "GET" })
+  .inputValidator(getFullTeamSchema)
+  .handler(async ({ data }) => {
+    const teamData = await db.query.team.findFirst({
+      where: (team, { eq }) => eq(team.id, data.id),
+      with: {
+        teamMembers: true,
+      },
+    });
+    if (!teamData) throw new Error("Team not found");
+    const orgMember = await db.query.member.findFirst({
+      where: (member, { eq, and }) =>
+        and(
+          eq(member.organizationId, teamData.organizationId),
+          eq(member.userId, data.user.id),
+        ),
+    });
+    if (!orgMember)
+      throw new Error("User is not a member of this organization");
+
+    return {
+      ...teamData,
+      role: orgMember.role,
+    };
+  });
+
+const getUserTeamsSchema = z.object({ organizationId: z.string() });
+
+export const getUserTeams = createServerFn({ method: "GET" })
+  .inputValidator(getUserTeamsSchema)
+  .handler(async ({ data }) => {
+    const teams = await auth.api.listUserTeams({
+      headers: getRequestHeaders(),
+      query: { organizationId: data.organizationId },
+    });
+    return teams ?? [];
   });

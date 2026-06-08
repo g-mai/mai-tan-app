@@ -1,4 +1,6 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
+import { toast } from "sonner";
+import { ImageUpload } from "#/components/shared/image-upload";
 import { PageTitle } from "#/components/shared/page-title";
 import {
   Card,
@@ -8,6 +10,7 @@ import {
   CardTitle,
 } from "#/components/ui/card";
 import { Separator } from "#/components/ui/separator";
+import { organization } from "#/features/auth/lib/auth-client";
 import { OrganizationLogo } from "#/features/organizations/components/organization-logo";
 import { getOrganization } from "#/features/organizations/lib/org.functions";
 
@@ -44,12 +47,48 @@ function RoleBadge({ role }: { role: string }) {
 
 function RouteComponent() {
   const org = Route.useLoaderData();
+  const router = useRouter();
 
   const createdAt = new Date(org.createdAt).toLocaleDateString(undefined, {
     year: "numeric",
     month: "long",
     day: "numeric",
   });
+
+  async function handleImageUpload(
+    url: string | undefined,
+    error: Error | null,
+  ) {
+    try {
+      if (error) throw error;
+      if (!url) throw new Error("No URL returned from upload");
+      const { data, error: updateError } = await organization.update({
+        organizationId: org.id,
+        data: {
+          logo: url,
+        },
+      });
+
+      if (updateError) {
+        throw new Error(
+          updateError.message || "Failed to update organization logo",
+        );
+      }
+
+      // invalidate router data to update user object in session
+      await router.invalidate();
+      toast.success("Organization logo updated successfully!", {
+        duration: 5000,
+        position: "top-center",
+      });
+    } catch (error) {
+      console.error("Failed to update organization logo:", error);
+      toast.error("Failed to update organization logo. Please try again.", {
+        duration: 5000,
+        position: "top-center",
+      });
+    }
+  }
 
   return (
     <div className="space-y-6">
@@ -60,6 +99,12 @@ function RouteComponent() {
         <CardHeader>
           <div className="flex items-center gap-4">
             <OrganizationLogo logoUrl={org.logo} width={64} height={64} />
+            <ImageUpload
+              currentImageUrl={org.logo}
+              prefix="orgs"
+              entityId={org.id}
+              onUploadComplete={handleImageUpload}
+            />
             <div>
               <CardTitle className="text-2xl">{org.name}</CardTitle>
               <CardDescription className="mt-1">
