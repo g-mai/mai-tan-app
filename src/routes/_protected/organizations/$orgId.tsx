@@ -98,13 +98,16 @@ function RouteComponent() {
       <Card>
         <CardHeader>
           <div className="flex items-center gap-4">
-            <OrganizationLogo logoUrl={org.logo} width={64} height={64} />
-            <ImageUpload
-              currentImageUrl={org.logo}
-              prefix="orgs"
-              entityId={org.id}
-              onUploadComplete={handleImageUpload}
-            />
+            <div className="flex flex-col items-center gap-2">
+              <OrganizationLogo logoUrl={org.logo} width={64} height={64} />
+              <ImageUpload
+                currentImageUrl={org.logo}
+                prefix="orgs"
+                entityId={org.id}
+                onUploadComplete={handleImageUpload}
+                buttonText="Edit Logo"
+              />
+            </div>
             <div>
               <CardTitle className="text-2xl">{org.name}</CardTitle>
               <CardDescription className="mt-1">

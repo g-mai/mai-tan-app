@@ -13,6 +13,7 @@ interface imageUploadProps {
   prefix: "avatars" | "orgs" | "teams";
   entityId: string;
   disabled?: boolean; // lock for non-admins
+  buttonText?: string;
 }
 
 export function ImageUpload({
@@ -21,6 +22,7 @@ export function ImageUpload({
   prefix,
   entityId,
   disabled = false,
+  buttonText = "Upload Image",
 }: imageUploadProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -72,17 +74,13 @@ export function ImageUpload({
   return (
     <div>
       <Button
-        variant="secondary"
+        variant="outline"
         size="sm"
         disabled={isPending || disabled}
         className="w-full h-full"
         onClick={() => fileInputRef.current?.click()}
       >
-        {isPending
-          ? "Uploading..."
-          : currentImageUrl
-            ? "Change Image"
-            : "Upload Image"}
+        {isPending ? "Uploading..." : buttonText}
       </Button>
       {!disabled && (
         <input

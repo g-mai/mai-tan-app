@@ -20,6 +20,8 @@ export const Route = createFileRoute("/_protected")({
 });
 
 function ProtectedLayout() {
+  const context = Route.useRouteContext();
+  console.log("[ProtectedLayout] context", context);
   // return (
   //   <div className="min-h-screen flex flex-col">
   //     <Header />
