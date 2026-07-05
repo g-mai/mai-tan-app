@@ -1,7 +1,8 @@
 // CREATE NEW ORGANIZATION PAGE
+
+import { createFileRoute } from "@tanstack/react-router";
 import { ComingSoon } from "#/components/shared/coming-soon";
 import { PageTitle } from "#/components/shared/page-title";
-import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_protected/organizations/new")({
   component: RouteComponent,

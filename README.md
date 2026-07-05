@@ -1,6 +1,8 @@
-# Mai Tan App - B2B SaaS Starter Kit
+# Mai Tan App - B2B SaaS Starter Kit - v 0.1.0
 
 A production-ready, feature-complete starter kit for building multi-tenant B2B SaaS applications. Built with TanStack Start, Better Auth, Drizzle ORM, and shadcn/ui.
+
+DEMO: COMING SOON...
 
 ## Features
 
@@ -36,7 +38,7 @@ A production-ready, feature-complete starter kit for building multi-tenant B2B S
 
 - **Resend** — Transactional email delivery
 - **React Email** — Email template components
-- **Sentry** — Error monitoring and observability
+- **Sentry** — Error monitoring and observability WIP
 
 ### State & Forms
 
@@ -47,7 +49,7 @@ A production-ready, feature-complete starter kit for building multi-tenant B2B S
 ### Tooling
 
 - **Biome** — Linter and formatter (replaces ESLint + Prettier)
-- **Vitest** — Unit testing
+- **Vitest** — Unit testing - WIP
 - **Docker Compose** — Local PostgreSQL
 
 ## Quick Start
@@ -79,17 +81,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ### Environment Variables
 
-Required variables in `.env`:
-
-| Variable                  | Description                                             |
-| ------------------------- | ------------------------------------------------------- |
-| `POSTGRES_USER`           | PostgreSQL user                                         |
-| `POSTGRES_PASSWORD`       | PostgreSQL password                                     |
-| `POSTGRES_DB`             | PostgreSQL database name                                |
-| `DATABASE_URL`            | Full connection string                                  |
-| `BETTER_AUTH_SECRET`      | Secret for Better Auth session signing                  |
-| `RESEND_API_KEY`          | Resend API key for email delivery                       |
-| `SKIP_VERIFICATION_EMAIL` | Set to `true` to skip email verification during seeding |
+For variables in `.env`, check .env.example
 
 ## Project Structure
 
@@ -121,7 +113,9 @@ src/
 │
 ├── lib/
 │   ├── db/                    # Drizzle config, schema, seed
+│   ├── query/                 # TanStack Query configs
 │   ├── resend/                # Resend client and email helpers
+│   ├── storage/               # R2 storage config and functions
 │   └── utils.ts               # cn() utility
 │
 └── hooks/                     # Global custom hooks (useAppForm)
