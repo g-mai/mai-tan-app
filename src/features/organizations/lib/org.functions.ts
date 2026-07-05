@@ -1,11 +1,9 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getRequestHeaders } from "@tanstack/react-start/server";
-import { eq } from "drizzle-orm";
 import z from "zod";
 import { auth } from "#/features/auth/lib/auth";
 import type { SessionData, User } from "#/features/auth/types";
 import { db } from "#/lib/db";
-import { member, organization, team, teamMember } from "#/lib/db/schema";
 
 export const listOrganizations = createServerFn({ method: "GET" }).handler(
   async () => {
