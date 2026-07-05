@@ -20,8 +20,8 @@ export const Route = createFileRoute("/_protected")({
 });
 
 function ProtectedLayout() {
-  const context = Route.useRouteContext();
-  console.log("[ProtectedLayout] context", context);
+  const session = Route.useRouteContext();
+  console.log("[ProtectedLayout] context", session);
   // return (
   //   <div className="min-h-screen flex flex-col">
   //     <Header />
@@ -33,7 +33,7 @@ function ProtectedLayout() {
   // );
   return (
     <SidebarProvider>
-      <AppSidebar />
+      <AppSidebar session={session} />
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2 border-b">
           <div className="flex flex-1 items-center justify-between gap-2 px-3">

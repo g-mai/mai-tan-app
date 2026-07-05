@@ -1,5 +1,6 @@
 import { createAuthClient } from "better-auth/client";
 import {
+  customSessionClient,
   inferAdditionalFields,
   inferOrgAdditionalFields,
   organizationClient,
@@ -17,6 +18,7 @@ export const authClient = createAuthClient({
         enabled: true,
       },
     }),
+    customSessionClient<typeof auth>(),
     inferAdditionalFields<typeof auth>(),
   ],
 });

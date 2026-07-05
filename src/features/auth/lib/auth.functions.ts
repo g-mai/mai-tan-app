@@ -12,6 +12,7 @@ export const getSession = createServerFn({ method: "GET" }).handler(
     return session;
   },
 );
+
 export function ensureSession(beforeLoadCtx: {
   context: { session: Session | null };
 }) {

@@ -11,6 +11,8 @@ import {
   SquareTerminal,
 } from "lucide-react";
 import { LogoTitle } from "#/components/shared/logo-title";
+import type { Session } from "#/features/auth/types";
+import { OrganizationSelector } from "#/features/organizations/components/organization-selector";
 // import { TeamSwitcher } from "./team-switcher";
 import {
   Sidebar,
@@ -149,7 +151,11 @@ const data = {
   ],
 };
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
+  session: Session;
+};
+
+export function AppSidebar({ session, ...props }: AppSidebarProps) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -160,7 +166,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavProjects projects={data.projects} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        {/* <NavUser user={data.user} /> */}
+        <OrganizationSelector
+          organizations={session.orgs}
+          activeOrganizationId={session.session.activeOrganizationId}
+          favouriteOrganizationId={session.user.favouriteOrganization}
+        />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
