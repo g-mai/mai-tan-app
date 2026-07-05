@@ -1,13 +1,28 @@
+import { Link } from "@tanstack/react-router";
+
 export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="mt-20 border-t border-(--line) px-4 pb-14 pt-10 text-(--sea-ink-soft)">
-      <div className="page-wrap flex flex-col items-center justify-between gap-4 text-center sm:flex-row sm:text-left">
-        <p className="m-0 text-sm">
-          &copy; {year} mai-tan-app. All rights reserved.
+    <footer className="border-t px-4 py-6 text-sm text-muted-foreground">
+      <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-3 sm:flex-row">
+        <p>
+          © {year} Mai Tan App. Built with TanStack Start, Better Auth, and
+          shadcn/ui.
         </p>
-        <p className="island-kicker m-0">Built with TanStack Start</p>
+        <div className="flex items-center gap-4">
+          <a
+            href="https://github.com/g-mai/mai-tan-app"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-foreground"
+          >
+            GitHub
+          </a>
+          <Link to="/about" className="hover:text-foreground">
+            About
+          </Link>
+        </div>
       </div>
     </footer>
   );

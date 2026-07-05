@@ -26,7 +26,7 @@ export function useLogin() {
       return signInData;
     },
     onSuccess: () => {
-      router.navigate({ to: "/" });
+      router.navigate({ to: "/dashboard" });
       toast.success("Successfully logged in!");
     },
     onError: (error) => {

@@ -1,4 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { ComingSoon } from "#/components/shared/coming-soon";
+import { PageTitle } from "#/components/shared/page-title";
 import { getFullTeam } from "#/features/organizations/lib/org.functions";
 
 export const Route = createFileRoute("/_protected/teams/$teamId")({
@@ -16,9 +18,11 @@ export const Route = createFileRoute("/_protected/teams/$teamId")({
   errorComponent: (props) => {
     return (
       <div>
-        <h1>Team not found</h1>
-        <p>Error loading team.</p>
-        {props.error instanceof Error && <p>{props.error.message}</p>}
+        <PageTitle title="Team not found" />
+        <p className="text-sm text-muted-foreground">Error loading team.</p>
+        {props.error instanceof Error && (
+          <p className="text-sm text-muted-foreground">{props.error.message}</p>
+        )}
       </div>
     );
   },
@@ -26,6 +30,17 @@ export const Route = createFileRoute("/_protected/teams/$teamId")({
 
 function RouteComponent() {
   const team = Route.useLoaderData();
-  // console.log("TEAM DATA", team);
-  return <div>Hello "/_protected/teams/$id"!</div>;
+
+  return (
+    <div>
+      <PageTitle
+        title={team.name}
+        subtitle={`${team.teamMembers.length} member${team.teamMembers.length === 1 ? "" : "s"}`}
+      />
+      <ComingSoon
+        title="Team management"
+        description="Editing team details, adding members, and removing members are on their way."
+      />
+    </div>
+  );
 }

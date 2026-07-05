@@ -11,21 +11,22 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ProtectedRouteRouteImport } from './routes/_protected/route'
 import { Route as AuthRouteRouteImport } from './routes/_auth/route'
-import { Route as ProtectedIndexRouteImport } from './routes/_protected/index'
-import { Route as DemoTanstackQueryRouteImport } from './routes/demo/tanstack-query'
-import { Route as ProtectedSettingsRouteImport } from './routes/_protected/settings'
-import { Route as ProtectedAuthenticatedRouteImport } from './routes/_protected/authenticated'
+import { Route as IndexRouteImport } from './routes/index'
+import { Route as ProtectedDashboardRouteImport } from './routes/_protected/dashboard'
 import { Route as ProtectedAboutRouteImport } from './routes/_protected/about'
 import { Route as AuthResetPasswordRouteImport } from './routes/_auth/reset-password'
 import { Route as AuthRegisterRouteImport } from './routes/_auth/register'
 import { Route as AuthLoginRouteImport } from './routes/_auth/login'
 import { Route as AuthForgotPasswordRouteImport } from './routes/_auth/forgot-password'
 import { Route as ProtectedTeamsIndexRouteImport } from './routes/_protected/teams/index'
+import { Route as ProtectedStackIndexRouteImport } from './routes/_protected/stack/index'
+import { Route as ProtectedSettingsIndexRouteImport } from './routes/_protected/settings/index'
 import { Route as ProtectedOrganizationsIndexRouteImport } from './routes/_protected/organizations/index'
-import { Route as DemoSentryTestingRouteImport } from './routes/demo/sentry.testing'
+import { Route as ProtectedDocsIndexRouteImport } from './routes/_protected/docs/index'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as ProtectedTeamsNewRouteImport } from './routes/_protected/teams/new'
 import { Route as ProtectedTeamsTeamIdRouteImport } from './routes/_protected/teams/$teamId'
+import { Route as ProtectedSettingsBillingRouteImport } from './routes/_protected/settings/billing'
 import { Route as ProtectedOrganizationsNewRouteImport } from './routes/_protected/organizations/new'
 import { Route as ProtectedOrganizationsOrgIdRouteImport } from './routes/_protected/organizations/$orgId'
 
@@ -37,24 +38,14 @@ const AuthRouteRoute = AuthRouteRouteImport.update({
   id: '/_auth',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ProtectedIndexRoute = ProtectedIndexRouteImport.update({
+const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => ProtectedRouteRoute,
-} as any)
-const DemoTanstackQueryRoute = DemoTanstackQueryRouteImport.update({
-  id: '/demo/tanstack-query',
-  path: '/demo/tanstack-query',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ProtectedSettingsRoute = ProtectedSettingsRouteImport.update({
-  id: '/settings',
-  path: '/settings',
-  getParentRoute: () => ProtectedRouteRoute,
-} as any)
-const ProtectedAuthenticatedRoute = ProtectedAuthenticatedRouteImport.update({
-  id: '/authenticated',
-  path: '/authenticated',
+const ProtectedDashboardRoute = ProtectedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
   getParentRoute: () => ProtectedRouteRoute,
 } as any)
 const ProtectedAboutRoute = ProtectedAboutRouteImport.update({
@@ -87,16 +78,26 @@ const ProtectedTeamsIndexRoute = ProtectedTeamsIndexRouteImport.update({
   path: '/teams/',
   getParentRoute: () => ProtectedRouteRoute,
 } as any)
+const ProtectedStackIndexRoute = ProtectedStackIndexRouteImport.update({
+  id: '/stack/',
+  path: '/stack/',
+  getParentRoute: () => ProtectedRouteRoute,
+} as any)
+const ProtectedSettingsIndexRoute = ProtectedSettingsIndexRouteImport.update({
+  id: '/settings/',
+  path: '/settings/',
+  getParentRoute: () => ProtectedRouteRoute,
+} as any)
 const ProtectedOrganizationsIndexRoute =
   ProtectedOrganizationsIndexRouteImport.update({
     id: '/organizations/',
     path: '/organizations/',
     getParentRoute: () => ProtectedRouteRoute,
   } as any)
-const DemoSentryTestingRoute = DemoSentryTestingRouteImport.update({
-  id: '/demo/sentry/testing',
-  path: '/demo/sentry/testing',
-  getParentRoute: () => rootRouteImport,
+const ProtectedDocsIndexRoute = ProtectedDocsIndexRouteImport.update({
+  id: '/docs/',
+  path: '/docs/',
+  getParentRoute: () => ProtectedRouteRoute,
 } as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
@@ -113,6 +114,12 @@ const ProtectedTeamsTeamIdRoute = ProtectedTeamsTeamIdRouteImport.update({
   path: '/teams/$teamId',
   getParentRoute: () => ProtectedRouteRoute,
 } as any)
+const ProtectedSettingsBillingRoute =
+  ProtectedSettingsBillingRouteImport.update({
+    id: '/settings/billing',
+    path: '/settings/billing',
+    getParentRoute: () => ProtectedRouteRoute,
+  } as any)
 const ProtectedOrganizationsNewRoute =
   ProtectedOrganizationsNewRouteImport.update({
     id: '/organizations/new',
@@ -127,45 +134,48 @@ const ProtectedOrganizationsOrgIdRoute =
   } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof ProtectedIndexRoute
+  '/': typeof IndexRoute
   '/forgot-password': typeof AuthForgotPasswordRoute
   '/login': typeof AuthLoginRoute
   '/register': typeof AuthRegisterRoute
   '/reset-password': typeof AuthResetPasswordRoute
   '/about': typeof ProtectedAboutRoute
-  '/authenticated': typeof ProtectedAuthenticatedRoute
-  '/settings': typeof ProtectedSettingsRoute
-  '/demo/tanstack-query': typeof DemoTanstackQueryRoute
+  '/dashboard': typeof ProtectedDashboardRoute
   '/organizations/$orgId': typeof ProtectedOrganizationsOrgIdRoute
   '/organizations/new': typeof ProtectedOrganizationsNewRoute
+  '/settings/billing': typeof ProtectedSettingsBillingRoute
   '/teams/$teamId': typeof ProtectedTeamsTeamIdRoute
   '/teams/new': typeof ProtectedTeamsNewRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
-  '/demo/sentry/testing': typeof DemoSentryTestingRoute
+  '/docs/': typeof ProtectedDocsIndexRoute
   '/organizations/': typeof ProtectedOrganizationsIndexRoute
+  '/settings/': typeof ProtectedSettingsIndexRoute
+  '/stack/': typeof ProtectedStackIndexRoute
   '/teams/': typeof ProtectedTeamsIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof ProtectedIndexRoute
+  '/': typeof IndexRoute
   '/forgot-password': typeof AuthForgotPasswordRoute
   '/login': typeof AuthLoginRoute
   '/register': typeof AuthRegisterRoute
   '/reset-password': typeof AuthResetPasswordRoute
   '/about': typeof ProtectedAboutRoute
-  '/authenticated': typeof ProtectedAuthenticatedRoute
-  '/settings': typeof ProtectedSettingsRoute
-  '/demo/tanstack-query': typeof DemoTanstackQueryRoute
+  '/dashboard': typeof ProtectedDashboardRoute
   '/organizations/$orgId': typeof ProtectedOrganizationsOrgIdRoute
   '/organizations/new': typeof ProtectedOrganizationsNewRoute
+  '/settings/billing': typeof ProtectedSettingsBillingRoute
   '/teams/$teamId': typeof ProtectedTeamsTeamIdRoute
   '/teams/new': typeof ProtectedTeamsNewRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
-  '/demo/sentry/testing': typeof DemoSentryTestingRoute
+  '/docs': typeof ProtectedDocsIndexRoute
   '/organizations': typeof ProtectedOrganizationsIndexRoute
+  '/settings': typeof ProtectedSettingsIndexRoute
+  '/stack': typeof ProtectedStackIndexRoute
   '/teams': typeof ProtectedTeamsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
   '/_auth': typeof AuthRouteRouteWithChildren
   '/_protected': typeof ProtectedRouteRouteWithChildren
   '/_auth/forgot-password': typeof AuthForgotPasswordRoute
@@ -173,17 +183,17 @@ export interface FileRoutesById {
   '/_auth/register': typeof AuthRegisterRoute
   '/_auth/reset-password': typeof AuthResetPasswordRoute
   '/_protected/about': typeof ProtectedAboutRoute
-  '/_protected/authenticated': typeof ProtectedAuthenticatedRoute
-  '/_protected/settings': typeof ProtectedSettingsRoute
-  '/demo/tanstack-query': typeof DemoTanstackQueryRoute
-  '/_protected/': typeof ProtectedIndexRoute
+  '/_protected/dashboard': typeof ProtectedDashboardRoute
   '/_protected/organizations/$orgId': typeof ProtectedOrganizationsOrgIdRoute
   '/_protected/organizations/new': typeof ProtectedOrganizationsNewRoute
+  '/_protected/settings/billing': typeof ProtectedSettingsBillingRoute
   '/_protected/teams/$teamId': typeof ProtectedTeamsTeamIdRoute
   '/_protected/teams/new': typeof ProtectedTeamsNewRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
-  '/demo/sentry/testing': typeof DemoSentryTestingRoute
+  '/_protected/docs/': typeof ProtectedDocsIndexRoute
   '/_protected/organizations/': typeof ProtectedOrganizationsIndexRoute
+  '/_protected/settings/': typeof ProtectedSettingsIndexRoute
+  '/_protected/stack/': typeof ProtectedStackIndexRoute
   '/_protected/teams/': typeof ProtectedTeamsIndexRoute
 }
 export interface FileRouteTypes {
@@ -195,16 +205,17 @@ export interface FileRouteTypes {
     | '/register'
     | '/reset-password'
     | '/about'
-    | '/authenticated'
-    | '/settings'
-    | '/demo/tanstack-query'
+    | '/dashboard'
     | '/organizations/$orgId'
     | '/organizations/new'
+    | '/settings/billing'
     | '/teams/$teamId'
     | '/teams/new'
     | '/api/auth/$'
-    | '/demo/sentry/testing'
+    | '/docs/'
     | '/organizations/'
+    | '/settings/'
+    | '/stack/'
     | '/teams/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -214,19 +225,21 @@ export interface FileRouteTypes {
     | '/register'
     | '/reset-password'
     | '/about'
-    | '/authenticated'
-    | '/settings'
-    | '/demo/tanstack-query'
+    | '/dashboard'
     | '/organizations/$orgId'
     | '/organizations/new'
+    | '/settings/billing'
     | '/teams/$teamId'
     | '/teams/new'
     | '/api/auth/$'
-    | '/demo/sentry/testing'
+    | '/docs'
     | '/organizations'
+    | '/settings'
+    | '/stack'
     | '/teams'
   id:
     | '__root__'
+    | '/'
     | '/_auth'
     | '/_protected'
     | '/_auth/forgot-password'
@@ -234,26 +247,25 @@ export interface FileRouteTypes {
     | '/_auth/register'
     | '/_auth/reset-password'
     | '/_protected/about'
-    | '/_protected/authenticated'
-    | '/_protected/settings'
-    | '/demo/tanstack-query'
-    | '/_protected/'
+    | '/_protected/dashboard'
     | '/_protected/organizations/$orgId'
     | '/_protected/organizations/new'
+    | '/_protected/settings/billing'
     | '/_protected/teams/$teamId'
     | '/_protected/teams/new'
     | '/api/auth/$'
-    | '/demo/sentry/testing'
+    | '/_protected/docs/'
     | '/_protected/organizations/'
+    | '/_protected/settings/'
+    | '/_protected/stack/'
     | '/_protected/teams/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
   ProtectedRouteRoute: typeof ProtectedRouteRouteWithChildren
-  DemoTanstackQueryRoute: typeof DemoTanstackQueryRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
-  DemoSentryTestingRoute: typeof DemoSentryTestingRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -272,32 +284,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_protected/': {
-      id: '/_protected/'
+    '/': {
+      id: '/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof ProtectedIndexRouteImport
-      parentRoute: typeof ProtectedRouteRoute
-    }
-    '/demo/tanstack-query': {
-      id: '/demo/tanstack-query'
-      path: '/demo/tanstack-query'
-      fullPath: '/demo/tanstack-query'
-      preLoaderRoute: typeof DemoTanstackQueryRouteImport
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_protected/settings': {
-      id: '/_protected/settings'
-      path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof ProtectedSettingsRouteImport
-      parentRoute: typeof ProtectedRouteRoute
-    }
-    '/_protected/authenticated': {
-      id: '/_protected/authenticated'
-      path: '/authenticated'
-      fullPath: '/authenticated'
-      preLoaderRoute: typeof ProtectedAuthenticatedRouteImport
+    '/_protected/dashboard': {
+      id: '/_protected/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof ProtectedDashboardRouteImport
       parentRoute: typeof ProtectedRouteRoute
     }
     '/_protected/about': {
@@ -342,6 +340,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedTeamsIndexRouteImport
       parentRoute: typeof ProtectedRouteRoute
     }
+    '/_protected/stack/': {
+      id: '/_protected/stack/'
+      path: '/stack'
+      fullPath: '/stack/'
+      preLoaderRoute: typeof ProtectedStackIndexRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
+    '/_protected/settings/': {
+      id: '/_protected/settings/'
+      path: '/settings'
+      fullPath: '/settings/'
+      preLoaderRoute: typeof ProtectedSettingsIndexRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
     '/_protected/organizations/': {
       id: '/_protected/organizations/'
       path: '/organizations'
@@ -349,12 +361,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedOrganizationsIndexRouteImport
       parentRoute: typeof ProtectedRouteRoute
     }
-    '/demo/sentry/testing': {
-      id: '/demo/sentry/testing'
-      path: '/demo/sentry/testing'
-      fullPath: '/demo/sentry/testing'
-      preLoaderRoute: typeof DemoSentryTestingRouteImport
-      parentRoute: typeof rootRouteImport
+    '/_protected/docs/': {
+      id: '/_protected/docs/'
+      path: '/docs'
+      fullPath: '/docs/'
+      preLoaderRoute: typeof ProtectedDocsIndexRouteImport
+      parentRoute: typeof ProtectedRouteRoute
     }
     '/api/auth/$': {
       id: '/api/auth/$'
@@ -375,6 +387,13 @@ declare module '@tanstack/react-router' {
       path: '/teams/$teamId'
       fullPath: '/teams/$teamId'
       preLoaderRoute: typeof ProtectedTeamsTeamIdRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
+    '/_protected/settings/billing': {
+      id: '/_protected/settings/billing'
+      path: '/settings/billing'
+      fullPath: '/settings/billing'
+      preLoaderRoute: typeof ProtectedSettingsBillingRouteImport
       parentRoute: typeof ProtectedRouteRoute
     }
     '/_protected/organizations/new': {
@@ -414,27 +433,31 @@ const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
 
 interface ProtectedRouteRouteChildren {
   ProtectedAboutRoute: typeof ProtectedAboutRoute
-  ProtectedAuthenticatedRoute: typeof ProtectedAuthenticatedRoute
-  ProtectedSettingsRoute: typeof ProtectedSettingsRoute
-  ProtectedIndexRoute: typeof ProtectedIndexRoute
+  ProtectedDashboardRoute: typeof ProtectedDashboardRoute
   ProtectedOrganizationsOrgIdRoute: typeof ProtectedOrganizationsOrgIdRoute
   ProtectedOrganizationsNewRoute: typeof ProtectedOrganizationsNewRoute
+  ProtectedSettingsBillingRoute: typeof ProtectedSettingsBillingRoute
   ProtectedTeamsTeamIdRoute: typeof ProtectedTeamsTeamIdRoute
   ProtectedTeamsNewRoute: typeof ProtectedTeamsNewRoute
+  ProtectedDocsIndexRoute: typeof ProtectedDocsIndexRoute
   ProtectedOrganizationsIndexRoute: typeof ProtectedOrganizationsIndexRoute
+  ProtectedSettingsIndexRoute: typeof ProtectedSettingsIndexRoute
+  ProtectedStackIndexRoute: typeof ProtectedStackIndexRoute
   ProtectedTeamsIndexRoute: typeof ProtectedTeamsIndexRoute
 }
 
 const ProtectedRouteRouteChildren: ProtectedRouteRouteChildren = {
   ProtectedAboutRoute: ProtectedAboutRoute,
-  ProtectedAuthenticatedRoute: ProtectedAuthenticatedRoute,
-  ProtectedSettingsRoute: ProtectedSettingsRoute,
-  ProtectedIndexRoute: ProtectedIndexRoute,
+  ProtectedDashboardRoute: ProtectedDashboardRoute,
   ProtectedOrganizationsOrgIdRoute: ProtectedOrganizationsOrgIdRoute,
   ProtectedOrganizationsNewRoute: ProtectedOrganizationsNewRoute,
+  ProtectedSettingsBillingRoute: ProtectedSettingsBillingRoute,
   ProtectedTeamsTeamIdRoute: ProtectedTeamsTeamIdRoute,
   ProtectedTeamsNewRoute: ProtectedTeamsNewRoute,
+  ProtectedDocsIndexRoute: ProtectedDocsIndexRoute,
   ProtectedOrganizationsIndexRoute: ProtectedOrganizationsIndexRoute,
+  ProtectedSettingsIndexRoute: ProtectedSettingsIndexRoute,
+  ProtectedStackIndexRoute: ProtectedStackIndexRoute,
   ProtectedTeamsIndexRoute: ProtectedTeamsIndexRoute,
 }
 
@@ -443,11 +466,10 @@ const ProtectedRouteRouteWithChildren = ProtectedRouteRoute._addFileChildren(
 )
 
 const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
   AuthRouteRoute: AuthRouteRouteWithChildren,
   ProtectedRouteRoute: ProtectedRouteRouteWithChildren,
-  DemoTanstackQueryRoute: DemoTanstackQueryRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
-  DemoSentryTestingRoute: DemoSentryTestingRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

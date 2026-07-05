@@ -7,7 +7,7 @@ import { ChangePasswordSection } from "#/features/auth/components/change-passwor
 import { ProfileSection } from "#/features/auth/components/profile-section";
 import { getAllSessions } from "#/features/auth/lib/auth.functions";
 
-export const Route = createFileRoute("/_protected/settings")({
+export const Route = createFileRoute("/_protected/settings/")({
   component: RouteComponent,
   loader: async () => {
     const sessions = await getAllSessions();

@@ -9,7 +9,7 @@ A production-ready, feature-complete starter kit for building multi-tenant B2B S
 - **Full-stack SSR** — Server-side rendering with TanStack Start, dehydrated/rehydrated query cache
 - **Email flows** — Transactional email via Resend (verification, password reset)
 - **Observability** — Sentry error tracking integrated via `@sentry/tanstackstart-react`
-- **Theme toggle** — Light/dark mode with `next-themes`, no flash on load
+- **Theme toggle** — Light/dark mode with init script, no flash on load
 
 ## Tech Stack
 
@@ -81,14 +81,14 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 Required variables in `.env`:
 
-| Variable | Description |
-|---|---|
-| `POSTGRES_USER` | PostgreSQL user |
-| `POSTGRES_PASSWORD` | PostgreSQL password |
-| `POSTGRES_DB` | PostgreSQL database name |
-| `DATABASE_URL` | Full connection string |
-| `BETTER_AUTH_SECRET` | Secret for Better Auth session signing |
-| `RESEND_API_KEY` | Resend API key for email delivery |
+| Variable                  | Description                                             |
+| ------------------------- | ------------------------------------------------------- |
+| `POSTGRES_USER`           | PostgreSQL user                                         |
+| `POSTGRES_PASSWORD`       | PostgreSQL password                                     |
+| `POSTGRES_DB`             | PostgreSQL database name                                |
+| `DATABASE_URL`            | Full connection string                                  |
+| `BETTER_AUTH_SECRET`      | Secret for Better Auth session signing                  |
+| `RESEND_API_KEY`          | Resend API key for email delivery                       |
 | `SKIP_VERIFICATION_EMAIL` | Set to `true` to skip email verification during seeding |
 
 ## Project Structure

@@ -1,8 +1,13 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { useLogin } from "#/features/auth/hooks/useLogin";
 
 export const Route = createFileRoute("/_auth/login")({
   component: RouteComponent,
+  beforeLoad: (ctx) => {
+    if (ctx.context.session) {
+      throw redirect({ to: "/dashboard" });
+    }
+  },
 });
 
 function RouteComponent() {

@@ -4,11 +4,11 @@ import { Command } from "lucide-react";
 
 export function LogoTitle({
   className = "flex gap-4 items-center py-2",
-  href = "/",
+  href = "/dashboard",
   ...props
 }) {
   return (
-    <Link to="/" className={className} {...props}>
+    <Link to={href} className={className} {...props}>
       <div className="bg-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
         <Command className="size-4" />
       </div>

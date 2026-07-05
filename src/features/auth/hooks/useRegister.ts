@@ -32,7 +32,7 @@ export function useRegister() {
       return registerData;
     },
     onSuccess: () => {
-      router.navigate({ to: "/" }); // TODO: check email page
+      router.navigate({ to: "/dashboard" }); // TODO: check email page
       toast.success(
         "Account created! Please check your email to verify your account.",
         {
