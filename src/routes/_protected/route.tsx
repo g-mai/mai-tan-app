@@ -7,7 +7,7 @@ import {
 import { ensureSession } from "#/features/auth/lib/auth.functions";
 import { AppSidebar } from "#/features/layout/components/app-sidebar";
 import Footer from "#/features/layout/components/footer";
-import BetterAuthHeader from "#/features/layout/components/header-user";
+import { HeaderNavUser } from "#/features/layout/components/header-nav-user";
 import ThemeToggle from "#/features/layout/components/theme-toggle";
 import { Separator } from "@/components/ui/separator";
 
@@ -21,16 +21,7 @@ export const Route = createFileRoute("/_protected")({
 
 function ProtectedLayout() {
   const session = Route.useRouteContext();
-  console.log("[ProtectedLayout] context", session);
-  // return (
-  //   <div className="min-h-screen flex flex-col">
-  //     <Header />
-  //     <main className="flex-1 p-8 max-w-5xl m-auto">
-  //       <Outlet />
-  //     </main>
-  //     <Footer />
-  //   </div>
-  // );
+
   return (
     <SidebarProvider>
       <AppSidebar session={session} />
@@ -44,7 +35,8 @@ function ProtectedLayout() {
             {/*<Header />*/}
             <div className="flex items-center gap-2">
               <ThemeToggle />
-              <BetterAuthHeader />
+              {/* <BetterAuthHeader /> */}
+              <HeaderNavUser user={session.user} />
             </div>
           </div>
         </header>

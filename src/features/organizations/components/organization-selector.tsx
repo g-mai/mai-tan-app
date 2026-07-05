@@ -27,12 +27,6 @@ export function OrganizationSelector({
   activeOrganizationId,
   favouriteOrganizationId,
 }: OrganizationSelectorProps) {
-  // TODO: fix the collapsed version
-
-  // console.log('organizations', organizations)
-  // console.log('activeOrganizationId', activeOrganizationId)
-  // console.log('favouriteOrganizationId', favouriteOrganizationId)
-
   if (organizations.length === 0) {
     // button to create organization
     return (
