@@ -69,7 +69,7 @@ export function NavMain() {
       items: [
         {
           title: "Introduction",
-          url: "/docs/intro",
+          url: "/docs",
         },
         {
           title: "Get Started",

@@ -19,9 +19,6 @@ export default function Footer() {
           >
             GitHub
           </a>
-          <Link to="/about" className="hover:text-foreground">
-            About
-          </Link>
         </div>
       </div>
     </footer>

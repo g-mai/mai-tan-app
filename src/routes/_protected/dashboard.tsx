@@ -70,9 +70,13 @@ function RouteComponent() {
         </CardHeader>
         <CardContent>
           <p className="text-sm text-muted-foreground">
-            TanStack Start, Better Auth, Drizzle ORM, and shadcn/ui. See{" "}
-            <Link to="/about" className="underline underline-offset-4">
-              About
+            TanStack Start, Better Auth, Drizzle ORM, and shadcn/ui. See the{" "}
+            <Link to="/stack" className="underline underline-offset-4">
+              tech stack
+            </Link>{" "}
+            or{" "}
+            <Link to="/docs" className="underline underline-offset-4">
+              docs
             </Link>{" "}
             for more on this starter kit.
           </p>

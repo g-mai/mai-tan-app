@@ -13,7 +13,6 @@ import { Route as ProtectedRouteRouteImport } from './routes/_protected/route'
 import { Route as AuthRouteRouteImport } from './routes/_auth/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProtectedDashboardRouteImport } from './routes/_protected/dashboard'
-import { Route as ProtectedAboutRouteImport } from './routes/_protected/about'
 import { Route as AuthResetPasswordRouteImport } from './routes/_auth/reset-password'
 import { Route as AuthRegisterRouteImport } from './routes/_auth/register'
 import { Route as AuthLoginRouteImport } from './routes/_auth/login'
@@ -26,9 +25,14 @@ import { Route as ProtectedDocsIndexRouteImport } from './routes/_protected/docs
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as ProtectedTeamsNewRouteImport } from './routes/_protected/teams/new'
 import { Route as ProtectedTeamsTeamIdRouteImport } from './routes/_protected/teams/$teamId'
+import { Route as ProtectedStackTanstackStartRouteImport } from './routes/_protected/stack/tanstack-start'
+import { Route as ProtectedStackDrizzleOrmRouteImport } from './routes/_protected/stack/drizzle-orm'
+import { Route as ProtectedStackBetterAuthRouteImport } from './routes/_protected/stack/better-auth'
 import { Route as ProtectedSettingsBillingRouteImport } from './routes/_protected/settings/billing'
 import { Route as ProtectedOrganizationsNewRouteImport } from './routes/_protected/organizations/new'
 import { Route as ProtectedOrganizationsOrgIdRouteImport } from './routes/_protected/organizations/$orgId'
+import { Route as ProtectedDocsGetStartedRouteImport } from './routes/_protected/docs/get-started'
+import { Route as ProtectedDocsChangelogRouteImport } from './routes/_protected/docs/changelog'
 
 const ProtectedRouteRoute = ProtectedRouteRouteImport.update({
   id: '/_protected',
@@ -46,11 +50,6 @@ const IndexRoute = IndexRouteImport.update({
 const ProtectedDashboardRoute = ProtectedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
-  getParentRoute: () => ProtectedRouteRoute,
-} as any)
-const ProtectedAboutRoute = ProtectedAboutRouteImport.update({
-  id: '/about',
-  path: '/about',
   getParentRoute: () => ProtectedRouteRoute,
 } as any)
 const AuthResetPasswordRoute = AuthResetPasswordRouteImport.update({
@@ -114,6 +113,24 @@ const ProtectedTeamsTeamIdRoute = ProtectedTeamsTeamIdRouteImport.update({
   path: '/teams/$teamId',
   getParentRoute: () => ProtectedRouteRoute,
 } as any)
+const ProtectedStackTanstackStartRoute =
+  ProtectedStackTanstackStartRouteImport.update({
+    id: '/stack/tanstack-start',
+    path: '/stack/tanstack-start',
+    getParentRoute: () => ProtectedRouteRoute,
+  } as any)
+const ProtectedStackDrizzleOrmRoute =
+  ProtectedStackDrizzleOrmRouteImport.update({
+    id: '/stack/drizzle-orm',
+    path: '/stack/drizzle-orm',
+    getParentRoute: () => ProtectedRouteRoute,
+  } as any)
+const ProtectedStackBetterAuthRoute =
+  ProtectedStackBetterAuthRouteImport.update({
+    id: '/stack/better-auth',
+    path: '/stack/better-auth',
+    getParentRoute: () => ProtectedRouteRoute,
+  } as any)
 const ProtectedSettingsBillingRoute =
   ProtectedSettingsBillingRouteImport.update({
     id: '/settings/billing',
@@ -132,6 +149,16 @@ const ProtectedOrganizationsOrgIdRoute =
     path: '/organizations/$orgId',
     getParentRoute: () => ProtectedRouteRoute,
   } as any)
+const ProtectedDocsGetStartedRoute = ProtectedDocsGetStartedRouteImport.update({
+  id: '/docs/get-started',
+  path: '/docs/get-started',
+  getParentRoute: () => ProtectedRouteRoute,
+} as any)
+const ProtectedDocsChangelogRoute = ProtectedDocsChangelogRouteImport.update({
+  id: '/docs/changelog',
+  path: '/docs/changelog',
+  getParentRoute: () => ProtectedRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -139,11 +166,15 @@ export interface FileRoutesByFullPath {
   '/login': typeof AuthLoginRoute
   '/register': typeof AuthRegisterRoute
   '/reset-password': typeof AuthResetPasswordRoute
-  '/about': typeof ProtectedAboutRoute
   '/dashboard': typeof ProtectedDashboardRoute
+  '/docs/changelog': typeof ProtectedDocsChangelogRoute
+  '/docs/get-started': typeof ProtectedDocsGetStartedRoute
   '/organizations/$orgId': typeof ProtectedOrganizationsOrgIdRoute
   '/organizations/new': typeof ProtectedOrganizationsNewRoute
   '/settings/billing': typeof ProtectedSettingsBillingRoute
+  '/stack/better-auth': typeof ProtectedStackBetterAuthRoute
+  '/stack/drizzle-orm': typeof ProtectedStackDrizzleOrmRoute
+  '/stack/tanstack-start': typeof ProtectedStackTanstackStartRoute
   '/teams/$teamId': typeof ProtectedTeamsTeamIdRoute
   '/teams/new': typeof ProtectedTeamsNewRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -159,11 +190,15 @@ export interface FileRoutesByTo {
   '/login': typeof AuthLoginRoute
   '/register': typeof AuthRegisterRoute
   '/reset-password': typeof AuthResetPasswordRoute
-  '/about': typeof ProtectedAboutRoute
   '/dashboard': typeof ProtectedDashboardRoute
+  '/docs/changelog': typeof ProtectedDocsChangelogRoute
+  '/docs/get-started': typeof ProtectedDocsGetStartedRoute
   '/organizations/$orgId': typeof ProtectedOrganizationsOrgIdRoute
   '/organizations/new': typeof ProtectedOrganizationsNewRoute
   '/settings/billing': typeof ProtectedSettingsBillingRoute
+  '/stack/better-auth': typeof ProtectedStackBetterAuthRoute
+  '/stack/drizzle-orm': typeof ProtectedStackDrizzleOrmRoute
+  '/stack/tanstack-start': typeof ProtectedStackTanstackStartRoute
   '/teams/$teamId': typeof ProtectedTeamsTeamIdRoute
   '/teams/new': typeof ProtectedTeamsNewRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -182,11 +217,15 @@ export interface FileRoutesById {
   '/_auth/login': typeof AuthLoginRoute
   '/_auth/register': typeof AuthRegisterRoute
   '/_auth/reset-password': typeof AuthResetPasswordRoute
-  '/_protected/about': typeof ProtectedAboutRoute
   '/_protected/dashboard': typeof ProtectedDashboardRoute
+  '/_protected/docs/changelog': typeof ProtectedDocsChangelogRoute
+  '/_protected/docs/get-started': typeof ProtectedDocsGetStartedRoute
   '/_protected/organizations/$orgId': typeof ProtectedOrganizationsOrgIdRoute
   '/_protected/organizations/new': typeof ProtectedOrganizationsNewRoute
   '/_protected/settings/billing': typeof ProtectedSettingsBillingRoute
+  '/_protected/stack/better-auth': typeof ProtectedStackBetterAuthRoute
+  '/_protected/stack/drizzle-orm': typeof ProtectedStackDrizzleOrmRoute
+  '/_protected/stack/tanstack-start': typeof ProtectedStackTanstackStartRoute
   '/_protected/teams/$teamId': typeof ProtectedTeamsTeamIdRoute
   '/_protected/teams/new': typeof ProtectedTeamsNewRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -204,11 +243,15 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/reset-password'
-    | '/about'
     | '/dashboard'
+    | '/docs/changelog'
+    | '/docs/get-started'
     | '/organizations/$orgId'
     | '/organizations/new'
     | '/settings/billing'
+    | '/stack/better-auth'
+    | '/stack/drizzle-orm'
+    | '/stack/tanstack-start'
     | '/teams/$teamId'
     | '/teams/new'
     | '/api/auth/$'
@@ -224,11 +267,15 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/reset-password'
-    | '/about'
     | '/dashboard'
+    | '/docs/changelog'
+    | '/docs/get-started'
     | '/organizations/$orgId'
     | '/organizations/new'
     | '/settings/billing'
+    | '/stack/better-auth'
+    | '/stack/drizzle-orm'
+    | '/stack/tanstack-start'
     | '/teams/$teamId'
     | '/teams/new'
     | '/api/auth/$'
@@ -246,11 +293,15 @@ export interface FileRouteTypes {
     | '/_auth/login'
     | '/_auth/register'
     | '/_auth/reset-password'
-    | '/_protected/about'
     | '/_protected/dashboard'
+    | '/_protected/docs/changelog'
+    | '/_protected/docs/get-started'
     | '/_protected/organizations/$orgId'
     | '/_protected/organizations/new'
     | '/_protected/settings/billing'
+    | '/_protected/stack/better-auth'
+    | '/_protected/stack/drizzle-orm'
+    | '/_protected/stack/tanstack-start'
     | '/_protected/teams/$teamId'
     | '/_protected/teams/new'
     | '/api/auth/$'
@@ -296,13 +347,6 @@ declare module '@tanstack/react-router' {
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof ProtectedDashboardRouteImport
-      parentRoute: typeof ProtectedRouteRoute
-    }
-    '/_protected/about': {
-      id: '/_protected/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof ProtectedAboutRouteImport
       parentRoute: typeof ProtectedRouteRoute
     }
     '/_auth/reset-password': {
@@ -389,6 +433,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedTeamsTeamIdRouteImport
       parentRoute: typeof ProtectedRouteRoute
     }
+    '/_protected/stack/tanstack-start': {
+      id: '/_protected/stack/tanstack-start'
+      path: '/stack/tanstack-start'
+      fullPath: '/stack/tanstack-start'
+      preLoaderRoute: typeof ProtectedStackTanstackStartRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
+    '/_protected/stack/drizzle-orm': {
+      id: '/_protected/stack/drizzle-orm'
+      path: '/stack/drizzle-orm'
+      fullPath: '/stack/drizzle-orm'
+      preLoaderRoute: typeof ProtectedStackDrizzleOrmRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
+    '/_protected/stack/better-auth': {
+      id: '/_protected/stack/better-auth'
+      path: '/stack/better-auth'
+      fullPath: '/stack/better-auth'
+      preLoaderRoute: typeof ProtectedStackBetterAuthRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
     '/_protected/settings/billing': {
       id: '/_protected/settings/billing'
       path: '/settings/billing'
@@ -408,6 +473,20 @@ declare module '@tanstack/react-router' {
       path: '/organizations/$orgId'
       fullPath: '/organizations/$orgId'
       preLoaderRoute: typeof ProtectedOrganizationsOrgIdRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
+    '/_protected/docs/get-started': {
+      id: '/_protected/docs/get-started'
+      path: '/docs/get-started'
+      fullPath: '/docs/get-started'
+      preLoaderRoute: typeof ProtectedDocsGetStartedRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
+    '/_protected/docs/changelog': {
+      id: '/_protected/docs/changelog'
+      path: '/docs/changelog'
+      fullPath: '/docs/changelog'
+      preLoaderRoute: typeof ProtectedDocsChangelogRouteImport
       parentRoute: typeof ProtectedRouteRoute
     }
   }
@@ -432,11 +511,15 @@ const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
 )
 
 interface ProtectedRouteRouteChildren {
-  ProtectedAboutRoute: typeof ProtectedAboutRoute
   ProtectedDashboardRoute: typeof ProtectedDashboardRoute
+  ProtectedDocsChangelogRoute: typeof ProtectedDocsChangelogRoute
+  ProtectedDocsGetStartedRoute: typeof ProtectedDocsGetStartedRoute
   ProtectedOrganizationsOrgIdRoute: typeof ProtectedOrganizationsOrgIdRoute
   ProtectedOrganizationsNewRoute: typeof ProtectedOrganizationsNewRoute
   ProtectedSettingsBillingRoute: typeof ProtectedSettingsBillingRoute
+  ProtectedStackBetterAuthRoute: typeof ProtectedStackBetterAuthRoute
+  ProtectedStackDrizzleOrmRoute: typeof ProtectedStackDrizzleOrmRoute
+  ProtectedStackTanstackStartRoute: typeof ProtectedStackTanstackStartRoute
   ProtectedTeamsTeamIdRoute: typeof ProtectedTeamsTeamIdRoute
   ProtectedTeamsNewRoute: typeof ProtectedTeamsNewRoute
   ProtectedDocsIndexRoute: typeof ProtectedDocsIndexRoute
@@ -447,11 +530,15 @@ interface ProtectedRouteRouteChildren {
 }
 
 const ProtectedRouteRouteChildren: ProtectedRouteRouteChildren = {
-  ProtectedAboutRoute: ProtectedAboutRoute,
   ProtectedDashboardRoute: ProtectedDashboardRoute,
+  ProtectedDocsChangelogRoute: ProtectedDocsChangelogRoute,
+  ProtectedDocsGetStartedRoute: ProtectedDocsGetStartedRoute,
   ProtectedOrganizationsOrgIdRoute: ProtectedOrganizationsOrgIdRoute,
   ProtectedOrganizationsNewRoute: ProtectedOrganizationsNewRoute,
   ProtectedSettingsBillingRoute: ProtectedSettingsBillingRoute,
+  ProtectedStackBetterAuthRoute: ProtectedStackBetterAuthRoute,
+  ProtectedStackDrizzleOrmRoute: ProtectedStackDrizzleOrmRoute,
+  ProtectedStackTanstackStartRoute: ProtectedStackTanstackStartRoute,
   ProtectedTeamsTeamIdRoute: ProtectedTeamsTeamIdRoute,
   ProtectedTeamsNewRoute: ProtectedTeamsNewRoute,
   ProtectedDocsIndexRoute: ProtectedDocsIndexRoute,
