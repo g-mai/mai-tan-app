@@ -4,7 +4,6 @@ import {
   Bot,
   ChevronRight,
   Home,
-  type LucideIcon,
   Settings2,
   SquareTerminal,
 } from "lucide-react";

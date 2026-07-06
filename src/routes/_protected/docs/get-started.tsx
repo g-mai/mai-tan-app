@@ -7,7 +7,11 @@ export const Route = createFileRoute("/_protected/docs/get-started")({
   component: RouteComponent,
 });
 
-const prerequisites = ["Node.js 18+", "pnpm 11+", "Docker (for local PostgreSQL)"];
+const prerequisites = [
+  "Node.js 18+",
+  "pnpm 11+",
+  "Docker (for local PostgreSQL)",
+];
 
 const installSteps = `# Clone the repository
 git clone <your-repo-url>
@@ -74,8 +78,8 @@ function RouteComponent() {
           <p className="text-sm text-muted-foreground">
             All required variables — database connection, Better Auth secret,
             Resend API key, and optional Sentry config — are listed with
-            descriptions in <code className="text-xs">.env.example</code> at
-            the root of the repo.
+            descriptions in <code className="text-xs">.env.example</code> at the
+            root of the repo.
           </p>
         </CardContent>
       </Card>

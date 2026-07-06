@@ -40,7 +40,7 @@ function ProtectedLayout() {
             </div>
           </div>
         </header>
-        <main className="flex-1 p-8 max-w-5xl m-auto">
+        <main className="flex-1 p-8 max-w-5xl m-auto w-full">
           <Outlet />
         </main>
         <Footer />

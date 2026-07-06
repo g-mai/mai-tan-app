@@ -1,4 +1,3 @@
-import { BookOpen, Bot, Settings2, SquareTerminal } from "lucide-react";
 import { LogoTitle } from "#/components/shared/logo-title";
 import type { Session } from "#/features/auth/types";
 import { OrganizationSelector } from "#/features/organizations/components/organization-selector";

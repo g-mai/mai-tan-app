@@ -1,5 +1,6 @@
 import { createAuthClient } from "better-auth/client";
 import {
+  anonymousClient,
   customSessionClient,
   inferAdditionalFields,
   inferOrgAdditionalFields,
@@ -18,6 +19,7 @@ export const authClient = createAuthClient({
         enabled: true,
       },
     }),
+    anonymousClient(),
     customSessionClient<typeof auth>(),
     inferAdditionalFields<typeof auth>(),
   ],

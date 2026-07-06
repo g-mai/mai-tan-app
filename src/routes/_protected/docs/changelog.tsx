@@ -21,8 +21,8 @@ function RouteComponent() {
         </CardHeader>
         <CardContent>
           <p className="text-sm text-muted-foreground">
-            First public version: authentication, multi-tenant organizations
-            and teams, user settings, and the core app shell.
+            First public version: authentication, multi-tenant organizations and
+            teams, user settings, and the core app shell.
           </p>
         </CardContent>
       </Card>

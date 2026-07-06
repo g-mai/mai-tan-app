@@ -20,7 +20,7 @@ function RouteComponent() {
   }
 
   return (
-    <div>
+    <div className="flex flex-col gap-4">
       <PageTitle
         title="Organizations"
         subtitle="View and manage your organizations"

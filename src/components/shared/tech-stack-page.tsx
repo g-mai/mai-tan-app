@@ -8,14 +8,14 @@ export function TechStackPage({
   tagline,
   icon: Icon,
   overview,
-  role,
+  text,
   link,
 }: {
   name: string;
   tagline: string;
   icon: LucideIcon;
   overview: string;
-  role: string;
+  text: string;
   link: string;
 }) {
   return (
@@ -41,7 +41,7 @@ export function TechStackPage({
           <CardTitle>In this starter</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground">{role}</p>
+          <p className="text-sm text-muted-foreground">{text}</p>
         </CardContent>
       </Card>
 

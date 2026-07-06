@@ -44,7 +44,7 @@ function RouteComponent() {
 
           <Link
             to="/forgot-password"
-            className="-mt-2 w-full text-xs text-right text-blue-700 hover:underline dark:text-blue-400"
+            className="-mt-2 w-full text-xs text-right text-primary-500 dark:text-primary-400 underline hover:text-primary"
           >
             Forgot password?
           </Link>
@@ -57,7 +57,7 @@ function RouteComponent() {
           Don't have an account?{" "}
           <Link
             to="/register"
-            className="text-blue-600 hover:underline dark:text-blue-400"
+            className="text-sm text-primary-500 dark:text-primary-400 underline hover:text-primary"
           >
             Register
           </Link>

@@ -1,6 +1,7 @@
 import { drizzleAdapter } from "@better-auth/drizzle-adapter";
 import { type BetterAuthOptions, betterAuth } from "better-auth";
 import {
+  anonymous,
   customSession,
   organization as organizationPlugin,
 } from "better-auth/plugins";
@@ -154,6 +155,8 @@ const options = {
         enabled: true,
       },
     }),
+
+    anonymous({ emailDomainName: "demo.local" }),
 
     tanstackStartCookies(),
   ],
