@@ -43,8 +43,8 @@ savePrefix: "~"
 strictSsl: true
 
 allowBuilds:
-  '@parcel/watcher': set this to true or false
+  '@parcel/watcher': false
   "@sentry/cli": true
   esbuild: true
   lightningcss: true
-  sharp: set this to true or false
+  sharp: true
