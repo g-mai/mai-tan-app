@@ -8,7 +8,6 @@ import { ensureSession } from "#/features/auth/lib/auth.functions";
 import { AppSidebar } from "#/features/layout/components/app-sidebar";
 import Footer from "#/features/layout/components/footer";
 import { HeaderNavUser } from "#/features/layout/components/header-nav-user";
-import ThemeToggle from "#/features/layout/components/theme-toggle";
 import {
   getNavOpenState,
   getSidebarState,

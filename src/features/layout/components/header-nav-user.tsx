@@ -7,6 +7,7 @@ import {
   Moon,
   Settings,
   Sun,
+  SunMoon,
 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -74,7 +75,10 @@ export function HeaderNavUser({ user }: { user: User }) {
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuSub>
-            <DropdownMenuSubTrigger>Theme</DropdownMenuSubTrigger>
+            <DropdownMenuSubTrigger>
+              <SunMoon />
+              Theme
+            </DropdownMenuSubTrigger>
             <DropdownMenuPortal>
               <DropdownMenuSubContent>
                 <DropdownMenuItem onSelect={() => setThemeMode("auto")}>

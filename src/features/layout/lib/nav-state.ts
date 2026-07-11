@@ -4,7 +4,7 @@ import { getCookie } from "@tanstack/react-start/server";
 const NAV_COOKIE_NAME = "sidebar_nav_state";
 const NAV_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
 
-export function serializeNavState(open: Set<string>) {
+function serializeNavState(open: Set<string>) {
   return [...open].join(",");
 }
 
