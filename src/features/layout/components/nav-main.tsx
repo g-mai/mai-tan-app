@@ -27,6 +27,7 @@ const items: NavItem[] = [
     url: "/stack",
     icon: Bot,
     items: [
+      { title: "Overview", url: "/stack" },
       { title: "Tanstack Start", url: "/stack/tanstack-start" },
       { title: "Better Auth", url: "/stack/better-auth" },
       { title: "Drizzle ORM", url: "/stack/drizzle-orm" },

@@ -60,34 +60,32 @@ export function OrganizationSelector({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
-        <div className="bg-card flex items-center justify-start gap-2 rounded-md border p-2 shadow-xs">
+        <div className="bg-card flex items-center justify-start gap-2 rounded-full py-2 px-4 shadow-xs">
           <OrganizationLogo
             logoUrl={activeOrg.logo}
-            height={40}
-            width={40}
-            className="size-10 rounded-full border"
+            height={32}
+            width={32}
+            className="size-6 rounded-full border"
           />
           <p className="text-muted-foreground text-sm">{activeOrg.name}</p>
         </div>
       </DropdownMenuTrigger>
 
       <DropdownMenuContent
-        className="w-(--radix-dropdown-menu-trigger-width) min-w-64 rounded-lg"
-        side="right"
-        align="start"
+        className="min-w-64 rounded-lg"
+        side="bottom"
+        align="end"
         sideOffset={6}
       >
-        <DropdownMenuLabel className="p-0 font-normal">
-          <div className="text-muted-foreground flex flex-col items-center gap-2 px-1 py-1.5 text-left text-sm">
-            Switch to another organization
-          </div>
+        <DropdownMenuLabel className="font-normal p-2 text-muted-foreground text-sm">
+          Switch to another organization
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           {inactiveOrgs.map((org) => (
             <DropdownMenuItem
               key={org.id}
-              className="flex items-center gap-2"
+              className="flex items-center p-2 gap-2"
               onClick={() => setActiveOrganization(org.id)}
             >
               <OrganizationLogo
@@ -101,7 +99,7 @@ export function OrganizationSelector({
           ))}
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="text-muted-foreground hover:bg-accent rounded-md text-sm">
+        <DropdownMenuItem className=" hover:bg-accent rounded-md text-sm p-2">
           <Link to="/organizations/new" className="flex items-center gap-2">
             <Plus size={16} />
             Create a new organization

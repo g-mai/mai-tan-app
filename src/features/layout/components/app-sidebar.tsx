@@ -1,12 +1,9 @@
 import { LogoTitle } from "#/components/shared/logo-title";
 import type { Session } from "#/features/auth/types";
-import { OrganizationSelector } from "#/features/organizations/components/organization-selector";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
-  SidebarGroup,
-  SidebarGroupLabel,
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
@@ -30,16 +27,7 @@ export function AppSidebar({
       <SidebarContent>
         <NavMain defaultOpenNav={defaultOpenNav} />
       </SidebarContent>
-      <SidebarFooter>
-        <SidebarGroup>
-          <SidebarGroupLabel>Your orgs</SidebarGroupLabel>
-          <OrganizationSelector
-            organizations={session.orgs}
-            activeOrganizationId={session.session.activeOrganizationId}
-            favouriteOrganizationId={session.user.favouriteOrganization}
-          />
-        </SidebarGroup>
-      </SidebarFooter>
+      <SidebarFooter></SidebarFooter>
       <SidebarRail />
     </Sidebar>
   );

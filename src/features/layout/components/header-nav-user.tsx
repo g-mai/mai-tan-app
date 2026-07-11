@@ -1,5 +1,13 @@
 import { Link, useRouter } from "@tanstack/react-router";
-import { Loader2Icon, LogOut, Settings } from "lucide-react";
+import {
+  Check,
+  Loader2Icon,
+  LogOut,
+  Monitor,
+  Moon,
+  Settings,
+  Sun,
+} from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { UserAvatar } from "#/features/auth/components/user-avatar";
@@ -11,13 +19,19 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuPortal,
   DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useThemeMode } from "../hooks/useThemeToggle";
 
 export function HeaderNavUser({ user }: { user: User }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const { mode, setThemeMode } = useThemeMode();
 
   async function handleLogout(event: React.MouseEvent) {
     // prevent menu from closing immediately
@@ -51,22 +65,36 @@ export function HeaderNavUser({ user }: { user: User }) {
         align="end"
         sideOffset={6}
       >
-        <DropdownMenuLabel className="p-0 font-normal">
-          <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-            <UserAvatar
-              user={user}
-              height={120}
-              width={120}
-              className="size-10"
-            />
-            <div className="grid flex-1 text-left text-sm leading-tight">
-              <span className="truncate font-medium">{user.name}</span>
-              <span className="truncate text-xs">{user.email}</span>
-            </div>
+        <DropdownMenuLabel className="font-normal">
+          <div className="flex flex-col p-1 text-left text-sm">
+            <span className="truncate font-medium">{user.name}</span>
+            <span className="truncate text-xs">{user.email}</span>
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
+          <DropdownMenuSub>
+            <DropdownMenuSubTrigger>Theme</DropdownMenuSubTrigger>
+            <DropdownMenuPortal>
+              <DropdownMenuSubContent>
+                <DropdownMenuItem onSelect={() => setThemeMode("auto")}>
+                  <Monitor className="h-4 w-4" />
+                  Auto
+                  {mode === "auto" && <Check className="ml-auto h-4 w-4" />}
+                </DropdownMenuItem>
+                <DropdownMenuItem onSelect={() => setThemeMode("light")}>
+                  <Sun className="h-4 w-4" />
+                  Light
+                  {mode === "light" && <Check className="ml-auto h-4 w-4" />}
+                </DropdownMenuItem>
+                <DropdownMenuItem onSelect={() => setThemeMode("dark")}>
+                  <Moon className="h-4 w-4" />
+                  Dark
+                  {mode === "dark" && <Check className="ml-auto h-4 w-4" />}
+                </DropdownMenuItem>
+              </DropdownMenuSubContent>
+            </DropdownMenuPortal>
+          </DropdownMenuSub>
           <DropdownMenuItem asChild>
             <Link to="/settings">
               <Settings />

@@ -13,6 +13,7 @@ import {
   getNavOpenState,
   getSidebarState,
 } from "#/features/layout/lib/nav-state";
+import { OrganizationSelector } from "#/features/organizations/components/organization-selector";
 import { Separator } from "@/components/ui/separator";
 
 export const Route = createFileRoute("/_protected")({
@@ -41,10 +42,12 @@ function ProtectedLayout() {
               <SidebarTrigger />
               <Separator orientation="vertical" className="mr-2 h-4" />
             </div>
-            {/*<Header />*/}
             <div className="flex items-center gap-2">
-              <ThemeToggle />
-              {/* <BetterAuthHeader /> */}
+              <OrganizationSelector
+                organizations={session.orgs}
+                activeOrganizationId={session.session.activeOrganizationId}
+                favouriteOrganizationId={session.user.favouriteOrganization}
+              />
               <HeaderNavUser user={session.user} />
             </div>
           </div>
