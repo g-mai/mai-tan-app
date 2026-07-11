@@ -14,16 +14,21 @@ import { NavMain } from "./nav-main";
 
 type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
   session: Session;
+  defaultOpenNav: string[];
 };
 
-export function AppSidebar({ session, ...props }: AppSidebarProps) {
+export function AppSidebar({
+  session,
+  defaultOpenNav,
+  ...props
+}: AppSidebarProps) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
         <LogoTitle href="/dashboard" />
       </SidebarHeader>
       <SidebarContent>
-        <NavMain />
+        <NavMain defaultOpenNav={defaultOpenNav} />
       </SidebarContent>
       <SidebarFooter>
         <SidebarGroup>
