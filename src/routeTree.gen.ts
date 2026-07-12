@@ -30,9 +30,10 @@ import { Route as ProtectedStackDrizzleOrmRouteImport } from './routes/_protecte
 import { Route as ProtectedStackBetterAuthRouteImport } from './routes/_protected/stack/better-auth'
 import { Route as ProtectedSettingsBillingRouteImport } from './routes/_protected/settings/billing'
 import { Route as ProtectedOrganizationsNewRouteImport } from './routes/_protected/organizations/new'
-import { Route as ProtectedOrganizationsOrgIdRouteImport } from './routes/_protected/organizations/$orgId'
 import { Route as ProtectedDocsGetStartedRouteImport } from './routes/_protected/docs/get-started'
 import { Route as ProtectedDocsChangelogRouteImport } from './routes/_protected/docs/changelog'
+import { Route as ProtectedOrganizationsOrgIdIndexRouteImport } from './routes/_protected/organizations/$orgId/index'
+import { Route as ProtectedOrganizationsOrgIdEditRouteImport } from './routes/_protected/organizations/$orgId/edit'
 
 const ProtectedRouteRoute = ProtectedRouteRouteImport.update({
   id: '/_protected',
@@ -143,12 +144,6 @@ const ProtectedOrganizationsNewRoute =
     path: '/organizations/new',
     getParentRoute: () => ProtectedRouteRoute,
   } as any)
-const ProtectedOrganizationsOrgIdRoute =
-  ProtectedOrganizationsOrgIdRouteImport.update({
-    id: '/organizations/$orgId',
-    path: '/organizations/$orgId',
-    getParentRoute: () => ProtectedRouteRoute,
-  } as any)
 const ProtectedDocsGetStartedRoute = ProtectedDocsGetStartedRouteImport.update({
   id: '/docs/get-started',
   path: '/docs/get-started',
@@ -159,6 +154,18 @@ const ProtectedDocsChangelogRoute = ProtectedDocsChangelogRouteImport.update({
   path: '/docs/changelog',
   getParentRoute: () => ProtectedRouteRoute,
 } as any)
+const ProtectedOrganizationsOrgIdIndexRoute =
+  ProtectedOrganizationsOrgIdIndexRouteImport.update({
+    id: '/organizations/$orgId/',
+    path: '/organizations/$orgId/',
+    getParentRoute: () => ProtectedRouteRoute,
+  } as any)
+const ProtectedOrganizationsOrgIdEditRoute =
+  ProtectedOrganizationsOrgIdEditRouteImport.update({
+    id: '/organizations/$orgId/edit',
+    path: '/organizations/$orgId/edit',
+    getParentRoute: () => ProtectedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -169,7 +176,6 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof ProtectedDashboardRoute
   '/docs/changelog': typeof ProtectedDocsChangelogRoute
   '/docs/get-started': typeof ProtectedDocsGetStartedRoute
-  '/organizations/$orgId': typeof ProtectedOrganizationsOrgIdRoute
   '/organizations/new': typeof ProtectedOrganizationsNewRoute
   '/settings/billing': typeof ProtectedSettingsBillingRoute
   '/stack/better-auth': typeof ProtectedStackBetterAuthRoute
@@ -183,6 +189,8 @@ export interface FileRoutesByFullPath {
   '/settings/': typeof ProtectedSettingsIndexRoute
   '/stack/': typeof ProtectedStackIndexRoute
   '/teams/': typeof ProtectedTeamsIndexRoute
+  '/organizations/$orgId/edit': typeof ProtectedOrganizationsOrgIdEditRoute
+  '/organizations/$orgId/': typeof ProtectedOrganizationsOrgIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -193,7 +201,6 @@ export interface FileRoutesByTo {
   '/dashboard': typeof ProtectedDashboardRoute
   '/docs/changelog': typeof ProtectedDocsChangelogRoute
   '/docs/get-started': typeof ProtectedDocsGetStartedRoute
-  '/organizations/$orgId': typeof ProtectedOrganizationsOrgIdRoute
   '/organizations/new': typeof ProtectedOrganizationsNewRoute
   '/settings/billing': typeof ProtectedSettingsBillingRoute
   '/stack/better-auth': typeof ProtectedStackBetterAuthRoute
@@ -207,6 +214,8 @@ export interface FileRoutesByTo {
   '/settings': typeof ProtectedSettingsIndexRoute
   '/stack': typeof ProtectedStackIndexRoute
   '/teams': typeof ProtectedTeamsIndexRoute
+  '/organizations/$orgId/edit': typeof ProtectedOrganizationsOrgIdEditRoute
+  '/organizations/$orgId': typeof ProtectedOrganizationsOrgIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -220,7 +229,6 @@ export interface FileRoutesById {
   '/_protected/dashboard': typeof ProtectedDashboardRoute
   '/_protected/docs/changelog': typeof ProtectedDocsChangelogRoute
   '/_protected/docs/get-started': typeof ProtectedDocsGetStartedRoute
-  '/_protected/organizations/$orgId': typeof ProtectedOrganizationsOrgIdRoute
   '/_protected/organizations/new': typeof ProtectedOrganizationsNewRoute
   '/_protected/settings/billing': typeof ProtectedSettingsBillingRoute
   '/_protected/stack/better-auth': typeof ProtectedStackBetterAuthRoute
@@ -234,6 +242,8 @@ export interface FileRoutesById {
   '/_protected/settings/': typeof ProtectedSettingsIndexRoute
   '/_protected/stack/': typeof ProtectedStackIndexRoute
   '/_protected/teams/': typeof ProtectedTeamsIndexRoute
+  '/_protected/organizations/$orgId/edit': typeof ProtectedOrganizationsOrgIdEditRoute
+  '/_protected/organizations/$orgId/': typeof ProtectedOrganizationsOrgIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -246,7 +256,6 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/docs/changelog'
     | '/docs/get-started'
-    | '/organizations/$orgId'
     | '/organizations/new'
     | '/settings/billing'
     | '/stack/better-auth'
@@ -260,6 +269,8 @@ export interface FileRouteTypes {
     | '/settings/'
     | '/stack/'
     | '/teams/'
+    | '/organizations/$orgId/edit'
+    | '/organizations/$orgId/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -270,7 +281,6 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/docs/changelog'
     | '/docs/get-started'
-    | '/organizations/$orgId'
     | '/organizations/new'
     | '/settings/billing'
     | '/stack/better-auth'
@@ -284,6 +294,8 @@ export interface FileRouteTypes {
     | '/settings'
     | '/stack'
     | '/teams'
+    | '/organizations/$orgId/edit'
+    | '/organizations/$orgId'
   id:
     | '__root__'
     | '/'
@@ -296,7 +308,6 @@ export interface FileRouteTypes {
     | '/_protected/dashboard'
     | '/_protected/docs/changelog'
     | '/_protected/docs/get-started'
-    | '/_protected/organizations/$orgId'
     | '/_protected/organizations/new'
     | '/_protected/settings/billing'
     | '/_protected/stack/better-auth'
@@ -310,6 +321,8 @@ export interface FileRouteTypes {
     | '/_protected/settings/'
     | '/_protected/stack/'
     | '/_protected/teams/'
+    | '/_protected/organizations/$orgId/edit'
+    | '/_protected/organizations/$orgId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -468,13 +481,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedOrganizationsNewRouteImport
       parentRoute: typeof ProtectedRouteRoute
     }
-    '/_protected/organizations/$orgId': {
-      id: '/_protected/organizations/$orgId'
-      path: '/organizations/$orgId'
-      fullPath: '/organizations/$orgId'
-      preLoaderRoute: typeof ProtectedOrganizationsOrgIdRouteImport
-      parentRoute: typeof ProtectedRouteRoute
-    }
     '/_protected/docs/get-started': {
       id: '/_protected/docs/get-started'
       path: '/docs/get-started'
@@ -487,6 +493,20 @@ declare module '@tanstack/react-router' {
       path: '/docs/changelog'
       fullPath: '/docs/changelog'
       preLoaderRoute: typeof ProtectedDocsChangelogRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
+    '/_protected/organizations/$orgId/': {
+      id: '/_protected/organizations/$orgId/'
+      path: '/organizations/$orgId'
+      fullPath: '/organizations/$orgId/'
+      preLoaderRoute: typeof ProtectedOrganizationsOrgIdIndexRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
+    '/_protected/organizations/$orgId/edit': {
+      id: '/_protected/organizations/$orgId/edit'
+      path: '/organizations/$orgId/edit'
+      fullPath: '/organizations/$orgId/edit'
+      preLoaderRoute: typeof ProtectedOrganizationsOrgIdEditRouteImport
       parentRoute: typeof ProtectedRouteRoute
     }
   }
@@ -514,7 +534,6 @@ interface ProtectedRouteRouteChildren {
   ProtectedDashboardRoute: typeof ProtectedDashboardRoute
   ProtectedDocsChangelogRoute: typeof ProtectedDocsChangelogRoute
   ProtectedDocsGetStartedRoute: typeof ProtectedDocsGetStartedRoute
-  ProtectedOrganizationsOrgIdRoute: typeof ProtectedOrganizationsOrgIdRoute
   ProtectedOrganizationsNewRoute: typeof ProtectedOrganizationsNewRoute
   ProtectedSettingsBillingRoute: typeof ProtectedSettingsBillingRoute
   ProtectedStackBetterAuthRoute: typeof ProtectedStackBetterAuthRoute
@@ -527,13 +546,14 @@ interface ProtectedRouteRouteChildren {
   ProtectedSettingsIndexRoute: typeof ProtectedSettingsIndexRoute
   ProtectedStackIndexRoute: typeof ProtectedStackIndexRoute
   ProtectedTeamsIndexRoute: typeof ProtectedTeamsIndexRoute
+  ProtectedOrganizationsOrgIdEditRoute: typeof ProtectedOrganizationsOrgIdEditRoute
+  ProtectedOrganizationsOrgIdIndexRoute: typeof ProtectedOrganizationsOrgIdIndexRoute
 }
 
 const ProtectedRouteRouteChildren: ProtectedRouteRouteChildren = {
   ProtectedDashboardRoute: ProtectedDashboardRoute,
   ProtectedDocsChangelogRoute: ProtectedDocsChangelogRoute,
   ProtectedDocsGetStartedRoute: ProtectedDocsGetStartedRoute,
-  ProtectedOrganizationsOrgIdRoute: ProtectedOrganizationsOrgIdRoute,
   ProtectedOrganizationsNewRoute: ProtectedOrganizationsNewRoute,
   ProtectedSettingsBillingRoute: ProtectedSettingsBillingRoute,
   ProtectedStackBetterAuthRoute: ProtectedStackBetterAuthRoute,
@@ -546,6 +566,8 @@ const ProtectedRouteRouteChildren: ProtectedRouteRouteChildren = {
   ProtectedSettingsIndexRoute: ProtectedSettingsIndexRoute,
   ProtectedStackIndexRoute: ProtectedStackIndexRoute,
   ProtectedTeamsIndexRoute: ProtectedTeamsIndexRoute,
+  ProtectedOrganizationsOrgIdEditRoute: ProtectedOrganizationsOrgIdEditRoute,
+  ProtectedOrganizationsOrgIdIndexRoute: ProtectedOrganizationsOrgIdIndexRoute,
 }
 
 const ProtectedRouteRouteWithChildren = ProtectedRouteRoute._addFileChildren(
