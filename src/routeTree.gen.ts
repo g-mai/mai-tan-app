@@ -24,7 +24,6 @@ import { Route as ProtectedOrganizationsIndexRouteImport } from './routes/_prote
 import { Route as ProtectedDocsIndexRouteImport } from './routes/_protected/docs/index'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as ProtectedTeamsNewRouteImport } from './routes/_protected/teams/new'
-import { Route as ProtectedTeamsTeamIdRouteImport } from './routes/_protected/teams/$teamId'
 import { Route as ProtectedStackTanstackStartRouteImport } from './routes/_protected/stack/tanstack-start'
 import { Route as ProtectedStackDrizzleOrmRouteImport } from './routes/_protected/stack/drizzle-orm'
 import { Route as ProtectedStackBetterAuthRouteImport } from './routes/_protected/stack/better-auth'
@@ -32,7 +31,9 @@ import { Route as ProtectedSettingsBillingRouteImport } from './routes/_protecte
 import { Route as ProtectedOrganizationsNewRouteImport } from './routes/_protected/organizations/new'
 import { Route as ProtectedDocsGetStartedRouteImport } from './routes/_protected/docs/get-started'
 import { Route as ProtectedDocsChangelogRouteImport } from './routes/_protected/docs/changelog'
+import { Route as ProtectedTeamsTeamIdIndexRouteImport } from './routes/_protected/teams/$teamId/index'
 import { Route as ProtectedOrganizationsOrgIdIndexRouteImport } from './routes/_protected/organizations/$orgId/index'
+import { Route as ProtectedTeamsTeamIdEditRouteImport } from './routes/_protected/teams/$teamId/edit'
 import { Route as ProtectedOrganizationsOrgIdEditRouteImport } from './routes/_protected/organizations/$orgId/edit'
 
 const ProtectedRouteRoute = ProtectedRouteRouteImport.update({
@@ -109,11 +110,6 @@ const ProtectedTeamsNewRoute = ProtectedTeamsNewRouteImport.update({
   path: '/teams/new',
   getParentRoute: () => ProtectedRouteRoute,
 } as any)
-const ProtectedTeamsTeamIdRoute = ProtectedTeamsTeamIdRouteImport.update({
-  id: '/teams/$teamId',
-  path: '/teams/$teamId',
-  getParentRoute: () => ProtectedRouteRoute,
-} as any)
 const ProtectedStackTanstackStartRoute =
   ProtectedStackTanstackStartRouteImport.update({
     id: '/stack/tanstack-start',
@@ -154,10 +150,22 @@ const ProtectedDocsChangelogRoute = ProtectedDocsChangelogRouteImport.update({
   path: '/docs/changelog',
   getParentRoute: () => ProtectedRouteRoute,
 } as any)
+const ProtectedTeamsTeamIdIndexRoute =
+  ProtectedTeamsTeamIdIndexRouteImport.update({
+    id: '/teams/$teamId/',
+    path: '/teams/$teamId/',
+    getParentRoute: () => ProtectedRouteRoute,
+  } as any)
 const ProtectedOrganizationsOrgIdIndexRoute =
   ProtectedOrganizationsOrgIdIndexRouteImport.update({
     id: '/organizations/$orgId/',
     path: '/organizations/$orgId/',
+    getParentRoute: () => ProtectedRouteRoute,
+  } as any)
+const ProtectedTeamsTeamIdEditRoute =
+  ProtectedTeamsTeamIdEditRouteImport.update({
+    id: '/teams/$teamId/edit',
+    path: '/teams/$teamId/edit',
     getParentRoute: () => ProtectedRouteRoute,
   } as any)
 const ProtectedOrganizationsOrgIdEditRoute =
@@ -181,7 +189,6 @@ export interface FileRoutesByFullPath {
   '/stack/better-auth': typeof ProtectedStackBetterAuthRoute
   '/stack/drizzle-orm': typeof ProtectedStackDrizzleOrmRoute
   '/stack/tanstack-start': typeof ProtectedStackTanstackStartRoute
-  '/teams/$teamId': typeof ProtectedTeamsTeamIdRoute
   '/teams/new': typeof ProtectedTeamsNewRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/docs/': typeof ProtectedDocsIndexRoute
@@ -190,7 +197,9 @@ export interface FileRoutesByFullPath {
   '/stack/': typeof ProtectedStackIndexRoute
   '/teams/': typeof ProtectedTeamsIndexRoute
   '/organizations/$orgId/edit': typeof ProtectedOrganizationsOrgIdEditRoute
+  '/teams/$teamId/edit': typeof ProtectedTeamsTeamIdEditRoute
   '/organizations/$orgId/': typeof ProtectedOrganizationsOrgIdIndexRoute
+  '/teams/$teamId/': typeof ProtectedTeamsTeamIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -206,7 +215,6 @@ export interface FileRoutesByTo {
   '/stack/better-auth': typeof ProtectedStackBetterAuthRoute
   '/stack/drizzle-orm': typeof ProtectedStackDrizzleOrmRoute
   '/stack/tanstack-start': typeof ProtectedStackTanstackStartRoute
-  '/teams/$teamId': typeof ProtectedTeamsTeamIdRoute
   '/teams/new': typeof ProtectedTeamsNewRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/docs': typeof ProtectedDocsIndexRoute
@@ -215,7 +223,9 @@ export interface FileRoutesByTo {
   '/stack': typeof ProtectedStackIndexRoute
   '/teams': typeof ProtectedTeamsIndexRoute
   '/organizations/$orgId/edit': typeof ProtectedOrganizationsOrgIdEditRoute
+  '/teams/$teamId/edit': typeof ProtectedTeamsTeamIdEditRoute
   '/organizations/$orgId': typeof ProtectedOrganizationsOrgIdIndexRoute
+  '/teams/$teamId': typeof ProtectedTeamsTeamIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -234,7 +244,6 @@ export interface FileRoutesById {
   '/_protected/stack/better-auth': typeof ProtectedStackBetterAuthRoute
   '/_protected/stack/drizzle-orm': typeof ProtectedStackDrizzleOrmRoute
   '/_protected/stack/tanstack-start': typeof ProtectedStackTanstackStartRoute
-  '/_protected/teams/$teamId': typeof ProtectedTeamsTeamIdRoute
   '/_protected/teams/new': typeof ProtectedTeamsNewRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/_protected/docs/': typeof ProtectedDocsIndexRoute
@@ -243,7 +252,9 @@ export interface FileRoutesById {
   '/_protected/stack/': typeof ProtectedStackIndexRoute
   '/_protected/teams/': typeof ProtectedTeamsIndexRoute
   '/_protected/organizations/$orgId/edit': typeof ProtectedOrganizationsOrgIdEditRoute
+  '/_protected/teams/$teamId/edit': typeof ProtectedTeamsTeamIdEditRoute
   '/_protected/organizations/$orgId/': typeof ProtectedOrganizationsOrgIdIndexRoute
+  '/_protected/teams/$teamId/': typeof ProtectedTeamsTeamIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -261,7 +272,6 @@ export interface FileRouteTypes {
     | '/stack/better-auth'
     | '/stack/drizzle-orm'
     | '/stack/tanstack-start'
-    | '/teams/$teamId'
     | '/teams/new'
     | '/api/auth/$'
     | '/docs/'
@@ -270,7 +280,9 @@ export interface FileRouteTypes {
     | '/stack/'
     | '/teams/'
     | '/organizations/$orgId/edit'
+    | '/teams/$teamId/edit'
     | '/organizations/$orgId/'
+    | '/teams/$teamId/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -286,7 +298,6 @@ export interface FileRouteTypes {
     | '/stack/better-auth'
     | '/stack/drizzle-orm'
     | '/stack/tanstack-start'
-    | '/teams/$teamId'
     | '/teams/new'
     | '/api/auth/$'
     | '/docs'
@@ -295,7 +306,9 @@ export interface FileRouteTypes {
     | '/stack'
     | '/teams'
     | '/organizations/$orgId/edit'
+    | '/teams/$teamId/edit'
     | '/organizations/$orgId'
+    | '/teams/$teamId'
   id:
     | '__root__'
     | '/'
@@ -313,7 +326,6 @@ export interface FileRouteTypes {
     | '/_protected/stack/better-auth'
     | '/_protected/stack/drizzle-orm'
     | '/_protected/stack/tanstack-start'
-    | '/_protected/teams/$teamId'
     | '/_protected/teams/new'
     | '/api/auth/$'
     | '/_protected/docs/'
@@ -322,7 +334,9 @@ export interface FileRouteTypes {
     | '/_protected/stack/'
     | '/_protected/teams/'
     | '/_protected/organizations/$orgId/edit'
+    | '/_protected/teams/$teamId/edit'
     | '/_protected/organizations/$orgId/'
+    | '/_protected/teams/$teamId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -439,13 +453,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedTeamsNewRouteImport
       parentRoute: typeof ProtectedRouteRoute
     }
-    '/_protected/teams/$teamId': {
-      id: '/_protected/teams/$teamId'
-      path: '/teams/$teamId'
-      fullPath: '/teams/$teamId'
-      preLoaderRoute: typeof ProtectedTeamsTeamIdRouteImport
-      parentRoute: typeof ProtectedRouteRoute
-    }
     '/_protected/stack/tanstack-start': {
       id: '/_protected/stack/tanstack-start'
       path: '/stack/tanstack-start'
@@ -495,11 +502,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedDocsChangelogRouteImport
       parentRoute: typeof ProtectedRouteRoute
     }
+    '/_protected/teams/$teamId/': {
+      id: '/_protected/teams/$teamId/'
+      path: '/teams/$teamId'
+      fullPath: '/teams/$teamId/'
+      preLoaderRoute: typeof ProtectedTeamsTeamIdIndexRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
     '/_protected/organizations/$orgId/': {
       id: '/_protected/organizations/$orgId/'
       path: '/organizations/$orgId'
       fullPath: '/organizations/$orgId/'
       preLoaderRoute: typeof ProtectedOrganizationsOrgIdIndexRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
+    '/_protected/teams/$teamId/edit': {
+      id: '/_protected/teams/$teamId/edit'
+      path: '/teams/$teamId/edit'
+      fullPath: '/teams/$teamId/edit'
+      preLoaderRoute: typeof ProtectedTeamsTeamIdEditRouteImport
       parentRoute: typeof ProtectedRouteRoute
     }
     '/_protected/organizations/$orgId/edit': {
@@ -539,7 +560,6 @@ interface ProtectedRouteRouteChildren {
   ProtectedStackBetterAuthRoute: typeof ProtectedStackBetterAuthRoute
   ProtectedStackDrizzleOrmRoute: typeof ProtectedStackDrizzleOrmRoute
   ProtectedStackTanstackStartRoute: typeof ProtectedStackTanstackStartRoute
-  ProtectedTeamsTeamIdRoute: typeof ProtectedTeamsTeamIdRoute
   ProtectedTeamsNewRoute: typeof ProtectedTeamsNewRoute
   ProtectedDocsIndexRoute: typeof ProtectedDocsIndexRoute
   ProtectedOrganizationsIndexRoute: typeof ProtectedOrganizationsIndexRoute
@@ -547,7 +567,9 @@ interface ProtectedRouteRouteChildren {
   ProtectedStackIndexRoute: typeof ProtectedStackIndexRoute
   ProtectedTeamsIndexRoute: typeof ProtectedTeamsIndexRoute
   ProtectedOrganizationsOrgIdEditRoute: typeof ProtectedOrganizationsOrgIdEditRoute
+  ProtectedTeamsTeamIdEditRoute: typeof ProtectedTeamsTeamIdEditRoute
   ProtectedOrganizationsOrgIdIndexRoute: typeof ProtectedOrganizationsOrgIdIndexRoute
+  ProtectedTeamsTeamIdIndexRoute: typeof ProtectedTeamsTeamIdIndexRoute
 }
 
 const ProtectedRouteRouteChildren: ProtectedRouteRouteChildren = {
@@ -559,7 +581,6 @@ const ProtectedRouteRouteChildren: ProtectedRouteRouteChildren = {
   ProtectedStackBetterAuthRoute: ProtectedStackBetterAuthRoute,
   ProtectedStackDrizzleOrmRoute: ProtectedStackDrizzleOrmRoute,
   ProtectedStackTanstackStartRoute: ProtectedStackTanstackStartRoute,
-  ProtectedTeamsTeamIdRoute: ProtectedTeamsTeamIdRoute,
   ProtectedTeamsNewRoute: ProtectedTeamsNewRoute,
   ProtectedDocsIndexRoute: ProtectedDocsIndexRoute,
   ProtectedOrganizationsIndexRoute: ProtectedOrganizationsIndexRoute,
@@ -567,7 +588,9 @@ const ProtectedRouteRouteChildren: ProtectedRouteRouteChildren = {
   ProtectedStackIndexRoute: ProtectedStackIndexRoute,
   ProtectedTeamsIndexRoute: ProtectedTeamsIndexRoute,
   ProtectedOrganizationsOrgIdEditRoute: ProtectedOrganizationsOrgIdEditRoute,
+  ProtectedTeamsTeamIdEditRoute: ProtectedTeamsTeamIdEditRoute,
   ProtectedOrganizationsOrgIdIndexRoute: ProtectedOrganizationsOrgIdIndexRoute,
+  ProtectedTeamsTeamIdIndexRoute: ProtectedTeamsTeamIdIndexRoute,
 }
 
 const ProtectedRouteRouteWithChildren = ProtectedRouteRoute._addFileChildren(

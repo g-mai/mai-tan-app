@@ -54,17 +54,21 @@ export const getTeam = createServerFn({ method: "GET" })
 
 const getFullTeamSchema = z.object({
   id: z.string(),
-  user: z.custom<User>(),
-  session: z.custom<SessionData>(),
 });
 
 export const getFullTeam = createServerFn({ method: "GET" })
   .inputValidator(getFullTeamSchema)
   .handler(async ({ data }) => {
+    const session = await auth.api.getSession({ headers: getRequestHeaders() });
+    if (!session) throw new Error("Unauthorized");
+
     const teamData = await db.query.team.findFirst({
       where: (team, { eq }) => eq(team.id, data.id),
       with: {
-        teamMembers: true,
+        organization: true,
+        teamMembers: {
+          with: { user: true },
+        },
       },
     });
     if (!teamData) throw new Error("Team not found");
@@ -72,7 +76,7 @@ export const getFullTeam = createServerFn({ method: "GET" })
       where: (member, { eq, and }) =>
         and(
           eq(member.organizationId, teamData.organizationId),
-          eq(member.userId, data.user.id),
+          eq(member.userId, session.user.id),
         ),
     });
     if (!orgMember)
@@ -83,6 +87,32 @@ export const getFullTeam = createServerFn({ method: "GET" })
       role: orgMember.role,
     };
   });
+
+export const listTeams = createServerFn({ method: "GET" }).handler(async () => {
+  const session = await auth.api.getSession({ headers: getRequestHeaders() });
+  if (!session) throw new Error("Unauthorized");
+
+  const memberships = await db.query.member.findMany({
+    where: (member, { eq }) => eq(member.userId, session.user.id),
+    columns: { organizationId: true },
+  });
+  if (memberships.length === 0) return [];
+
+  // Scoped to org membership, not team membership: auth.api.listUserTeams only
+  // returns teams with a teamMember row for the user, and createTeam doesn't add
+  // the creator to the team — so a team you just made wouldn't show up here.
+  return db.query.team.findMany({
+    where: (team, { inArray }) =>
+      inArray(
+        team.organizationId,
+        memberships.map((m) => m.organizationId),
+      ),
+    with: {
+      organization: { columns: { name: true } },
+    },
+    orderBy: (team, { asc }) => asc(team.name),
+  });
+});
 
 const getUserTeamsSchema = z.object({ organizationId: z.string() });
 

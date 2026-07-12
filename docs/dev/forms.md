@@ -117,7 +117,7 @@ export function TextField({
 
 Key points:
 
-- `data-invalid` on `<Field>` applies destructive colour to the label and error text via CSS
+- `data-invalid` on `<Field>` applies destructive color to the label and error text via CSS
 - `aria-invalid` on the input communicates invalidity to screen readers
 - `errors` from `useStore` is reactive — it re-renders only when errors change
 - `isInvalid` guards error display: don't show errors before the user has interacted

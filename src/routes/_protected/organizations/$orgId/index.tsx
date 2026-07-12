@@ -33,12 +33,12 @@ export const Route = createFileRoute("/_protected/organizations/$orgId/")({
 });
 
 function RoleBadge({ role }: { role: string }) {
-  const colours: Record<string, string> = {
+  const colors: Record<string, string> = {
     owner: "bg-amber-100 text-amber-800",
     admin: "bg-blue-100 text-blue-800",
     member: "bg-gray-100 text-gray-700",
   };
-  const cls = colours[role] ?? "bg-gray-100 text-gray-700";
+  const cls = colors[role] ?? "bg-gray-100 text-gray-700";
   return (
     <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${cls}`}>
       {role}
