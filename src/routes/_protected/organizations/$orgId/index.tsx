@@ -1,4 +1,5 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
+import { Edit } from "lucide-react";
 import { toast } from "sonner";
 import { ImageUpload } from "#/components/shared/image-upload";
 import { PageTitle } from "#/components/shared/page-title";
@@ -14,7 +15,7 @@ import { organization } from "#/features/auth/lib/auth-client";
 import { OrganizationLogo } from "#/features/organizations/components/organization-logo";
 import { getOrganization } from "#/features/organizations/lib/org.functions";
 
-export const Route = createFileRoute("/_protected/organizations/$orgId")({
+export const Route = createFileRoute("/_protected/organizations/$orgId/")({
   component: RouteComponent,
   loader: async ({ params }) => {
     const org = await getOrganization({ data: { id: params.orgId } });
@@ -32,12 +33,12 @@ export const Route = createFileRoute("/_protected/organizations/$orgId")({
 });
 
 function RoleBadge({ role }: { role: string }) {
-  const colours: Record<string, string> = {
+  const colors: Record<string, string> = {
     owner: "bg-amber-100 text-amber-800",
     admin: "bg-blue-100 text-blue-800",
     member: "bg-gray-100 text-gray-700",
   };
-  const cls = colours[role] ?? "bg-gray-100 text-gray-700";
+  const cls = colors[role] ?? "bg-gray-100 text-gray-700";
   return (
     <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${cls}`}>
       {role}
@@ -97,7 +98,7 @@ function RouteComponent() {
       {/* Overview card */}
       <Card>
         <CardHeader>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 relative">
             <div className="flex flex-col items-center gap-2">
               <OrganizationLogo logoUrl={org.logo} width={64} height={64} />
               <ImageUpload
@@ -113,6 +114,16 @@ function RouteComponent() {
               <CardDescription className="mt-1">
                 <span className="font-mono">/{org.slug}</span>
               </CardDescription>
+            </div>
+            <div className="absolute top-0 right-0">
+              <Link
+                to="/organizations/$orgId/edit"
+                params={{ orgId: org.id }}
+                className="flex items-center gap-1 rounded-md px-2 py-1 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+              >
+                <Edit size={20} className="text-muted-foreground" />
+                Edit
+              </Link>
             </div>
           </div>
         </CardHeader>

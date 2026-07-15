@@ -8,7 +8,11 @@ import { ensureSession } from "#/features/auth/lib/auth.functions";
 import { AppSidebar } from "#/features/layout/components/app-sidebar";
 import Footer from "#/features/layout/components/footer";
 import { HeaderNavUser } from "#/features/layout/components/header-nav-user";
-import ThemeToggle from "#/features/layout/components/theme-toggle";
+import {
+  getNavOpenState,
+  getSidebarState,
+} from "#/features/layout/lib/nav-state";
+import { OrganizationSelector } from "#/features/organizations/components/organization-selector";
 import { Separator } from "@/components/ui/separator";
 
 export const Route = createFileRoute("/_protected")({
@@ -16,15 +20,20 @@ export const Route = createFileRoute("/_protected")({
     const session = ensureSession(ctx);
     return session;
   },
+  loader: async () => ({
+    openNav: await getNavOpenState(),
+    sidebarOpen: await getSidebarState(),
+  }),
   component: ProtectedLayout,
 });
 
 function ProtectedLayout() {
   const session = Route.useRouteContext();
+  const { openNav, sidebarOpen } = Route.useLoaderData();
 
   return (
-    <SidebarProvider>
-      <AppSidebar session={session} />
+    <SidebarProvider defaultOpen={sidebarOpen}>
+      <AppSidebar session={session} defaultOpenNav={openNav} />
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2 border-b">
           <div className="flex flex-1 items-center justify-between gap-2 px-3">
@@ -32,10 +41,12 @@ function ProtectedLayout() {
               <SidebarTrigger />
               <Separator orientation="vertical" className="mr-2 h-4" />
             </div>
-            {/*<Header />*/}
             <div className="flex items-center gap-2">
-              <ThemeToggle />
-              {/* <BetterAuthHeader /> */}
+              <OrganizationSelector
+                organizations={session.orgs}
+                activeOrganizationId={session.session.activeOrganizationId}
+                favouriteOrganizationId={session.user.favouriteOrganization}
+              />
               <HeaderNavUser user={session.user} />
             </div>
           </div>

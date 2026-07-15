@@ -21,7 +21,8 @@
     "db:seed": "tsx --env-file=.env src/lib/db/seed.ts",
     "db:reset": "tsx --env-file=.env src/lib/db/seed.ts --reset",
     "db:studio": "drizzle-kit studio",
-    "start": "node --import ./.output/server/instrument.server.mjs .output/server/index.mjs"
+    "start": "node --import ./.output/server/instrument.server.mjs .output/server/index.mjs",
+    "knip": "knip"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "~3.1053.0",
@@ -74,6 +75,7 @@
     "@types/react-dom": "^19.2.0",
     "@vitejs/plugin-react": "^6.0.1",
     "jsdom": "^28.1.0",
+    "knip": "~6.25.0",
     "tsx": "^4.21.0",
     "typescript": "^5.7.2",
     "vite": "^8.0.0",

@@ -1,18 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { ComingSoon } from "#/components/shared/coming-soon";
 import { PageTitle } from "#/components/shared/page-title";
+import { EditTeam } from "#/features/organizations/components/edit-team";
 import { getFullTeam } from "#/features/organizations/lib/org.functions";
 
-export const Route = createFileRoute("/_protected/teams/$teamId")({
+export const Route = createFileRoute("/_protected/teams/$teamId/edit")({
   component: RouteComponent,
-  loader: async ({ context, params }) => {
-    const team = await getFullTeam({
-      data: {
-        id: params.teamId,
-        session: context.session,
-        user: context.user,
-      },
-    });
+  loader: async ({ params }) => {
+    const team = await getFullTeam({ data: { id: params.teamId } });
     return team;
   },
   errorComponent: (props) => {
@@ -30,17 +24,18 @@ export const Route = createFileRoute("/_protected/teams/$teamId")({
 
 function RouteComponent() {
   const team = Route.useLoaderData();
+  const canManage = team.role === "owner" || team.role === "admin";
 
   return (
-    <div>
-      <PageTitle
-        title={team.name}
-        subtitle={`${team.teamMembers.length} member${team.teamMembers.length === 1 ? "" : "s"}`}
-      />
-      <ComingSoon
-        title="Team management"
-        description="Editing team details, adding members, and removing members are on their way."
-      />
+    <div className="w-2xl flex flex-col gap-4">
+      <PageTitle title="Edit team" subtitle={team.organization.name} />
+      {canManage ? (
+        <EditTeam team={team} />
+      ) : (
+        <p className="text-sm text-muted-foreground">
+          Only owners and admins of {team.organization.name} can edit this team.
+        </p>
+      )}
     </div>
   );
 }

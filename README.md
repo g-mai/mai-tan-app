@@ -1,4 +1,4 @@
-# Mai Tan App - B2B SaaS Starter Kit - v 0.1.0
+# Mai Tan App - B2B SaaS Starter Kit - v 0.1.1
 
 A production-ready, feature-complete starter kit for building multi-tenant B2B SaaS applications. Built with TanStack Start, Better Auth, Drizzle ORM, and shadcn/ui.
 
@@ -7,6 +7,8 @@ Demo: [CLICK HERE](https://tan.g-mai.dev/) to check it live!
 ## Features
 
 - **Multi-tenant organizations** — Better Auth organizations plugin with teams, members, roles, and session-persisted context
+- **Organization & team management** — Create and edit organizations and teams from dedicated routes
+- **Collapsible sidebar** — Nested navigation with persisted open/closed state
 - **Type-safe forms** — `@tanstack/react-form` + Zod + TanStack Query mutations
 - **Full-stack SSR** — Server-side rendering with TanStack Start, dehydrated/rehydrated query cache
 - **Email flows** — Transactional email via Resend (verification, password reset)

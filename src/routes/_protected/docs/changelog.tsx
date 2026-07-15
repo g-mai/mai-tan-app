@@ -15,6 +15,26 @@ function RouteComponent() {
       <Card>
         <CardHeader>
           <div className="flex items-center gap-2">
+            <CardTitle>v0.1.1</CardTitle>
+            <Badge variant="secondary">Latest</Badge>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <ul className="list-disc space-y-1 pl-5 text-sm text-muted-foreground">
+            <li>Create and edit organizations from dedicated routes.</li>
+            <li>Create and edit teams within an organization.</li>
+            <li>
+              Collapsible sidebar navigation with persisted open/closed state.
+            </li>
+            <li>Theme toggle moved into the user menu.</li>
+            <li>Refreshed organization selector and cleaned up unused layout components.</li>
+          </ul>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <div className="flex items-center gap-2">
             <CardTitle>v0.1.0</CardTitle>
             <Badge variant="secondary">Initial release</Badge>
           </div>
