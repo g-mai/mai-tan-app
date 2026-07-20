@@ -15,8 +15,26 @@ function RouteComponent() {
       <Card>
         <CardHeader>
           <div className="flex items-center gap-2">
-            <CardTitle>v0.1.1</CardTitle>
+            <CardTitle>v0.1.2</CardTitle>
             <Badge variant="secondary">Latest</Badge>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <ul className="list-disc space-y-1 pl-5 text-sm text-muted-foreground">
+            <li>Redesigned marketing homepage with a live app preview.</li>
+            <li>Buttons now have a pressed/tactile micro-interaction.</li>
+            <li>Demo accounts get a friendlier generated guest name.</li>
+            <li>
+              Admin gets notified by email whenever a demo account is created.
+            </li>
+          </ul>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <div className="flex items-center gap-2">
+            <CardTitle>v0.1.1</CardTitle>
           </div>
         </CardHeader>
         <CardContent>
@@ -27,7 +45,10 @@ function RouteComponent() {
               Collapsible sidebar navigation with persisted open/closed state.
             </li>
             <li>Theme toggle moved into the user menu.</li>
-            <li>Refreshed organization selector and cleaned up unused layout components.</li>
+            <li>
+              Refreshed organization selector and cleaned up unused layout
+              components.
+            </li>
           </ul>
         </CardContent>
       </Card>
