@@ -4,6 +4,7 @@ import { auth } from "#/features/auth/lib/auth";
 import { generateDemoData } from "#/features/demo/lib/faker-data";
 import { db } from "#/lib/db";
 import { teamMember as teamMemberTable } from "#/lib/db/schema";
+import { sendNotificationToAdmin } from "#/lib/resend/emails";
 
 /**
  * Populates the app for the currently signed-in anonymous guest: creates 2
@@ -91,5 +92,10 @@ export const bootstrapDemo = createServerFn({ method: "POST" }).handler(
         });
       }
     }
+
+    await sendNotificationToAdmin({
+      subject: "Demo account created",
+      message: `A demo account has been created for guest user with ID: ${guestId}`,
+    });
   },
 );

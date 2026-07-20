@@ -11,6 +11,7 @@ import { LogoTitle } from "#/components/shared/logo-title";
 import { Badge } from "#/components/ui/badge";
 import { Button } from "#/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "#/components/ui/card";
+import { DemoButton } from "#/features/demo/components/demo-button";
 import Footer from "#/features/layout/components/footer";
 import ThemeToggle from "#/features/layout/components/theme-toggle";
 
@@ -87,7 +88,7 @@ function HomePage() {
       </header>
 
       <main className="flex-1">
-        <section className="mx-auto max-w-5xl px-4 py-16 text-center sm:px-8 sm:py-24">
+        <section className="mx-auto max-w-5xl px-4 py-2 text-center sm:px-8 sm:py-24">
           <Badge variant="secondary" className="mb-4">
             B2B SaaS Starter Kit
           </Badge>
@@ -99,13 +100,28 @@ function HomePage() {
             applications. Authentication, organizations, teams, and billing
             infrastructure — already working, so you can focus on your product.
           </p>
-          <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <Button size="lg" asChild>
-              <Link to="/register">Get started</Link>
-            </Button>
-            <Button size="lg" variant="outline" asChild>
-              <Link to="/login">Login</Link>
-            </Button>
+          <div className="mt-8 flex flex-col flex-wrap justify-center gap-3">
+            <div className="flex flex-col gap-2 sm:flex-row sm:justify-center">
+              <Button size="lg" className="w-40" asChild>
+                <Link to="/register">Get started</Link>
+              </Button>
+              <Button size="lg" className="w-40" variant="outline" asChild>
+                <Link to="/login">Login</Link>
+              </Button>
+            </div>
+            <div className="my-2 flex items-center gap-2 m-auto">
+              <div className="h-px flex-1 bg-border w-60" />
+              <span className="text-xs text-neutral-500 dark:text-neutral-400">
+                or
+              </span>
+              <div className="h-px flex-1 bg-border w-60" />
+            </div>
+            <DemoButton className="w-50 justify-center m-auto" size="lg" />
+            <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-2">
+              A demo account will be created for you,
+              <br />
+              so you can explore the app without signing up.
+            </p>
           </div>
         </section>
 
