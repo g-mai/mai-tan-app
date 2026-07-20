@@ -4,6 +4,7 @@ import { cn } from "#/lib/utils";
 
 export function DemoButton({
   className,
+  children,
   ...props
 }: React.ComponentProps<typeof Button>) {
   const { start, isPending } = useDemo();
@@ -17,7 +18,7 @@ export function DemoButton({
       onClick={() => start()}
       {...props}
     >
-      {isPending ? "Setting up your demo…" : "Explore the App"}
+      {isPending ? "Setting up your demo…" : (children ?? "Explore the App")}
     </Button>
   );
 }
