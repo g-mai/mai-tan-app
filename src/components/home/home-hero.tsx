@@ -36,7 +36,7 @@ export function HomeHero() {
       />
       <div className="relative mx-auto grid max-w-300 grid-cols-1 items-center gap-10 px-6 py-20 lg:grid-cols-[1.05fr_1fr] lg:gap-14 lg:py-22">
         {/* left column */}
-        <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
+        <div>
           <Badge
             variant="secondary"
             className="gap-1.5 rounded-full border border-secondary/40 bg-secondary/10 px-3 py-1 font-mono font-medium text-secondary text-xs"
@@ -89,7 +89,7 @@ export function HomeHero() {
         </div>
 
         {/* app preview mock */}
-        <div className="animate-in fade-in slide-in-from-bottom-2 delay-100 duration-300">
+        <div>
           <div className="overflow-hidden rounded-xl border bg-card shadow-[6px_6px_0_0_rgba(0,0,0,0.12),6px_4px_10px_-3px_rgba(0,0,0,0.12)]">
             <div className="flex items-center gap-2 border-b bg-muted/60 px-3.5 py-2.75">
               <span className="size-2.75 rounded-full bg-secondary/85" />
