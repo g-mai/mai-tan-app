@@ -59,3 +59,37 @@ export async function sendResetPasswordEmail(
     throw error; // Re-throw so Better Auth knows it failed
   }
 }
+
+export async function sendNotificationToAdmin(
+  { subject, message }: { subject: string; message: string },
+  request?: unknown,
+) {
+  if (!process.env.ADMIN_EMAIL) {
+    console.warn(
+      "ADMIN_EMAIL is not set in environment variables. Skipping notification email.",
+    );
+    return { success: false, message: "ADMIN_EMAIL not set" };
+  }
+
+  try {
+    const { data, error } = await resend.emails.send({
+      from: env.FROM_ADDRESS_EMAIL,
+      to: [process.env.ADMIN_EMAIL],
+      subject,
+      text: message,
+    });
+
+    if (error) {
+      console.error("Resend error:", error);
+      throw new Error(
+        `Failed to send notification email to admin: ${error.message}`,
+      );
+    }
+
+    console.log("Notification email sent successfully:", data);
+    return { success: true, data };
+  } catch (error) {
+    console.error("Failed to send notification email to admin:", error);
+    throw error; // Re-throw so Better Auth knows it failed
+  }
+}

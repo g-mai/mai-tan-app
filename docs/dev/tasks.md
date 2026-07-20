@@ -10,16 +10,12 @@ Tasks are grouped by area. Each item is scoped to a single, shippable unit of wo
 
 File upload infrastructure is shared across user avatars, organization logos, and team logos. The storage backend decision should be made first, then all three upload tasks can be implemented consistently.
 
-> **Storage decision pending.** Three options to evaluate:
->
-> - **AWS S3** — industry standard, mature SDKs, fits well in any cloud setup
-> - **Cloudflare R2** — S3-compatible API, no egress fees, good choice if already on Cloudflare
-> - **Uploadthing** — purpose-built for full-stack JS apps, minimal setup, handles resizing and delivery
+> **Storage decision: Cloudflare R2.** S3-compatible API, no egress fees. Implemented in `src/lib/storage/` (`r2.ts` client, `upload-img.functions.ts` server functions).
 
-- [ ] Decide on storage provider and set up the upload infrastructure (client-side upload component, server-side signed URL or direct upload handler)
-- [ ] User avatar — upload, store, and display across the app (sidebar, settings, member lists)
-- [ ] Organization logo — upload, store, and display on org cards and detail page
-- [ ] Team logo — upload, store, and display on team cards and detail page
+- [x] Decide on storage provider and set up the upload infrastructure (client-side upload component, server-side signed URL or direct upload handler)
+- [x] User avatar — upload, store, and display across the app (sidebar, settings, member lists)
+- [x] Organization logo — upload, store, and display on org cards and detail page
+- [x] Team logo — upload, store, and display on team cards and detail page
 
 ---
 
@@ -30,7 +26,7 @@ File upload infrastructure is shared across user avatars, organization logos, an
 - [ ] Create organization — form (name, slug, description, website) + server function
 - [ ] Edit organization details — form pre-filled with current values, updates via server function
 - [ ] Delete organization — confirmation dialog, server function, redirect to org list after
-- [ ] Organization logo — see **File Uploads** above
+- [x] Organization logo — see **File Uploads** above
 
 ---
 
@@ -43,7 +39,7 @@ File upload infrastructure is shared across user avatars, organization logos, an
 - [ ] Delete team — confirmation dialog, server function, redirect to org detail after
 - [ ] Add member to team — select from existing org members, assign to team
 - [ ] Remove member from team — confirmation, server function
-- [ ] Team logo — see **File Uploads** above
+- [x] Team logo — see **File Uploads** above
 
 ---
 
@@ -69,7 +65,7 @@ File upload infrastructure is shared across user avatars, organization logos, an
 - [x] Edit display name (first name, last name)
 - [x] Session management — active sessions list with device/browser info, revoke individual sessions, sign out from current session
 - [ ] Profile section polish — remove "Upload WIP" placeholder, display current email as a read-only field, clean up layout
-- [ ] User avatar — see **File Uploads** above
+- [x] User avatar — see **File Uploads** above
 
 ---
 
