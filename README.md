@@ -51,7 +51,7 @@ Demo: [CLICK HERE](https://tan.g-mai.dev/) to check it live!
 ### Tooling
 
 - **Biome** — Linter and formatter (replaces ESLint + Prettier)
-- **Vitest** — Unit testing - WIP
+- **Vitest** — Unit testing
 - **Docker Compose** — Local PostgreSQL
 
 ## Quick Start
