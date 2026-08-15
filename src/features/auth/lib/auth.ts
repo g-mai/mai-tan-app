@@ -161,8 +161,6 @@ const options = {
       generateName: () =>
         `Guest McGuestson${Math.floor(Math.random() * 10000)}`,
     }),
-
-    tanstackStartCookies(),
   ],
 } satisfies BetterAuthOptions;
 
@@ -172,12 +170,15 @@ export const auth = betterAuth({
     ...(options.plugins ?? []),
     customSession(async ({ user, session }) => {
       const rows = await db
-        .select()
+        .select({ organization })
         .from(organization)
         .innerJoin(member, eq(member.organizationId, organization.id))
         .where(eq(member.userId, user.id));
 
       return { user, session, orgs: rows.map((r) => r.organization) };
     }, options),
+
+    // Cookies' plugin must always stay last
+    tanstackStartCookies(),
   ],
 });
