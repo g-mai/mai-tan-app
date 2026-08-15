@@ -1,0 +1,46 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    # Mirrors minimumReleaseAge (2880 minutes = 2 days) in .npmrc. Without this,
+    # Dependabot would open PRs for versions pnpm refuses to install.
+    cooldown:
+      default-days: 2
+      semver-major-days: 7
+      semver-minor-days: 3
+      semver-patch-days: 2
+    groups:
+      tanstack:
+        patterns:
+          - "@tanstack/*"
+        update-types: [patch, minor]
+      react:
+        patterns:
+          - react
+          - react-dom
+          - "@types/react"
+          - "@types/react-dom"
+        update-types: [patch, minor]
+      better-auth:
+        patterns:
+          - better-auth
+          - "@better-auth/*"
+        update-types: [patch, minor]
+      aws-sdk:
+        patterns:
+          - "@aws-sdk/*"
+        update-types: [patch, minor]
+      dev-dependencies:
+        dependency-type: development
+        update-types: [patch, minor]
+      production-dependencies:
+        dependency-type: production
+        update-types: [patch, minor]
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly

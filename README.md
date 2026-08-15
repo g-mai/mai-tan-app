@@ -58,7 +58,7 @@ Demo: [CLICK HERE](https://tan.g-mai.dev/) to check it live!
 
 ### Prerequisites
 
-- Node.js 18+
+- Node.js 22.22+
 - pnpm 11+
 - Docker (for local PostgreSQL via Docker Compose)
 

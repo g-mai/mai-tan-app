@@ -14,6 +14,5 @@ function RouteComponent() {
   const org = Route.useLoaderData();
   const setOrg = () => {};
 
-  console.log(org);
   return <EditOrg org={org} setOrg={setOrg} />;
 }

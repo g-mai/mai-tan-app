@@ -21,7 +21,7 @@ const getOrgSchema = z.object({
 });
 
 export const getOrganization = createServerFn({ method: "GET" })
-  .inputValidator(getOrgSchema)
+  .validator(getOrgSchema)
   .handler(async ({ data }) => {
     const org = await auth.api.getFullOrganization({
       headers: getRequestHeaders(),
@@ -42,7 +42,7 @@ const getTeamSchema = z.object({
 });
 
 export const getTeam = createServerFn({ method: "GET" })
-  .inputValidator(getTeamSchema)
+  .validator(getTeamSchema)
   .handler(async ({ data }) => {
     const teams = await auth.api.listUserTeams({
       headers: getRequestHeaders(),
@@ -57,7 +57,7 @@ const getFullTeamSchema = z.object({
 });
 
 export const getFullTeam = createServerFn({ method: "GET" })
-  .inputValidator(getFullTeamSchema)
+  .validator(getFullTeamSchema)
   .handler(async ({ data }) => {
     const session = await auth.api.getSession({ headers: getRequestHeaders() });
     if (!session) throw new Error("Unauthorized");
@@ -117,7 +117,7 @@ export const listTeams = createServerFn({ method: "GET" }).handler(async () => {
 const getUserTeamsSchema = z.object({ organizationId: z.string() });
 
 export const getUserTeams = createServerFn({ method: "GET" })
-  .inputValidator(getUserTeamsSchema)
+  .validator(getUserTeamsSchema)
   .handler(async ({ data }) => {
     const teams = await auth.api.listUserTeams({
       headers: getRequestHeaders(),
