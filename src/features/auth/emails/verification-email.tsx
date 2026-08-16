@@ -33,11 +33,23 @@ export function VerificationEmailOTPTemplate({
   return (
     <div style={{ fontFamily: "Arial, sans-serif", lineHeight: "1.6" }}>
       <h1 style={{ color: "#333" }}>Verify Your Email</h1>
-      <p>
-        Please verify your email address by entering the following OTP:
-        <strong>{otp}</strong>
+      <p>Enter this code to finish creating your account for {email}:</p>
+      <p
+        style={{
+          fontFamily: "monospace",
+          fontSize: "32px",
+          fontWeight: "bold",
+          letterSpacing: "8px",
+          color: "#333",
+        }}
+      >
+        {otp}
       </p>
-      <p>Thank you!</p>
+      <p>This code expires in 10 minutes.</p>
+      <p>
+        If you didn't request it, you can safely ignore this email — no account
+        will be created.
+      </p>
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import { redirect } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { getRequestHeaders } from "@tanstack/react-start/server";
+import z from "zod";
 import { auth } from "#/features/auth/lib/auth";
 import type { Session } from "#/features/auth/types";
 
@@ -24,6 +25,24 @@ export function ensureSession(beforeLoadCtx: {
 
   return session;
 }
+
+const setInitialPasswordSchema = z.object({
+  password: z.string().min(8),
+});
+
+/**
+ * Sets the password for a user created by the email-OTP flow. `setPassword` is
+ * server-only and throws if a credential account already exists.
+ */
+export const setInitialPassword = createServerFn({ method: "POST" })
+  .validator(setInitialPasswordSchema)
+  .handler(async ({ data }) => {
+    const headers = getRequestHeaders();
+    await auth.api.setPassword({
+      headers,
+      body: { newPassword: data.password },
+    });
+  });
 
 export const getAllSessions = createServerFn({ method: "GET" }).handler(
   async () => {

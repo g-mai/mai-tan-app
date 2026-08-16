@@ -14,9 +14,11 @@ import { Route as AuthRouteRouteImport } from './routes/_auth/route'
 import { Route as ProtectedRouteRouteImport } from './routes/_protected/route'
 import { Route as AuthForgotPasswordRouteImport } from './routes/_auth/forgot-password'
 import { Route as AuthLoginRouteImport } from './routes/_auth/login'
-import { Route as AuthRegisterRouteImport } from './routes/_auth/register'
 import { Route as AuthResetPasswordRouteImport } from './routes/_auth/reset-password'
 import { Route as ProtectedDashboardRouteImport } from './routes/_protected/dashboard'
+import { Route as AuthRegisterIndexRouteImport } from './routes/_auth/register/index'
+import { Route as AuthRegisterPasswordRouteImport } from './routes/_auth/register/password'
+import { Route as AuthRegisterVerifyRouteImport } from './routes/_auth/register/verify'
 import { Route as ProtectedDocsIndexRouteImport } from './routes/_protected/docs/index'
 import { Route as ProtectedDocsChangelogRouteImport } from './routes/_protected/docs/changelog'
 import { Route as ProtectedDocsGetStartedRouteImport } from './routes/_protected/docs/get-started'
@@ -59,11 +61,6 @@ const AuthLoginRoute = AuthLoginRouteImport.update({
   path: '/login',
   getParentRoute: () => AuthRouteRoute,
 } as any)
-const AuthRegisterRoute = AuthRegisterRouteImport.update({
-  id: '/register',
-  path: '/register',
-  getParentRoute: () => AuthRouteRoute,
-} as any)
 const AuthResetPasswordRoute = AuthResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
@@ -73,6 +70,21 @@ const ProtectedDashboardRoute = ProtectedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
   getParentRoute: () => ProtectedRouteRoute,
+} as any)
+const AuthRegisterIndexRoute = AuthRegisterIndexRouteImport.update({
+  id: '/register/',
+  path: '/register/',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
+const AuthRegisterPasswordRoute = AuthRegisterPasswordRouteImport.update({
+  id: '/register/password',
+  path: '/register/password',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
+const AuthRegisterVerifyRoute = AuthRegisterVerifyRouteImport.update({
+  id: '/register/verify',
+  path: '/register/verify',
+  getParentRoute: () => AuthRouteRoute,
 } as any)
 const ProtectedDocsIndexRoute = ProtectedDocsIndexRouteImport.update({
   id: '/docs/',
@@ -179,9 +191,10 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/forgot-password': typeof AuthForgotPasswordRoute
   '/login': typeof AuthLoginRoute
-  '/register': typeof AuthRegisterRoute
   '/reset-password': typeof AuthResetPasswordRoute
   '/dashboard': typeof ProtectedDashboardRoute
+  '/register/password': typeof AuthRegisterPasswordRoute
+  '/register/verify': typeof AuthRegisterVerifyRoute
   '/docs/changelog': typeof ProtectedDocsChangelogRoute
   '/docs/get-started': typeof ProtectedDocsGetStartedRoute
   '/organizations/new': typeof ProtectedOrganizationsNewRoute
@@ -191,6 +204,7 @@ export interface FileRoutesByFullPath {
   '/stack/tanstack-start': typeof ProtectedStackTanstackStartRoute
   '/teams/new': typeof ProtectedTeamsNewRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/register/': typeof AuthRegisterIndexRoute
   '/docs/': typeof ProtectedDocsIndexRoute
   '/organizations/': typeof ProtectedOrganizationsIndexRoute
   '/settings/': typeof ProtectedSettingsIndexRoute
@@ -205,9 +219,10 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/forgot-password': typeof AuthForgotPasswordRoute
   '/login': typeof AuthLoginRoute
-  '/register': typeof AuthRegisterRoute
   '/reset-password': typeof AuthResetPasswordRoute
   '/dashboard': typeof ProtectedDashboardRoute
+  '/register/password': typeof AuthRegisterPasswordRoute
+  '/register/verify': typeof AuthRegisterVerifyRoute
   '/docs/changelog': typeof ProtectedDocsChangelogRoute
   '/docs/get-started': typeof ProtectedDocsGetStartedRoute
   '/organizations/new': typeof ProtectedOrganizationsNewRoute
@@ -217,6 +232,7 @@ export interface FileRoutesByTo {
   '/stack/tanstack-start': typeof ProtectedStackTanstackStartRoute
   '/teams/new': typeof ProtectedTeamsNewRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/register': typeof AuthRegisterIndexRoute
   '/docs': typeof ProtectedDocsIndexRoute
   '/organizations': typeof ProtectedOrganizationsIndexRoute
   '/settings': typeof ProtectedSettingsIndexRoute
@@ -234,9 +250,10 @@ export interface FileRoutesById {
   '/_protected': typeof ProtectedRouteRouteWithChildren
   '/_auth/forgot-password': typeof AuthForgotPasswordRoute
   '/_auth/login': typeof AuthLoginRoute
-  '/_auth/register': typeof AuthRegisterRoute
   '/_auth/reset-password': typeof AuthResetPasswordRoute
   '/_protected/dashboard': typeof ProtectedDashboardRoute
+  '/_auth/register/password': typeof AuthRegisterPasswordRoute
+  '/_auth/register/verify': typeof AuthRegisterVerifyRoute
   '/_protected/docs/changelog': typeof ProtectedDocsChangelogRoute
   '/_protected/docs/get-started': typeof ProtectedDocsGetStartedRoute
   '/_protected/organizations/new': typeof ProtectedOrganizationsNewRoute
@@ -246,6 +263,7 @@ export interface FileRoutesById {
   '/_protected/stack/tanstack-start': typeof ProtectedStackTanstackStartRoute
   '/_protected/teams/new': typeof ProtectedTeamsNewRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/_auth/register/': typeof AuthRegisterIndexRoute
   '/_protected/docs/': typeof ProtectedDocsIndexRoute
   '/_protected/organizations/': typeof ProtectedOrganizationsIndexRoute
   '/_protected/settings/': typeof ProtectedSettingsIndexRoute
@@ -262,9 +280,10 @@ export interface FileRouteTypes {
     | '/'
     | '/forgot-password'
     | '/login'
-    | '/register'
     | '/reset-password'
     | '/dashboard'
+    | '/register/password'
+    | '/register/verify'
     | '/docs/changelog'
     | '/docs/get-started'
     | '/organizations/new'
@@ -274,6 +293,7 @@ export interface FileRouteTypes {
     | '/stack/tanstack-start'
     | '/teams/new'
     | '/api/auth/$'
+    | '/register/'
     | '/docs/'
     | '/organizations/'
     | '/settings/'
@@ -288,9 +308,10 @@ export interface FileRouteTypes {
     | '/'
     | '/forgot-password'
     | '/login'
-    | '/register'
     | '/reset-password'
     | '/dashboard'
+    | '/register/password'
+    | '/register/verify'
     | '/docs/changelog'
     | '/docs/get-started'
     | '/organizations/new'
@@ -300,6 +321,7 @@ export interface FileRouteTypes {
     | '/stack/tanstack-start'
     | '/teams/new'
     | '/api/auth/$'
+    | '/register'
     | '/docs'
     | '/organizations'
     | '/settings'
@@ -316,9 +338,10 @@ export interface FileRouteTypes {
     | '/_protected'
     | '/_auth/forgot-password'
     | '/_auth/login'
-    | '/_auth/register'
     | '/_auth/reset-password'
     | '/_protected/dashboard'
+    | '/_auth/register/password'
+    | '/_auth/register/verify'
     | '/_protected/docs/changelog'
     | '/_protected/docs/get-started'
     | '/_protected/organizations/new'
@@ -328,6 +351,7 @@ export interface FileRouteTypes {
     | '/_protected/stack/tanstack-start'
     | '/_protected/teams/new'
     | '/api/auth/$'
+    | '/_auth/register/'
     | '/_protected/docs/'
     | '/_protected/organizations/'
     | '/_protected/settings/'
@@ -383,13 +407,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLoginRouteImport
       parentRoute: typeof AuthRouteRoute
     }
-    '/_auth/register': {
-      id: '/_auth/register'
-      path: '/register'
-      fullPath: '/register'
-      preLoaderRoute: typeof AuthRegisterRouteImport
-      parentRoute: typeof AuthRouteRoute
-    }
     '/_auth/reset-password': {
       id: '/_auth/reset-password'
       path: '/reset-password'
@@ -403,6 +420,27 @@ declare module '@tanstack/react-router' {
       fullPath: '/dashboard'
       preLoaderRoute: typeof ProtectedDashboardRouteImport
       parentRoute: typeof ProtectedRouteRoute
+    }
+    '/_auth/register/': {
+      id: '/_auth/register/'
+      path: '/register'
+      fullPath: '/register/'
+      preLoaderRoute: typeof AuthRegisterIndexRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
+    '/_auth/register/password': {
+      id: '/_auth/register/password'
+      path: '/register/password'
+      fullPath: '/register/password'
+      preLoaderRoute: typeof AuthRegisterPasswordRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
+    '/_auth/register/verify': {
+      id: '/_auth/register/verify'
+      path: '/register/verify'
+      fullPath: '/register/verify'
+      preLoaderRoute: typeof AuthRegisterVerifyRouteImport
+      parentRoute: typeof AuthRouteRoute
     }
     '/_protected/docs/': {
       id: '/_protected/docs/'
@@ -536,15 +574,19 @@ declare module '@tanstack/react-router' {
 interface AuthRouteRouteChildren {
   AuthForgotPasswordRoute: typeof AuthForgotPasswordRoute
   AuthLoginRoute: typeof AuthLoginRoute
-  AuthRegisterRoute: typeof AuthRegisterRoute
   AuthResetPasswordRoute: typeof AuthResetPasswordRoute
+  AuthRegisterPasswordRoute: typeof AuthRegisterPasswordRoute
+  AuthRegisterVerifyRoute: typeof AuthRegisterVerifyRoute
+  AuthRegisterIndexRoute: typeof AuthRegisterIndexRoute
 }
 
 const AuthRouteRouteChildren: AuthRouteRouteChildren = {
   AuthForgotPasswordRoute: AuthForgotPasswordRoute,
   AuthLoginRoute: AuthLoginRoute,
-  AuthRegisterRoute: AuthRegisterRoute,
   AuthResetPasswordRoute: AuthResetPasswordRoute,
+  AuthRegisterPasswordRoute: AuthRegisterPasswordRoute,
+  AuthRegisterVerifyRoute: AuthRegisterVerifyRoute,
+  AuthRegisterIndexRoute: AuthRegisterIndexRoute,
 }
 
 const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(

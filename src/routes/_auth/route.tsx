@@ -1,9 +1,24 @@
-import { createFileRoute, Outlet } from "@tanstack/react-router";
+import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { LogoTitle } from "#/components/shared/logo-title";
 import Footer from "#/features/layout/components/footer";
+import {
+  ensureOnboardingComplete,
+  getOnboardingStep,
+} from "#/features/onboarding/lib/onboarding";
 import { Card } from "@/components/ui/card";
 
 export const Route = createFileRoute("/_auth")({
+  beforeLoad: (ctx) => {
+    if (!ctx.context.session) return;
+
+    // Signed in, so none of these pages apply — except /register/password,
+    // which is itself the target for the "password" step.
+    if (!getOnboardingStep(ctx.context.session.user)) {
+      throw redirect({ to: "/dashboard" });
+    }
+
+    ensureOnboardingComplete(ctx);
+  },
   component: AuthLayout,
 });
 

@@ -1,22 +1,21 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useLogin } from "#/features/auth/hooks/useLogin";
+import { useRegisterEmail } from "#/features/auth/hooks/useRegisterEmail";
 
-// Signed-in visitors are redirected by the _auth layout's onboarding gate.
-export const Route = createFileRoute("/_auth/login")({
+export const Route = createFileRoute("/_auth/register/")({
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const { form, isPending, isSuccess, isError } = useLogin();
+  const { form, isPending } = useRegisterEmail();
 
   return (
     <div className="flex justify-center">
       <div className="w-full max-w-md p-6">
         <h1 className="text-lg font-semibold leading-none tracking-tight">
-          Sign in to your account
+          Create an account
         </h1>
         <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-2 mb-6">
-          Enter your email and password to login to your account
+          Enter your email and we'll send you a 6-digit code to confirm it.
         </p>
 
         <form
@@ -32,30 +31,26 @@ function RouteComponent() {
               <field.TextField label="Email" placeholder="john@email.com" />
             )}
           </form.AppField>
-          <form.AppField name="password">
-            {(field) => (
-              <field.PasswordField label="Password" placeholder="***" />
-            )}
-          </form.AppField>
-
-          <Link
-            to="/forgot-password"
-            className="-mt-2 w-full text-xs text-right text-primary-500 dark:text-primary-400 underline hover:text-primary"
-          >
-            Forgot password?
-          </Link>
           <form.AppForm>
-            <form.SubscribeButton label={isPending ? "Loading..." : "Login"} />
+            <form.SubscribeButton
+              label={isPending ? "Sending code..." : "Send code"}
+            />
           </form.AppForm>
         </form>
 
+        <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-4">
+          We only use your email for account and transactional messages — never
+          marketing. You can permanently delete your account and all its data
+          from Settings at any time.
+        </p>
+
         <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-6">
-          Don't have an account?{" "}
+          Already have an account?{" "}
           <Link
-            to="/register"
+            to="/login"
             className="text-sm text-primary-500 dark:text-primary-400 underline hover:text-primary"
           >
-            Register
+            Log in
           </Link>
         </p>
       </div>
