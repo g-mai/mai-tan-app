@@ -1,15 +1,19 @@
 import { drizzleAdapter } from "@better-auth/drizzle-adapter";
 import { type BetterAuthOptions, betterAuth } from "better-auth";
 import {
-  anonymous,
   customSession,
+  emailOTP,
   organization as organizationPlugin,
 } from "better-auth/plugins";
 import { tanstackStartCookies } from "better-auth/tanstack-start";
 import { eq } from "drizzle-orm";
 import { db } from "#/lib/db";
 import { authSchema, member, organization } from "#/lib/db/schema";
-import { sendResetPasswordEmail, sendVerifyEmail } from "#/lib/resend/emails";
+import {
+  sendResetPasswordEmail,
+  sendVerificationOtpEmail,
+  sendVerifyEmail,
+} from "#/lib/resend/emails";
 
 const options = {
   database: drizzleAdapter(db, {
@@ -35,6 +39,11 @@ const options = {
         defaultValue: "",
       },
       favouriteOrganization: {
+        type: "string",
+        required: false,
+        defaultValue: "",
+      },
+      onboardingStep: {
         type: "string",
         required: false,
         defaultValue: "",
@@ -72,11 +81,6 @@ const options = {
   },
   emailVerification: {
     sendVerificationEmail: async ({ user, url, token }, request) => {
-      if (process.env.SKIP_VERIFICATION_EMAIL === "true") {
-        // Skipping verification email (seed mode)
-        return;
-      }
-      console.log("Preparing to send verification email to:", user.email);
       await sendVerifyEmail({
         user: user as Parameters<typeof sendVerifyEmail>[0]["user"],
         url,
@@ -155,11 +159,20 @@ const options = {
         enabled: true,
       },
     }),
-
-    anonymous({
-      emailDomainName: "demo.local",
-      generateName: () =>
-        `Guest McGuestson${Math.floor(Math.random() * 10000)}`,
+    emailOTP({
+      async sendVerificationOTP({ email, otp, type }) {
+        if (type === "sign-in") {
+          await sendVerificationOtpEmail({
+            email,
+            otp,
+          });
+        } else if (type === "email-verification") {
+          // Send the OTP for email verification
+        } else {
+          // Send the OTP for password reset
+        }
+      },
+      expiresIn: 10 * 60, // 10 minutes
     }),
   ],
 } satisfies BetterAuthOptions;

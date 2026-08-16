@@ -1,16 +1,14 @@
 import type { User } from "#/features/auth/types";
 
-interface EmailTemplateProps {
-  user: User;
-  url: string;
-  token: string;
-}
-
 export function VerificationEmailTemplate({
   user,
   url,
   token,
-}: EmailTemplateProps) {
+}: {
+  user: User;
+  url: string;
+  token: string;
+}) {
   return (
     <div style={{ fontFamily: "Arial, sans-serif", lineHeight: "1.6" }}>
       <h1 style={{ color: "#333" }}>Verify Your Email</h1>
@@ -21,6 +19,25 @@ export function VerificationEmailTemplate({
       </p>
       <p>Thank you!</p>
       <pre>{JSON.stringify(user, null, 2)}</pre>
+    </div>
+  );
+}
+
+export function VerificationEmailOTPTemplate({
+  email,
+  otp,
+}: {
+  email: string;
+  otp: string;
+}) {
+  return (
+    <div style={{ fontFamily: "Arial, sans-serif", lineHeight: "1.6" }}>
+      <h1 style={{ color: "#333" }}>Verify Your Email</h1>
+      <p>
+        Please verify your email address by entering the following OTP:
+        <strong>{otp}</strong>
+      </p>
+      <p>Thank you!</p>
     </div>
   );
 }

@@ -22,7 +22,7 @@ export const user = pgTable("user", {
   firstName: text("first_name").default(""),
   lastName: text("last_name").default(""),
   favouriteOrganization: text("favourite_organization").default(""),
-  isAnonymous: boolean("is_anonymous").default(false),
+  onboardingStep: text("onboarding_step").default(""),
 });
 
 export const session = pgTable(

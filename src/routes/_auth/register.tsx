@@ -1,6 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useRegister } from "#/features/auth/hooks/useRegister";
-import { DemoButton } from "#/features/demo/components/demo-button";
 
 export const Route = createFileRoute("/_auth/register")({
   component: RouteComponent,
@@ -27,19 +26,6 @@ function RouteComponent() {
   return (
     <div className="flex justify-center">
       <div className="w-full max-w-md p-6">
-        <DemoButton />
-        <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-2 mb-6">
-          A demo account will be created for you, and you can explore the app
-          without signing up.
-        </p>
-        <div className="my-4 flex items-center gap-2">
-          <div className="h-px flex-1 bg-border" />
-          <span className="text-xs text-neutral-500 dark:text-neutral-400">
-            or
-          </span>
-          <div className="h-px flex-1 bg-border" />
-        </div>
-
         <h1 className="text-lg font-semibold leading-none tracking-tight">
           Create an account
         </h1>
