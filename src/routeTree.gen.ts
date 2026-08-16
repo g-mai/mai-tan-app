@@ -12,10 +12,17 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthRouteRouteImport } from './routes/_auth/route'
 import { Route as ProtectedRouteRouteImport } from './routes/_protected/route'
+import { Route as OnboardingRouteRouteImport } from './routes/onboarding/route'
 import { Route as AuthForgotPasswordRouteImport } from './routes/_auth/forgot-password'
 import { Route as AuthLoginRouteImport } from './routes/_auth/login'
 import { Route as AuthResetPasswordRouteImport } from './routes/_auth/reset-password'
 import { Route as ProtectedDashboardRouteImport } from './routes/_protected/dashboard'
+import { Route as OnboardingCompleteRouteImport } from './routes/onboarding/complete'
+import { Route as OnboardingInviteRouteImport } from './routes/onboarding/invite'
+import { Route as OnboardingOrganizationRouteImport } from './routes/onboarding/organization'
+import { Route as OnboardingProfileRouteImport } from './routes/onboarding/profile'
+import { Route as OnboardingSubscriptionRouteImport } from './routes/onboarding/subscription'
+import { Route as OnboardingTeamRouteImport } from './routes/onboarding/team'
 import { Route as AuthRegisterIndexRouteImport } from './routes/_auth/register/index'
 import { Route as AuthRegisterPasswordRouteImport } from './routes/_auth/register/password'
 import { Route as AuthRegisterVerifyRouteImport } from './routes/_auth/register/verify'
@@ -51,6 +58,11 @@ const ProtectedRouteRoute = ProtectedRouteRouteImport.update({
   id: '/_protected',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OnboardingRouteRoute = OnboardingRouteRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthForgotPasswordRoute = AuthForgotPasswordRouteImport.update({
   id: '/forgot-password',
   path: '/forgot-password',
@@ -70,6 +82,36 @@ const ProtectedDashboardRoute = ProtectedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
   getParentRoute: () => ProtectedRouteRoute,
+} as any)
+const OnboardingCompleteRoute = OnboardingCompleteRouteImport.update({
+  id: '/complete',
+  path: '/complete',
+  getParentRoute: () => OnboardingRouteRoute,
+} as any)
+const OnboardingInviteRoute = OnboardingInviteRouteImport.update({
+  id: '/invite',
+  path: '/invite',
+  getParentRoute: () => OnboardingRouteRoute,
+} as any)
+const OnboardingOrganizationRoute = OnboardingOrganizationRouteImport.update({
+  id: '/organization',
+  path: '/organization',
+  getParentRoute: () => OnboardingRouteRoute,
+} as any)
+const OnboardingProfileRoute = OnboardingProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => OnboardingRouteRoute,
+} as any)
+const OnboardingSubscriptionRoute = OnboardingSubscriptionRouteImport.update({
+  id: '/subscription',
+  path: '/subscription',
+  getParentRoute: () => OnboardingRouteRoute,
+} as any)
+const OnboardingTeamRoute = OnboardingTeamRouteImport.update({
+  id: '/team',
+  path: '/team',
+  getParentRoute: () => OnboardingRouteRoute,
 } as any)
 const AuthRegisterIndexRoute = AuthRegisterIndexRouteImport.update({
   id: '/register/',
@@ -189,10 +231,17 @@ const ProtectedTeamsTeamIdEditRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/onboarding': typeof OnboardingRouteRouteWithChildren
   '/forgot-password': typeof AuthForgotPasswordRoute
   '/login': typeof AuthLoginRoute
   '/reset-password': typeof AuthResetPasswordRoute
   '/dashboard': typeof ProtectedDashboardRoute
+  '/onboarding/complete': typeof OnboardingCompleteRoute
+  '/onboarding/invite': typeof OnboardingInviteRoute
+  '/onboarding/organization': typeof OnboardingOrganizationRoute
+  '/onboarding/profile': typeof OnboardingProfileRoute
+  '/onboarding/subscription': typeof OnboardingSubscriptionRoute
+  '/onboarding/team': typeof OnboardingTeamRoute
   '/register/password': typeof AuthRegisterPasswordRoute
   '/register/verify': typeof AuthRegisterVerifyRoute
   '/docs/changelog': typeof ProtectedDocsChangelogRoute
@@ -217,10 +266,17 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/onboarding': typeof OnboardingRouteRouteWithChildren
   '/forgot-password': typeof AuthForgotPasswordRoute
   '/login': typeof AuthLoginRoute
   '/reset-password': typeof AuthResetPasswordRoute
   '/dashboard': typeof ProtectedDashboardRoute
+  '/onboarding/complete': typeof OnboardingCompleteRoute
+  '/onboarding/invite': typeof OnboardingInviteRoute
+  '/onboarding/organization': typeof OnboardingOrganizationRoute
+  '/onboarding/profile': typeof OnboardingProfileRoute
+  '/onboarding/subscription': typeof OnboardingSubscriptionRoute
+  '/onboarding/team': typeof OnboardingTeamRoute
   '/register/password': typeof AuthRegisterPasswordRoute
   '/register/verify': typeof AuthRegisterVerifyRoute
   '/docs/changelog': typeof ProtectedDocsChangelogRoute
@@ -248,10 +304,17 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_auth': typeof AuthRouteRouteWithChildren
   '/_protected': typeof ProtectedRouteRouteWithChildren
+  '/onboarding': typeof OnboardingRouteRouteWithChildren
   '/_auth/forgot-password': typeof AuthForgotPasswordRoute
   '/_auth/login': typeof AuthLoginRoute
   '/_auth/reset-password': typeof AuthResetPasswordRoute
   '/_protected/dashboard': typeof ProtectedDashboardRoute
+  '/onboarding/complete': typeof OnboardingCompleteRoute
+  '/onboarding/invite': typeof OnboardingInviteRoute
+  '/onboarding/organization': typeof OnboardingOrganizationRoute
+  '/onboarding/profile': typeof OnboardingProfileRoute
+  '/onboarding/subscription': typeof OnboardingSubscriptionRoute
+  '/onboarding/team': typeof OnboardingTeamRoute
   '/_auth/register/password': typeof AuthRegisterPasswordRoute
   '/_auth/register/verify': typeof AuthRegisterVerifyRoute
   '/_protected/docs/changelog': typeof ProtectedDocsChangelogRoute
@@ -278,10 +341,17 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/onboarding'
     | '/forgot-password'
     | '/login'
     | '/reset-password'
     | '/dashboard'
+    | '/onboarding/complete'
+    | '/onboarding/invite'
+    | '/onboarding/organization'
+    | '/onboarding/profile'
+    | '/onboarding/subscription'
+    | '/onboarding/team'
     | '/register/password'
     | '/register/verify'
     | '/docs/changelog'
@@ -306,10 +376,17 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/onboarding'
     | '/forgot-password'
     | '/login'
     | '/reset-password'
     | '/dashboard'
+    | '/onboarding/complete'
+    | '/onboarding/invite'
+    | '/onboarding/organization'
+    | '/onboarding/profile'
+    | '/onboarding/subscription'
+    | '/onboarding/team'
     | '/register/password'
     | '/register/verify'
     | '/docs/changelog'
@@ -336,10 +413,17 @@ export interface FileRouteTypes {
     | '/'
     | '/_auth'
     | '/_protected'
+    | '/onboarding'
     | '/_auth/forgot-password'
     | '/_auth/login'
     | '/_auth/reset-password'
     | '/_protected/dashboard'
+    | '/onboarding/complete'
+    | '/onboarding/invite'
+    | '/onboarding/organization'
+    | '/onboarding/profile'
+    | '/onboarding/subscription'
+    | '/onboarding/team'
     | '/_auth/register/password'
     | '/_auth/register/verify'
     | '/_protected/docs/changelog'
@@ -367,6 +451,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
   ProtectedRouteRoute: typeof ProtectedRouteRouteWithChildren
+  OnboardingRouteRoute: typeof OnboardingRouteRouteWithChildren
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
 
@@ -391,6 +476,13 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: '/'
       preLoaderRoute: typeof ProtectedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding': {
+      id: '/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof OnboardingRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_auth/forgot-password': {
@@ -420,6 +512,48 @@ declare module '@tanstack/react-router' {
       fullPath: '/dashboard'
       preLoaderRoute: typeof ProtectedDashboardRouteImport
       parentRoute: typeof ProtectedRouteRoute
+    }
+    '/onboarding/complete': {
+      id: '/onboarding/complete'
+      path: '/complete'
+      fullPath: '/onboarding/complete'
+      preLoaderRoute: typeof OnboardingCompleteRouteImport
+      parentRoute: typeof OnboardingRouteRoute
+    }
+    '/onboarding/invite': {
+      id: '/onboarding/invite'
+      path: '/invite'
+      fullPath: '/onboarding/invite'
+      preLoaderRoute: typeof OnboardingInviteRouteImport
+      parentRoute: typeof OnboardingRouteRoute
+    }
+    '/onboarding/organization': {
+      id: '/onboarding/organization'
+      path: '/organization'
+      fullPath: '/onboarding/organization'
+      preLoaderRoute: typeof OnboardingOrganizationRouteImport
+      parentRoute: typeof OnboardingRouteRoute
+    }
+    '/onboarding/profile': {
+      id: '/onboarding/profile'
+      path: '/profile'
+      fullPath: '/onboarding/profile'
+      preLoaderRoute: typeof OnboardingProfileRouteImport
+      parentRoute: typeof OnboardingRouteRoute
+    }
+    '/onboarding/subscription': {
+      id: '/onboarding/subscription'
+      path: '/subscription'
+      fullPath: '/onboarding/subscription'
+      preLoaderRoute: typeof OnboardingSubscriptionRouteImport
+      parentRoute: typeof OnboardingRouteRoute
+    }
+    '/onboarding/team': {
+      id: '/onboarding/team'
+      path: '/team'
+      fullPath: '/onboarding/team'
+      preLoaderRoute: typeof OnboardingTeamRouteImport
+      parentRoute: typeof OnboardingRouteRoute
     }
     '/_auth/register/': {
       id: '/_auth/register/'
@@ -639,10 +773,33 @@ const ProtectedRouteRouteWithChildren = ProtectedRouteRoute._addFileChildren(
   ProtectedRouteRouteChildren,
 )
 
+interface OnboardingRouteRouteChildren {
+  OnboardingCompleteRoute: typeof OnboardingCompleteRoute
+  OnboardingInviteRoute: typeof OnboardingInviteRoute
+  OnboardingOrganizationRoute: typeof OnboardingOrganizationRoute
+  OnboardingProfileRoute: typeof OnboardingProfileRoute
+  OnboardingSubscriptionRoute: typeof OnboardingSubscriptionRoute
+  OnboardingTeamRoute: typeof OnboardingTeamRoute
+}
+
+const OnboardingRouteRouteChildren: OnboardingRouteRouteChildren = {
+  OnboardingCompleteRoute: OnboardingCompleteRoute,
+  OnboardingInviteRoute: OnboardingInviteRoute,
+  OnboardingOrganizationRoute: OnboardingOrganizationRoute,
+  OnboardingProfileRoute: OnboardingProfileRoute,
+  OnboardingSubscriptionRoute: OnboardingSubscriptionRoute,
+  OnboardingTeamRoute: OnboardingTeamRoute,
+}
+
+const OnboardingRouteRouteWithChildren = OnboardingRouteRoute._addFileChildren(
+  OnboardingRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRouteRoute: AuthRouteRouteWithChildren,
   ProtectedRouteRoute: ProtectedRouteRouteWithChildren,
+  OnboardingRouteRoute: OnboardingRouteRouteWithChildren,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
 }
 export const routeTree = rootRouteImport

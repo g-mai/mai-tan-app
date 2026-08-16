@@ -5,17 +5,23 @@ import {
   CardHeader,
   CardTitle,
 } from "#/components/ui/card";
-import { useCreateTeam } from "#/features/organizations/hooks/useCreateTeam";
+import {
+  type CreatedTeam,
+  useCreateTeam,
+} from "#/features/organizations/hooks/useCreateTeam";
 
 // TODO: add preselected organization for dropdown
 export function CreateTeam({
   organizations,
+  onCreated,
 }: {
   organizations: { id: string; name: string }[];
+  onCreated?: (team: CreatedTeam) => void;
 }) {
   const { form, isPending } = useCreateTeam({
     defaultOrganizationId:
       organizations.length === 1 ? organizations[0].id : undefined,
+    onCreated,
   });
 
   return (

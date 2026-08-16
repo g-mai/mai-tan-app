@@ -42,16 +42,13 @@ export function useCreateOrg({
       // refreshes cookie cache
       await organization.setActive({ organizationId: org.id });
       await router.invalidate();
-      onCreated(org);
-      toast.success("Organization created! Add a few more details.", {
+      toast.success("Organization created!", {
         duration: 5000,
         position: "top-center",
       });
-      // redirect to $orgId/edit to let user add logo and description
-      router.navigate({
-        to: "/organizations/$orgId/edit",
-        params: { orgId: org.id },
-      });
+      // What happens next is the caller's call: the onboarding flow advances a
+      // step, /organizations/new swaps in <EditOrg>.
+      onCreated(org);
     },
     onError: (error) => {
       console.error("Create organization error:", error);

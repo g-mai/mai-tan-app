@@ -8,6 +8,7 @@ export const Route = createFileRoute("/_protected/teams/new")({
 
 function RouteComponent() {
   const session = Route.useRouteContext();
+  const navigate = Route.useNavigate();
 
   return (
     <div className="w-2xl flex flex-col gap-4">
@@ -24,7 +25,12 @@ function RouteComponent() {
           .
         </p>
       ) : (
-        <CreateTeam organizations={session.orgs} />
+        <CreateTeam
+          organizations={session.orgs}
+          onCreated={(team) =>
+            navigate({ to: "/teams/$teamId/edit", params: { teamId: team.id } })
+          }
+        />
       )}
     </div>
   );

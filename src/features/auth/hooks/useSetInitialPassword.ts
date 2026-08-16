@@ -30,7 +30,7 @@ export function useSetInitialPassword() {
     },
     onSuccess: async () => {
       await router.invalidate();
-      router.navigate({ href: ONBOARDING_ROUTES.profile });
+      router.navigate({ to: ONBOARDING_ROUTES.profile });
     },
     onError: (error) => {
       console.error("Set password error:", error);

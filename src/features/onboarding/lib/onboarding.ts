@@ -1,4 +1,4 @@
-import { redirect } from "@tanstack/react-router";
+import { type LinkProps, redirect } from "@tanstack/react-router";
 
 export const ONBOARDING_STEPS = [
   "password",
@@ -12,7 +12,7 @@ export const ONBOARDING_STEPS = [
 
 export type OnboardingStep = (typeof ONBOARDING_STEPS)[number];
 
-export const ONBOARDING_ROUTES: Record<OnboardingStep, string> = {
+export const ONBOARDING_ROUTES: Record<OnboardingStep, LinkProps["to"]> = {
   password: "/register/password",
   profile: "/onboarding/profile",
   organization: "/onboarding/organization",
@@ -52,7 +52,7 @@ export function ensureOnboardingComplete(ctx: OnboardingContext) {
 
   const route = ONBOARDING_ROUTES[step];
   if (ctx.location.pathname !== route) {
-    throw redirect({ href: route });
+    throw redirect({ to: route });
   }
 }
 
@@ -61,16 +61,16 @@ export function ensureOnboardingComplete(ctx: OnboardingContext) {
  * finishing, redirects to wherever the user actually belongs.
  */
 export function ensureOnboardingStep(
-  ctx: OnboardingContext,
+  user: OnboardingUser | null | undefined,
   step: OnboardingStep,
 ) {
-  const current = getOnboardingStep(ctx.context.session?.user);
+  const current = getOnboardingStep(user);
 
   if (!current) {
     throw redirect({ to: "/dashboard" });
   }
 
   if (current !== step) {
-    throw redirect({ href: ONBOARDING_ROUTES[current] });
+    throw redirect({ to: ONBOARDING_ROUTES[current] });
   }
 }
