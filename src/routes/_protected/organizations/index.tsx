@@ -14,6 +14,7 @@ function RouteComponent() {
     return <p>Nothing found</p>;
   }
 
+  // TODO: add a button to create a new organization
   return (
     <div className="flex flex-col gap-4">
       <PageTitle

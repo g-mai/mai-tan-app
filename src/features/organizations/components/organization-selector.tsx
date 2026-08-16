@@ -37,6 +37,10 @@ export function OrganizationSelector({
     );
   }
 
+  // TODO: Move to sidebar, add button to go to current org settings
+  // or show more info about current org
+  // Do not show "Switch to another organization" if there's only one org
+
   // Falls back to the user's favourite when the session has no active org yet
   // (e.g. right after registration, before the first setActive).
   const activeOrg =

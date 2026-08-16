@@ -1,13 +1,18 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import z from "zod";
 import { useLogin } from "#/features/auth/hooks/useLogin";
 
 // Signed-in visitors are redirected by the _auth layout's onboarding gate.
 export const Route = createFileRoute("/_auth/login")({
+  validateSearch: z.object({
+    invitation: z.string().optional().catch(undefined),
+  }),
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const { form, isPending, isSuccess, isError } = useLogin();
+  const { invitation } = Route.useSearch();
+  const { form, isPending, isSuccess, isError } = useLogin({ invitation });
 
   return (
     <div className="flex justify-center">

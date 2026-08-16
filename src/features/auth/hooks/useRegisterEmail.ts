@@ -5,7 +5,11 @@ import z from "zod";
 import { emailOtp } from "#/features/auth/lib/auth-client";
 import { useAppForm } from "#/hooks/use-app-form";
 
-export function useRegisterEmail() {
+export function useRegisterEmail({
+  defaultEmail,
+}: {
+  defaultEmail?: string;
+} = {}) {
   const router = useRouter();
   const registerEmailFormSchema = z.object({
     email: z.email("Invalid email address"),
@@ -39,7 +43,7 @@ export function useRegisterEmail() {
 
   const form = useAppForm({
     defaultValues: {
-      email: "",
+      email: defaultEmail ?? "",
     },
     validators: {
       onSubmit: registerEmailFormSchema,

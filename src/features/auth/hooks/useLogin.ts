@@ -5,7 +5,7 @@ import { z } from "zod";
 import { signIn } from "#/features/auth/lib/auth-client";
 import { useAppForm } from "#/hooks/use-app-form";
 
-export function useLogin() {
+export function useLogin({ invitation }: { invitation?: string } = {}) {
   const router = useRouter();
   const loginFormSchema = z.object({
     email: z.email("Invalid email addresssss"),
@@ -26,7 +26,16 @@ export function useLogin() {
       return signInData;
     },
     onSuccess: () => {
-      router.navigate({ to: "/dashboard" });
+      // Came from an invitation link — send them back to it rather than to the
+      // dashboard, where the invitation would be invisible.
+      if (invitation) {
+        router.navigate({
+          to: "/invite/$invitationId",
+          params: { invitationId: invitation },
+        });
+      } else {
+        router.navigate({ to: "/dashboard" });
+      }
       toast.success("Successfully logged in!");
     },
     onError: (error) => {

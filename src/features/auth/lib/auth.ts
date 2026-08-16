@@ -10,6 +10,7 @@ import { eq } from "drizzle-orm";
 import { db } from "#/lib/db";
 import { authSchema, member, organization } from "#/lib/db/schema";
 import {
+  sendInvitationEmail,
   sendResetPasswordEmail,
   sendVerificationOtpEmail,
   sendVerifyEmail,
@@ -91,6 +92,15 @@ const options = {
   },
   plugins: [
     organizationPlugin({
+      membershipLimit: 100, // TODO: dynamic based on plan
+      sendInvitationEmail: async (data) => {
+        await sendInvitationEmail({
+          email: data.email,
+          organizationName: data.organization.name,
+          inviterName: data.inviter.user.name || data.inviter.user.email,
+          url: `${process.env.BETTER_AUTH_URL}/invite/${data.id}`,
+        });
+      },
       schema: {
         organization: {
           additionalFields: {

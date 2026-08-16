@@ -17,6 +17,7 @@ import { Route as AuthForgotPasswordRouteImport } from './routes/_auth/forgot-pa
 import { Route as AuthLoginRouteImport } from './routes/_auth/login'
 import { Route as AuthResetPasswordRouteImport } from './routes/_auth/reset-password'
 import { Route as ProtectedDashboardRouteImport } from './routes/_protected/dashboard'
+import { Route as InviteInvitationIdRouteImport } from './routes/invite/$invitationId'
 import { Route as OnboardingCompleteRouteImport } from './routes/onboarding/complete'
 import { Route as OnboardingInviteRouteImport } from './routes/onboarding/invite'
 import { Route as OnboardingOrganizationRouteImport } from './routes/onboarding/organization'
@@ -82,6 +83,11 @@ const ProtectedDashboardRoute = ProtectedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
   getParentRoute: () => ProtectedRouteRoute,
+} as any)
+const InviteInvitationIdRoute = InviteInvitationIdRouteImport.update({
+  id: '/invite/$invitationId',
+  path: '/invite/$invitationId',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const OnboardingCompleteRoute = OnboardingCompleteRouteImport.update({
   id: '/complete',
@@ -236,6 +242,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof AuthLoginRoute
   '/reset-password': typeof AuthResetPasswordRoute
   '/dashboard': typeof ProtectedDashboardRoute
+  '/invite/$invitationId': typeof InviteInvitationIdRoute
   '/onboarding/complete': typeof OnboardingCompleteRoute
   '/onboarding/invite': typeof OnboardingInviteRoute
   '/onboarding/organization': typeof OnboardingOrganizationRoute
@@ -271,6 +278,7 @@ export interface FileRoutesByTo {
   '/login': typeof AuthLoginRoute
   '/reset-password': typeof AuthResetPasswordRoute
   '/dashboard': typeof ProtectedDashboardRoute
+  '/invite/$invitationId': typeof InviteInvitationIdRoute
   '/onboarding/complete': typeof OnboardingCompleteRoute
   '/onboarding/invite': typeof OnboardingInviteRoute
   '/onboarding/organization': typeof OnboardingOrganizationRoute
@@ -309,6 +317,7 @@ export interface FileRoutesById {
   '/_auth/login': typeof AuthLoginRoute
   '/_auth/reset-password': typeof AuthResetPasswordRoute
   '/_protected/dashboard': typeof ProtectedDashboardRoute
+  '/invite/$invitationId': typeof InviteInvitationIdRoute
   '/onboarding/complete': typeof OnboardingCompleteRoute
   '/onboarding/invite': typeof OnboardingInviteRoute
   '/onboarding/organization': typeof OnboardingOrganizationRoute
@@ -346,6 +355,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/reset-password'
     | '/dashboard'
+    | '/invite/$invitationId'
     | '/onboarding/complete'
     | '/onboarding/invite'
     | '/onboarding/organization'
@@ -381,6 +391,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/reset-password'
     | '/dashboard'
+    | '/invite/$invitationId'
     | '/onboarding/complete'
     | '/onboarding/invite'
     | '/onboarding/organization'
@@ -418,6 +429,7 @@ export interface FileRouteTypes {
     | '/_auth/login'
     | '/_auth/reset-password'
     | '/_protected/dashboard'
+    | '/invite/$invitationId'
     | '/onboarding/complete'
     | '/onboarding/invite'
     | '/onboarding/organization'
@@ -452,6 +464,7 @@ export interface RootRouteChildren {
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
   ProtectedRouteRoute: typeof ProtectedRouteRouteWithChildren
   OnboardingRouteRoute: typeof OnboardingRouteRouteWithChildren
+  InviteInvitationIdRoute: typeof InviteInvitationIdRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
 
@@ -512,6 +525,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/dashboard'
       preLoaderRoute: typeof ProtectedDashboardRouteImport
       parentRoute: typeof ProtectedRouteRoute
+    }
+    '/invite/$invitationId': {
+      id: '/invite/$invitationId'
+      path: '/invite/$invitationId'
+      fullPath: '/invite/$invitationId'
+      preLoaderRoute: typeof InviteInvitationIdRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/onboarding/complete': {
       id: '/onboarding/complete'
@@ -800,6 +820,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRouteRoute: AuthRouteRouteWithChildren,
   ProtectedRouteRoute: ProtectedRouteRouteWithChildren,
   OnboardingRouteRoute: OnboardingRouteRouteWithChildren,
+  InviteInvitationIdRoute: InviteInvitationIdRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
 }
 export const routeTree = rootRouteImport

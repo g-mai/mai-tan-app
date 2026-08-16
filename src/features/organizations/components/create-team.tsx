@@ -24,6 +24,7 @@ export function CreateTeam({
     onCreated,
   });
 
+  // TODO: Fix card description to also work during onboarding
   return (
     <Card>
       <CardHeader>

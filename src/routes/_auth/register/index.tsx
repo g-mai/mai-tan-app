@@ -1,21 +1,40 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import z from "zod";
 import { useRegisterEmail } from "#/features/auth/hooks/useRegisterEmail";
+import { getInvitationPreview } from "#/features/organizations/lib/invitation.functions";
 
 export const Route = createFileRoute("/_auth/register/")({
+  // Cosmetic only: the invitation is picked up from the user's pending
+  // invitations at the organization step, so losing this param costs a
+  // prefilled field and nothing more.
+  validateSearch: z.object({
+    invitation: z.string().optional().catch(undefined),
+  }),
+  loaderDeps: ({ search }) => ({ invitation: search.invitation }),
+  loader: async ({ deps }) =>
+    deps.invitation
+      ? getInvitationPreview({ data: { id: deps.invitation } })
+      : null,
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const { form, isPending } = useRegisterEmail();
+  const invitation = Route.useLoaderData();
+  const invited = invitation?.status === "pending" ? invitation : null;
+  const { form, isPending } = useRegisterEmail({
+    defaultEmail: invited?.email,
+  });
 
   return (
     <div className="flex justify-center">
       <div className="w-full max-w-md p-6">
         <h1 className="text-lg font-semibold leading-none tracking-tight">
-          Create an account
+          {invited ? `Join ${invited.organizationName}` : "Create an account"}
         </h1>
         <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-2 mb-6">
-          Enter your email and we'll send you a 6-digit code to confirm it.
+          {invited
+            ? `${invited.inviterName} invited you. Confirm your email with a 6-digit code and you'll join right after.`
+            : "Enter your email and we'll send you a 6-digit code to confirm it."}
         </p>
 
         <form

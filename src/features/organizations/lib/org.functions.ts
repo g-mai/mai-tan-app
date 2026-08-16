@@ -3,7 +3,9 @@ import { getRequestHeaders } from "@tanstack/react-start/server";
 import z from "zod";
 import { auth } from "#/features/auth/lib/auth";
 import type { SessionData, User } from "#/features/auth/types";
+import { generateFakeMember } from "#/features/organizations/lib/faker-member";
 import { db } from "#/lib/db";
+import { user as userTable } from "#/lib/db/schema";
 
 export const listOrganizations = createServerFn({ method: "GET" }).handler(
   async () => {
@@ -113,6 +115,64 @@ export const listTeams = createServerFn({ method: "GET" }).handler(async () => {
     orderBy: (team, { asc }) => asc(team.name),
   });
 });
+
+const createFakeMemberSchema = z.object({ organizationId: z.string() });
+
+/**
+ * Adds a generated teammate to an organization, for trying the app out.
+ *
+ * `auth.api.addMember` is server-only and runs no session or permission check of
+ * its own — its own docs say the caller must authorize — so this does it here.
+ *
+ * The user row is inserted directly rather than through `auth.api.signUpEmail`,
+ * which would issue a session and clobber the caller's own cookie via
+ * `tanstackStartCookies`.
+ */
+export const createFakeMember = createServerFn({ method: "POST" })
+  .validator(createFakeMemberSchema)
+  .handler(async ({ data }) => {
+    const session = await auth.api.getSession({ headers: getRequestHeaders() });
+    if (!session) throw new Error("Unauthorized");
+
+    const callerMembership = await db.query.member.findFirst({
+      where: (member, { eq, and }) =>
+        and(
+          eq(member.organizationId, data.organizationId),
+          eq(member.userId, session.user.id),
+        ),
+    });
+    if (
+      !callerMembership ||
+      (callerMembership.role !== "owner" && callerMembership.role !== "admin")
+    ) {
+      throw new Error("Only owners and admins can add members");
+    }
+
+    const fake = generateFakeMember();
+    const [inserted] = await db
+      .insert(userTable)
+      .values({
+        id: crypto.randomUUID(),
+        name: `${fake.firstName} ${fake.lastName}`,
+        email: fake.email,
+        emailVerified: true,
+        firstName: fake.firstName,
+        lastName: fake.lastName,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      })
+      .returning();
+
+    await auth.api.addMember({
+      body: {
+        organizationId: data.organizationId,
+        userId: inserted.id,
+        role: "member",
+      },
+    });
+
+    return { name: inserted.name, email: inserted.email };
+  });
 
 const getUserTeamsSchema = z.object({ organizationId: z.string() });
 

@@ -4,6 +4,7 @@ import {
   VerificationEmailOTPTemplate,
   VerificationEmailTemplate,
 } from "#/features/auth/emails/verification-email";
+import { InvitationEmailTemplate } from "#/features/organizations/emails/invitation-email";
 import { env } from "#/lib/env";
 import type { User } from "@/features/auth/types";
 
@@ -69,6 +70,43 @@ export async function sendVerificationOtpEmail(
     return { success: true, data };
   } catch (error) {
     console.error("Failed to send verification OTP email:", error);
+    throw error; // Re-throw so Better Auth knows it failed
+  }
+}
+
+export async function sendInvitationEmail({
+  email,
+  organizationName,
+  inviterName,
+  url,
+}: {
+  email: string;
+  organizationName: string;
+  inviterName: string;
+  url: string;
+}) {
+  if (process.env.SKIP_VERIFICATION_EMAIL === "true") {
+    // Skipping invitation email (seed mode)
+    return;
+  }
+  console.log("Sending invitation email to:", email);
+  try {
+    const { data, error } = await resend.emails.send({
+      from: env.FROM_ADDRESS_EMAIL,
+      to: [email],
+      subject: `You've been invited to ${organizationName}`,
+      react: InvitationEmailTemplate({ organizationName, inviterName, url }),
+    });
+
+    if (error) {
+      console.error("Resend error:", error);
+      throw new Error(`Failed to send invitation email: ${error.message}`);
+    }
+
+    console.log("Invitation email sent successfully:", data);
+    return { success: true, data };
+  } catch (error) {
+    console.error("Failed to send invitation email:", error);
     throw error; // Re-throw so Better Auth knows it failed
   }
 }
