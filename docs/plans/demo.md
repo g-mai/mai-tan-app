@@ -1,5 +1,10 @@
 # Demo / Guest-Login Feature
 
+> **Superseded** by [`docs/plans/onboarding.md`](./onboarding.md). The anonymous demo
+> described below has been removed entirely (`src/features/demo/`, the `anonymous`
+> plugin) in favor of the mandatory registration + onboarding flow. Kept as historical
+> record only.
+
 ## Context
 
 The registration flow currently forces new visitors through a full sign-up + email

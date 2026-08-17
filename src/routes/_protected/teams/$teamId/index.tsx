@@ -10,7 +10,7 @@ import {
 } from "#/components/ui/card";
 import { Separator } from "#/components/ui/separator";
 import { TeamLogo } from "#/features/organizations/components/team-logo";
-import { getFullTeam } from "#/features/organizations/lib/org.functions";
+import { getFullTeam } from "#/features/organizations/lib/team.functions";
 
 export const Route = createFileRoute("/_protected/teams/$teamId/")({
   component: RouteComponent,

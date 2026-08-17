@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PageTitle } from "#/components/shared/page-title";
 import { EditTeam } from "#/features/organizations/components/edit-team";
-import { getFullTeam } from "#/features/organizations/lib/org.functions";
+import { getFullTeam } from "#/features/organizations/lib/team.functions";
 
 export const Route = createFileRoute("/_protected/teams/$teamId/edit")({
   component: RouteComponent,

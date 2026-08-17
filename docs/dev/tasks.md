@@ -45,14 +45,14 @@ File upload infrastructure is shared across user avatars, organization logos, an
 
 ## Members & Invitations
 
-- [ ] Configure `sendInvitationEmail` in `auth.ts` — construct the invite URL (`/invite/$invitationId`) and send it via Resend using the existing email infrastructure
-- [ ] Invite member — modal on org detail page with email input and role selector (member / admin); calls Better Auth's `inviteMember` endpoint
-- [ ] Invitation acceptance route — `/invite/$invitationId` page that:
+- [x] Configure `sendInvitationEmail` in `auth.ts` — construct the invite URL (`/invite/$invitationId`) and send it via Resend using the existing email infrastructure
+- [x] Invite member — modal on org detail page with email input and role selector (member / admin); calls Better Auth's `inviteMember` endpoint
+- [x] Invitation acceptance route — `/invite/$invitationId` page that:
   - If authenticated: calls `acceptInvitation` directly, then redirects to the org
   - If unauthenticated: redirects to login/register with the invitation ID preserved in the URL; after auth, resumes acceptance
-- [ ] Pending invitations list — visible to org owners and admins on the org detail page; shows email, role, expiry
-- [ ] Cancel invitation — action on pending invitation, with confirmation
-- [ ] Resend invitation — regenerates and resends the invite email for a pending invitation
+- [x] Pending invitations list — visible to org owners and admins on the org detail page; shows email, role, expiry
+- [x] Cancel invitation — action on pending invitation, with confirmation
+- [x] Resend invitation — regenerates and resends the invite email for a pending invitation
 - [ ] Remove member from organization — action on member list, confirmation dialog, server function
 - [ ] Change member role — inline role selector on member list (owner / admin / member), updates via server function
 
@@ -71,7 +71,7 @@ File upload infrastructure is shared across user avatars, organization logos, an
 
 ## Onboarding & Empty States
 
-- [ ] Post-signup redirect — after registration, check if the user belongs to any org; if not, redirect to the create organization page instead of the generic home page
+- [x] Post-signup redirect — superseded by mandatory onboarding: every new user is routed through org creation (`/onboarding/organization`) before reaching the app, see `docs/plans/onboarding.md`
 - [ ] Empty state: no organizations — when a user has no orgs, show a clear prompt to create one instead of an empty list
 - [ ] Empty state: no teams — when an org has no teams, show a prompt to create the first team
 - [ ] Empty state: no members (besides self) — when an org has only the owner, show a prompt to invite teammates
