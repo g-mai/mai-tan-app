@@ -1,4 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
+import {
+  ScreenBody,
+  ScreenCard,
+  ScreenFooter,
+  ScreenHeader,
+  ScreenStrip,
+} from "#/components/shared/screen-shell";
 import { Button } from "#/components/ui/button";
 import { useAdvanceOnboarding } from "#/features/onboarding/hooks/useAdvanceOnboarding";
 import { ensureOnboardingStep } from "#/features/onboarding/lib/onboarding";
@@ -18,32 +25,35 @@ function RouteComponent() {
   // that refreshes on creation, and reset the form on success
 
   return (
-    <div className="p-2">
-      <h1 className="text-lg font-semibold leading-none tracking-tight">
-        Add a team
-      </h1>
-      <div className="text-sm text-muted-foreground mt-2 mb-6 grid gap-2">
-        <p>
-          Creating your organization also created a default team named after it,
-          so you already have one.
-        </p>
-        <p>
-          Teams scope people and work inside an organization — use them for
-          departments, projects, or clients. Add a second one now, or skip and
-          do it later.
-        </p>
-      </div>
+    <ScreenCard>
+      <ScreenStrip path="onboarding/team" state="step 5 / 7 · optional" />
+      <ScreenBody>
+        <ScreenHeader title="Add a team">
+          <p>
+            Creating your organization also created a default team named after
+            it, so you already have one.
+          </p>
+          <p>
+            Teams scope people and work inside an organization — use them for
+            departments, projects, or clients. Add a second one now, or skip and
+            do it later.
+          </p>
+        </ScreenHeader>
 
-      <CreateTeam organizations={session.orgs} />
-
-      <Button
-        variant="outline"
-        className="mt-6"
-        disabled={isPending}
-        onClick={() => advance({ onboardingStep: "invite" })}
-      >
-        {isPending ? "Saving..." : "Continue"}
-      </Button>
-    </div>
+        <div className="mt-6">
+          <CreateTeam variant="panel" organizations={session.orgs} />
+        </div>
+      </ScreenBody>
+      <ScreenFooter>
+        <span className="font-mono text-[11px]">you can do this later</span>
+        <Button
+          variant="outline"
+          disabled={isPending}
+          onClick={() => advance({ onboardingStep: "invite" })}
+        >
+          {isPending ? "Saving..." : "Continue"}
+        </Button>
+      </ScreenFooter>
+    </ScreenCard>
   );
 }

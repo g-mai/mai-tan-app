@@ -29,7 +29,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useThemeMode } from "../hooks/useThemeToggle";
 
-export function HeaderNavUser({ user }: { user: User }) {
+export function HeaderNavUser({
+  user,
+  variant,
+}: {
+  user: User;
+  variant?: string;
+}) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const { mode, setThemeMode } = useThemeMode();
@@ -99,12 +105,14 @@ export function HeaderNavUser({ user }: { user: User }) {
               </DropdownMenuSubContent>
             </DropdownMenuPortal>
           </DropdownMenuSub>
-          <DropdownMenuItem asChild>
-            <Link to="/settings">
-              <Settings />
-              Settings
-            </Link>
-          </DropdownMenuItem>
+          {variant !== "onboarding" && (
+            <DropdownMenuItem asChild>
+              <Link to="/settings">
+                <Settings />
+                Settings
+              </Link>
+            </DropdownMenuItem>
+          )}
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem variant="destructive" onClick={handleLogout}>

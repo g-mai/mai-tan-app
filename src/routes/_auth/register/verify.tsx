@@ -1,5 +1,12 @@
 import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import z from "zod";
+import {
+  ScreenBody,
+  ScreenCard,
+  ScreenFooter,
+  ScreenHeader,
+  ScreenStrip,
+} from "#/components/shared/screen-shell";
 import { Button } from "#/components/ui/button";
 import { FieldError } from "#/components/ui/field";
 import { useVerifyEmailOtp } from "#/features/auth/hooks/useVerifyEmailOtp";
@@ -22,15 +29,23 @@ function RouteComponent() {
     useVerifyEmailOtp(email);
 
   return (
-    <div className="flex justify-center">
-      <div className="w-full max-w-md p-6">
-        <h1 className="text-lg font-semibold leading-none tracking-tight">
-          Check your email
-        </h1>
-        <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-2 mb-6">
-          We sent a 6-digit code to <strong>{email}</strong>. It expires in 10
-          minutes.
-        </p>
+    <ScreenCard>
+      <ScreenStrip
+        path="/register/verify"
+        state={error ? "error" : "2 / 2"}
+        tone={error ? "destructive" : "muted"}
+      />
+      <ScreenBody>
+        <ScreenHeader
+          title="Check your email"
+          description={
+            <>
+              We sent a 6-digit code to{" "}
+              <strong className="font-medium text-foreground">{email}</strong>.
+              It expires in 10 minutes.
+            </>
+          }
+        />
 
         <form
           onSubmit={(e) => {
@@ -38,11 +53,14 @@ function RouteComponent() {
             e.stopPropagation();
             form.handleSubmit();
           }}
-          className="grid gap-4"
+          className="mt-6 grid gap-4"
         >
-          <form.AppField name="otp">
-            {(field) => <field.TextField label="Code" placeholder="123456" />}
-          </form.AppField>
+          {/* Code reads as a code: mono, tracked out, taller field. */}
+          <div className="[&_input]:h-12 [&_input]:font-mono [&_input]:text-xl [&_input]:tracking-[0.4em]">
+            <form.AppField name="otp">
+              {(field) => <field.TextField label="Code" placeholder="123456" />}
+            </form.AppField>
+          </div>
           {error && <FieldError errors={[{ message: error }]} />}
           <form.AppForm>
             <form.SubscribeButton
@@ -51,8 +69,8 @@ function RouteComponent() {
           </form.AppForm>
         </form>
 
-        <div className="mt-6 flex items-center gap-2">
-          <span className="text-sm text-neutral-500 dark:text-neutral-400">
+        <div className="mt-5 flex items-center gap-2 text-sm text-muted-foreground">
+          <span>
             {needsNewCode ? "Need a new code?" : "Didn't get the email?"}
           </span>
           <Button
@@ -64,17 +82,16 @@ function RouteComponent() {
             {isResending ? "Sending..." : "Resend code"}
           </Button>
         </div>
-
-        <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-2">
-          Wrong address?{" "}
-          <Link
-            to="/register"
-            className="text-sm text-primary-500 dark:text-primary-400 underline hover:text-primary"
-          >
-            Start over
-          </Link>
-        </p>
-      </div>
-    </div>
+      </ScreenBody>
+      <ScreenFooter>
+        <span>Wrong address?</span>
+        <Link
+          to="/register"
+          className="text-primary underline underline-offset-4"
+        >
+          Start over
+        </Link>
+      </ScreenFooter>
+    </ScreenCard>
   );
 }

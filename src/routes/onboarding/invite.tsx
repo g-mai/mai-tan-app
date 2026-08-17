@@ -1,4 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
+import {
+  ScreenBody,
+  ScreenCard,
+  ScreenFooter,
+  ScreenHeader,
+  ScreenStrip,
+} from "#/components/shared/screen-shell";
 import { Button } from "#/components/ui/button";
 import { useAdvanceOnboarding } from "#/features/onboarding/hooks/useAdvanceOnboarding";
 import { ensureOnboardingStep } from "#/features/onboarding/lib/onboarding";
@@ -22,41 +29,46 @@ function RouteComponent() {
 
   // TODO: Add section with current members (to see fake members)
   return (
-    <div className="p-2">
-      <h1 className="text-lg font-semibold leading-none tracking-tight">
-        Invite your teammates
-      </h1>
-      <div className="text-sm text-muted-foreground mt-2 mb-6 grid gap-2">
-        <p>
-          Invitations go out by email and stay pending until accepted, so you
-          can send them before anyone has an account.
-        </p>
-        <p>
-          <strong>Members</strong> can see the organization and the teams they
-          belong to. <strong>Admins</strong> can additionally manage teams and
-          invite or remove people. You're the <strong>owner</strong> — the only
-          role that can delete the organization.
-        </p>
-      </div>
+    <ScreenCard>
+      <ScreenStrip path="onboarding/invite" state="step 6 / 7" />
+      <ScreenBody>
+        <ScreenHeader title="Invite your teammates">
+          <p>
+            Invitations go out by email and stay pending until accepted, so you
+            can send them before anyone has an account.
+          </p>
+          <p>
+            <strong>Members</strong> can see the organization and the teams they
+            belong to. <strong>Admins</strong> can additionally manage teams and
+            invite or remove people. You're the <strong>owner</strong> — the
+            only role that can delete the organization.
+          </p>
+        </ScreenHeader>
 
-      <div className="grid gap-4">
-        <InviteMember organizationId={org.id} />
-        <PendingInvitations invitations={invitations} organizationId={org.id} />
-        <div className="flex items-center gap-3">
-          <span className="text-sm text-muted-foreground">
-            No one to invite yet?
-          </span>
-          <FakerMember organizationId={org.id} />
+        <div className="mt-6 grid gap-4">
+          <InviteMember variant="panel" organizationId={org.id} />
+          <PendingInvitations
+            variant="panel"
+            invitations={invitations}
+            organizationId={org.id}
+          />
+          {/* Dashed = optional escape hatch, not a primary path. */}
+          <div className="flex flex-col gap-3 rounded-lg border border-dashed p-3 sm:flex-row sm:items-center sm:justify-between">
+            <span className="text-sm text-muted-foreground">
+              No one to invite yet?
+            </span>
+            <FakerMember organizationId={org.id} />
+          </div>
         </div>
-      </div>
-
-      <Button
-        className="mt-6"
-        disabled={isPending}
-        onClick={() => advance({ onboardingStep: "complete" })}
-      >
-        {isPending ? "Saving..." : "Continue"}
-      </Button>
-    </div>
+      </ScreenBody>
+      <ScreenFooter className="sm:justify-end">
+        <Button
+          disabled={isPending}
+          onClick={() => advance({ onboardingStep: "complete" })}
+        >
+          {isPending ? "Saving..." : "Continue"}
+        </Button>
+      </ScreenFooter>
+    </ScreenCard>
   );
 }

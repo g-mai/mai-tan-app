@@ -1,12 +1,11 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { LogoTitle } from "#/components/shared/logo-title";
+import { GridBackdrop } from "#/components/shared/screen-shell";
 import { ensureSession } from "#/features/auth/lib/auth.functions";
 import Footer from "#/features/layout/components/footer";
-import {
-  getOnboardingStep,
-  ONBOARDING_STEPS,
-} from "#/features/onboarding/lib/onboarding";
-import { Card } from "@/components/ui/card";
+import { HeaderNavUser } from "#/features/layout/components/header-nav-user";
+import { OnboardingProgress } from "#/features/onboarding/components/onboarding-progress";
+import { getOnboardingStep } from "#/features/onboarding/lib/onboarding";
 
 export const Route = createFileRoute("/onboarding")({
   beforeLoad: (ctx) => {
@@ -27,22 +26,23 @@ function OnboardingLayout() {
   if (!step) {
     throw redirect({ to: "/dashboard" });
   }
-  const stepNumber = ONBOARDING_STEPS.indexOf(step) + 1;
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <main className="flex-1 flex flex-col justify-center">
-        <LogoTitle href="/" className="flex gap-4 mx-auto" />
-        {stepNumber > 0 && (
-          <p className="mt-6 text-center font-mono text-muted-foreground text-xs">
-            Step {stepNumber} of {ONBOARDING_STEPS.length}
-          </p>
-        )}
-        <Card className="w-full max-w-xl mx-auto mt-4 mb-10 p-4">
+    <GridBackdrop className="flex flex-col">
+      <main className="flex flex-1 flex-col justify-center px-4 py-10">
+        <div className="mx-auto grid w-full max-w-xl gap-4">
+          <div className="flex justify-between">
+            <LogoTitle
+              href="/"
+              className="flex items-center justify-center gap-3"
+            />
+            <HeaderNavUser user={session.user} variant="onboarding" />
+          </div>
+          <OnboardingProgress step={step} />
           <Outlet />
-        </Card>
+        </div>
       </main>
       <Footer />
-    </div>
+    </GridBackdrop>
   );
 }

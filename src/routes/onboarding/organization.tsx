@@ -1,11 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Button } from "#/components/ui/button";
 import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "#/components/ui/card";
+  ScreenBody,
+  ScreenCard,
+  ScreenFooter,
+  ScreenHeader,
+  ScreenStrip,
+} from "#/components/shared/screen-shell";
+import { Button } from "#/components/ui/button";
 import { useAdvanceOnboarding } from "#/features/onboarding/hooks/useAdvanceOnboarding";
 import { ensureOnboardingStep } from "#/features/onboarding/lib/onboarding";
 import { CreateOrg } from "#/features/organizations/components/create-org";
@@ -38,100 +39,121 @@ function RouteComponent() {
   if (session.orgs.length > 0) {
     const org = session.orgs[0];
     return (
-      <div className="p-2">
-        <h1 className="text-lg font-semibold leading-none tracking-tight">
-          You're in {org.name}
-        </h1>
-        <p className="text-sm text-muted-foreground mt-2 mb-6">
-          You already belong to an organization, so there's nothing to set up
-          here. You can always create your own later.
-        </p>
-        <Button
-          disabled={isPending}
-          onClick={() =>
-            advance({
-              favouriteOrganization: org.id,
-              onboardingStep: "complete",
-            })
-          }
-        >
-          {isPending ? "Saving..." : "Continue"}
-        </Button>
-      </div>
+      <ScreenCard>
+        <ScreenStrip
+          path="onboarding/organization"
+          state="already a member"
+          tone="primary"
+        />
+        <ScreenBody>
+          <ScreenHeader
+            title={`You're in ${org.name}`}
+            description="You already belong to an organization, so there's nothing to set up here. You can always create your own later."
+          />
+        </ScreenBody>
+        <ScreenFooter className="sm:justify-end">
+          <Button
+            disabled={isPending}
+            onClick={() =>
+              advance({
+                favouriteOrganization: org.id,
+                onboardingStep: "complete",
+              })
+            }
+          >
+            {isPending ? "Saving..." : "Continue"}
+          </Button>
+        </ScreenFooter>
+      </ScreenCard>
     );
   }
 
   if (invitations.length > 0) {
     return (
-      <div className="p-2">
-        <h1 className="text-lg font-semibold leading-none tracking-tight">
-          You've been invited
-        </h1>
-        <p className="text-sm text-muted-foreground mt-2 mb-6">
-          Join an organization you were invited to, or start your own instead.
-        </p>
-
-        <div className="grid gap-3">
-          {invitations.map((invitation) => (
-            <Card key={invitation.id}>
-              <CardHeader>
-                <div className="flex items-center justify-between gap-4">
-                  <div className="min-w-0">
-                    <CardTitle>{invitation.organizationName}</CardTitle>
-                    <CardDescription className="mt-1">
-                      as {invitation.role ?? "member"}
-                    </CardDescription>
-                  </div>
-                  <Button
-                    disabled={isAccepting}
-                    onClick={() => accept(invitation.id)}
-                  >
-                    {isAccepting
-                      ? "Joining..."
-                      : `Join ${invitation.organizationName}`}
-                  </Button>
-                </div>
-              </CardHeader>
-            </Card>
-          ))}
-        </div>
-
-        <div className="my-6 flex items-center gap-2">
-          <div className="h-px flex-1 bg-border" />
-          <span className="text-xs text-muted-foreground">or</span>
-          <div className="h-px flex-1 bg-border" />
-        </div>
-
-        <CreateOrg
-          onCreated={(org) =>
-            advance({
-              favouriteOrganization: org.id,
-              onboardingStep: "subscription",
-            })
-          }
+      <ScreenCard>
+        <ScreenStrip
+          path="onboarding/organization"
+          state={`${invitations.length} invitation${invitations.length > 1 ? "s" : ""}`}
+          tone="secondary"
         />
-      </div>
+        <ScreenBody>
+          <ScreenHeader
+            title="You've been invited"
+            description="Join an organization you were invited to, or start your own instead."
+          />
+
+          {/* Invitation rows: rust left rule instead of a nested Card. */}
+          <div className="mt-6 grid gap-3">
+            {invitations.map((invitation) => (
+              <div
+                key={invitation.id}
+                className="flex flex-col gap-3 rounded-lg border border-l-[3px] border-l-secondary bg-muted p-4 sm:flex-row sm:items-center sm:justify-between"
+              >
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-semibold">
+                    {invitation.organizationName}
+                  </p>
+                  <p className="mt-1 font-mono text-[11px] text-muted-foreground">
+                    as {invitation.role ?? "member"}
+                  </p>
+                </div>
+                <Button
+                  size="sm"
+                  className="shrink-0"
+                  disabled={isAccepting}
+                  onClick={() => accept(invitation.id)}
+                >
+                  {isAccepting
+                    ? "Joining..."
+                    : `Join ${invitation.organizationName}`}
+                </Button>
+              </div>
+            ))}
+          </div>
+
+          <div className="my-6 flex items-center gap-2">
+            <div className="h-px flex-1 bg-border" />
+            <span className="font-mono text-[10px] tracking-widest text-muted-foreground">
+              OR
+            </span>
+            <div className="h-px flex-1 bg-border" />
+          </div>
+
+          <CreateOrg
+            variant="panel"
+            onCreated={(org) =>
+              advance({
+                favouriteOrganization: org.id,
+                onboardingStep: "subscription",
+              })
+            }
+          />
+        </ScreenBody>
+      </ScreenCard>
     );
   }
 
   return (
-    <div className="p-2">
-      <h1 className="text-lg font-semibold leading-none tracking-tight">
-        Create your organization
-      </h1>
-      <p className="text-sm text-muted-foreground mt-2 mb-6">
-        An organization is the top-level container for your people, teams and
-        billing. You can create more later.
-      </p>
+    <ScreenCard>
+      <ScreenStrip path="onboarding/organization" state="step 3 / 7" />
+      <ScreenBody>
+        <ScreenHeader
+          title="Create your organization"
+          description="An organization is the top-level container for your people, teams and billing. You can create more later."
+        />
 
-      <CreateOrg
-        onCreated={(org) =>
-          advance({
-            favouriteOrganization: org.id,
-            onboardingStep: "subscription",
-          })
-        }
-      />
-    </div>
+        <div className="mt-6">
+          <CreateOrg
+            variant="panel"
+            onCreated={(org) =>
+              advance({
+                favouriteOrganization: org.id,
+                onboardingStep: "subscription",
+              })
+            }
+          />
+        </div>
+      </ScreenBody>
+    </ScreenCard>
   );
 }

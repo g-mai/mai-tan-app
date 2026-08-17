@@ -1,4 +1,10 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
+import {
+  ScreenBody,
+  ScreenCard,
+  ScreenHeader,
+  ScreenStrip,
+} from "#/components/shared/screen-shell";
 import { useSetInitialPassword } from "#/features/auth/hooks/useSetInitialPassword";
 
 export const Route = createFileRoute("/_auth/register/password")({
@@ -16,15 +22,17 @@ function RouteComponent() {
   const { form, isPending } = useSetInitialPassword();
 
   return (
-    <div className="flex justify-center">
-      <div className="w-full max-w-md p-6">
-        <h1 className="text-lg font-semibold leading-none tracking-tight">
-          Choose a password
-        </h1>
-        <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-2 mb-6">
-          Your email is confirmed. Set a password to finish securing your
-          account.
-        </p>
+    <ScreenCard>
+      <ScreenStrip
+        path="/register/password"
+        state="email confirmed"
+        tone="primary"
+      />
+      <ScreenBody>
+        <ScreenHeader
+          title="Choose a password"
+          description="Your email is confirmed. Set a password to finish securing your account."
+        />
 
         <form
           onSubmit={(e) => {
@@ -32,7 +40,7 @@ function RouteComponent() {
             e.stopPropagation();
             form.handleSubmit();
           }}
-          className="grid gap-4"
+          className="mt-6 grid gap-4"
         >
           <form.AppField name="password">
             {(field) => (
@@ -50,7 +58,7 @@ function RouteComponent() {
             />
           </form.AppForm>
         </form>
-      </div>
-    </div>
+      </ScreenBody>
+    </ScreenCard>
   );
 }

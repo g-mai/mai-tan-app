@@ -1,10 +1,4 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "#/components/ui/card";
+import { SectionPanel } from "#/components/shared/screen-shell";
 import {
   type SentInvitation,
   useInviteMember,
@@ -13,34 +7,37 @@ import {
 export function InviteMember({
   organizationId,
   onInvited,
+  variant = "card",
 }: {
   organizationId: string;
   onInvited?: (invitation: SentInvitation) => void;
+  variant?: "card" | "panel";
 }) {
   const { form, isPending } = useInviteMember({ organizationId, onInvited });
 
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Invite someone</CardTitle>
-        <CardDescription>
-          They'll get an email with a link to join. It expires in 48 hours.
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            form.handleSubmit();
-          }}
-          className="grid gap-4"
-        >
+  const isPanel = variant === "panel";
+
+  const body = (
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        form.handleSubmit();
+      }}
+      className="grid gap-4"
+    >
+      {/* In a panel the two fields share a row; stacked everywhere else. */}
+      <div
+        className={isPanel ? "flex flex-col gap-3 sm:flex-row" : "grid gap-4"}
+      >
+        <div className={isPanel ? "sm:flex-2" : undefined}>
           <form.AppField name="email">
             {(field) => (
               <field.TextField label="Email" placeholder="teammate@email.com" />
             )}
           </form.AppField>
+        </div>
+        <div className={isPanel ? "sm:flex-1" : undefined}>
           <form.AppField name="role">
             {(field) => (
               <field.SelectField
@@ -54,13 +51,23 @@ export function InviteMember({
               />
             )}
           </form.AppField>
-          <form.AppForm>
-            <form.SubscribeButton
-              label={isPending ? "Sending..." : "Send invitation"}
-            />
-          </form.AppForm>
-        </form>
-      </CardContent>
-    </Card>
+        </div>
+      </div>
+      <form.AppForm>
+        <form.SubscribeButton
+          label={isPending ? "Sending..." : "Send invitation"}
+        />
+      </form.AppForm>
+    </form>
+  );
+
+  return (
+    <SectionPanel
+      title="Invite someone"
+      description="They'll get an email with a link to join. It expires in 48 hours."
+      variant={variant}
+    >
+      {body}
+    </SectionPanel>
   );
 }

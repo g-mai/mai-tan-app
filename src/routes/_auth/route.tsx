@@ -1,11 +1,11 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { LogoTitle } from "#/components/shared/logo-title";
+import { GridBackdrop } from "#/components/shared/screen-shell";
 import Footer from "#/features/layout/components/footer";
 import {
   ensureOnboardingComplete,
   getOnboardingStep,
 } from "#/features/onboarding/lib/onboarding";
-import { Card } from "@/components/ui/card";
 
 export const Route = createFileRoute("/_auth")({
   beforeLoad: (ctx) => {
@@ -22,16 +22,20 @@ export const Route = createFileRoute("/_auth")({
   component: AuthLayout,
 });
 
+// The Card moved into each screen so strips/footers can differ per route.
 function AuthLayout() {
   return (
-    <div className="min-h-screen flex flex-col">
-      <main className="flex-1 flex flex-col justify-center">
-        <LogoTitle href="/" className="flex gap-4 mx-auto" />
-        <Card className="w-full max-w-md mx-auto mt-10 p-4">
+    <GridBackdrop className="flex flex-col">
+      <main className="flex flex-1 flex-col justify-center px-4 py-10">
+        <div className="mx-auto w-full max-w-md">
+          <LogoTitle
+            href="/"
+            className="mb-8 flex items-center justify-center gap-3"
+          />
           <Outlet /> {/* child routes render here */}
-        </Card>
+        </div>
       </main>
       <Footer />
-    </div>
+    </GridBackdrop>
   );
 }

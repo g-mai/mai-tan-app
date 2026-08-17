@@ -1,5 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { ComingSoon } from "#/components/shared/coming-soon";
+import {
+  ScreenBody,
+  ScreenCard,
+  ScreenFooter,
+  ScreenHeader,
+  ScreenStrip,
+} from "#/components/shared/screen-shell";
 import { Button } from "#/components/ui/button";
 import { useAdvanceOnboarding } from "#/features/onboarding/hooks/useAdvanceOnboarding";
 import { ensureOnboardingStep } from "#/features/onboarding/lib/onboarding";
@@ -14,26 +21,27 @@ function RouteComponent() {
   const { advance, isPending } = useAdvanceOnboarding();
 
   return (
-    <div className="p-2">
-      <h1 className="text-lg font-semibold leading-none tracking-tight">
-        Pick a plan
-      </h1>
-      <p className="text-sm text-muted-foreground mt-2 mb-6">
-        Nothing to pay today.
-      </p>
+    <ScreenCard>
+      <ScreenStrip path="onboarding/subscription" state="step 4 / 7" />
+      <ScreenBody>
+        <ScreenHeader title="Pick a plan" description="Nothing to pay today." />
 
-      <ComingSoon
-        title="Subscriptions"
-        description="Billing arrives once Stripe is integrated: plans are scoped to an organization and priced per seat, so every member you invite counts towards it. Until then every organization has full access."
-      />
-
-      <Button
-        className="mt-6"
-        disabled={isPending}
-        onClick={() => advance({ onboardingStep: "team" })}
-      >
-        {isPending ? "Saving..." : "Continue"}
-      </Button>
-    </div>
+        <div className="mt-6">
+          <ComingSoon
+            title="Subscriptions"
+            description="Billing arrives once Stripe is integrated: plans are scoped to an organization and priced per seat, so every member you invite counts towards it. Until then every organization has full access."
+          />
+        </div>
+      </ScreenBody>
+      <ScreenFooter>
+        <span className="font-mono text-[11px]">no card required</span>
+        <Button
+          disabled={isPending}
+          onClick={() => advance({ onboardingStep: "team" })}
+        >
+          {isPending ? "Saving..." : "Continue"}
+        </Button>
+      </ScreenFooter>
+    </ScreenCard>
   );
 }
