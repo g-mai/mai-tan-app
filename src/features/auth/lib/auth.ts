@@ -7,6 +7,7 @@ import {
 } from "better-auth/plugins";
 import { tanstackStartCookies } from "better-auth/tanstack-start";
 import { eq } from "drizzle-orm";
+import { findSoleOwnedOrgs } from "#/features/organizations/lib/org";
 import { db } from "#/lib/db";
 import { authSchema, member, organization } from "#/lib/db/schema";
 import {
@@ -48,6 +49,30 @@ const options = {
         type: "string",
         required: false,
         defaultValue: "",
+      },
+    },
+    deleteUser: {
+      enabled: true,
+      // Delete the orgs that would be with no owner if this user disappeared.
+      beforeDelete: async (user) => {
+        const memberships = await db.query.member.findMany({
+          where: (member, { eq }) => eq(member.userId, user.id),
+          with: {
+            organization: {
+              with: { members: { columns: { userId: true, role: true } } },
+            },
+          },
+        });
+
+        const orgs = findSoleOwnedOrgs(
+          memberships.map((membership) => membership.organization),
+          user.id,
+        );
+
+        for (const org of orgs) {
+          // Teams, members and invitations cascade on organization.id.
+          await db.delete(organization).where(eq(organization.id, org.id));
+        }
       },
     },
     changeEmail: {

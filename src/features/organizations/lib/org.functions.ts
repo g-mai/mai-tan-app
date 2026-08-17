@@ -4,8 +4,34 @@ import z from "zod";
 import { auth } from "#/features/auth/lib/auth";
 import type { SessionData, User } from "#/features/auth/types";
 import { generateFakeMember } from "#/features/organizations/lib/faker-member";
+import { findSoleOwnedOrgs } from "#/features/organizations/lib/org";
 import { db } from "#/lib/db";
 import { user as userTable } from "#/lib/db/schema";
+
+/**
+ * Drives the account-deletion warning: which organizations would be left with
+ * no owner — stranded and unreachable — if this account went away.
+ */
+export const listSoleOwnedOrgs = createServerFn({ method: "GET" }).handler(
+  async () => {
+    const session = await auth.api.getSession({ headers: getRequestHeaders() });
+    if (!session) throw new Error("Unauthorized");
+
+    const memberships = await db.query.member.findMany({
+      where: (member, { eq }) => eq(member.userId, session.user.id),
+      with: {
+        organization: {
+          with: { members: { columns: { userId: true, role: true } } },
+        },
+      },
+    });
+
+    return findSoleOwnedOrgs(
+      memberships.map((membership) => membership.organization),
+      session.user.id,
+    );
+  },
+);
 
 export const listOrganizations = createServerFn({ method: "GET" }).handler(
   async () => {

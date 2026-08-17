@@ -37,6 +37,7 @@ export const {
   resetPassword,
   changePassword,
   updateUser,
+  deleteUser,
   revokeSession,
   revokeOtherSessions,
   organization,
