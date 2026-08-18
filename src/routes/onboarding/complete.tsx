@@ -8,7 +8,7 @@ import {
   ScreenStrip,
 } from "#/components/shared/screen-shell";
 import { Button } from "#/components/ui/button";
-import { useAdvanceOnboarding } from "#/features/onboarding/hooks/useAdvanceOnboarding";
+import { useOnboardingNavigation } from "#/features/onboarding/hooks/useOnboardingNavigation";
 import { ensureOnboardingStep } from "#/features/onboarding/lib/onboarding";
 
 export const Route = createFileRoute("/onboarding/complete")({
@@ -25,7 +25,7 @@ const WHATS_NEXT = [
 ];
 
 function RouteComponent() {
-  const { advance, isPending } = useAdvanceOnboarding();
+  const { navigate, isPending } = useOnboardingNavigation();
 
   return (
     <ScreenCard>
@@ -54,7 +54,7 @@ function RouteComponent() {
       <ScreenFooter className="sm:justify-end">
         <Button
           disabled={isPending}
-          onClick={() => advance({ onboardingStep: "done" })}
+          onClick={() => navigate({ onboardingStep: "done" })}
         >
           {isPending ? "Saving..." : "Go to the app"}
         </Button>

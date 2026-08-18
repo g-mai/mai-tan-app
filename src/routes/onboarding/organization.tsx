@@ -7,7 +7,8 @@ import {
   ScreenStrip,
 } from "#/components/shared/screen-shell";
 import { Button } from "#/components/ui/button";
-import { useAdvanceOnboarding } from "#/features/onboarding/hooks/useAdvanceOnboarding";
+import { OnboardingBackButton } from "#/features/onboarding/components/onboarding-back-button";
+import { useOnboardingNavigation } from "#/features/onboarding/hooks/useOnboardingNavigation";
 import { ensureOnboardingStep } from "#/features/onboarding/lib/onboarding";
 import { CreateOrg } from "#/features/organizations/components/create-org";
 import { useAcceptInvitation } from "#/features/organizations/hooks/useAcceptInvitation";
@@ -23,13 +24,13 @@ export const Route = createFileRoute("/onboarding/organization")({
 function RouteComponent() {
   const invitations = Route.useLoaderData();
   const session = Route.useRouteContext();
-  const { advance, isPending } = useAdvanceOnboarding();
+  const { navigate, isPending } = useOnboardingNavigation();
 
   // Accepting drops them at the end of the flow: the steps that follow
   // (subscription, team, invites) belong to whoever owns the organization.
   const { accept, isPending: isAccepting } = useAcceptInvitation({
     onAccepted: (accepted) =>
-      advance({
+      navigate({
         favouriteOrganization: accepted.invitation.organizationId,
         onboardingStep: "complete",
       }),
@@ -51,11 +52,12 @@ function RouteComponent() {
             description="You already belong to an organization, so there's nothing to set up here. You can always create your own later."
           />
         </ScreenBody>
-        <ScreenFooter className="sm:justify-end">
+        <ScreenFooter>
+          <OnboardingBackButton step="profile" disabled={isPending} />
           <Button
             disabled={isPending}
             onClick={() =>
-              advance({
+              navigate({
                 favouriteOrganization: org.id,
                 onboardingStep: "complete",
               })
@@ -122,13 +124,19 @@ function RouteComponent() {
           <CreateOrg
             variant="panel"
             onCreated={(org) =>
-              advance({
+              navigate({
                 favouriteOrganization: org.id,
                 onboardingStep: "subscription",
               })
             }
           />
         </ScreenBody>
+        <ScreenFooter>
+          <OnboardingBackButton
+            step="profile"
+            disabled={isPending || isAccepting}
+          />
+        </ScreenFooter>
       </ScreenCard>
     );
   }
@@ -146,7 +154,7 @@ function RouteComponent() {
           <CreateOrg
             variant="panel"
             onCreated={(org) =>
-              advance({
+              navigate({
                 favouriteOrganization: org.id,
                 onboardingStep: "subscription",
               })
@@ -154,6 +162,9 @@ function RouteComponent() {
           />
         </div>
       </ScreenBody>
+      <ScreenFooter>
+        <OnboardingBackButton step="profile" disabled={isPending} />
+      </ScreenFooter>
     </ScreenCard>
   );
 }

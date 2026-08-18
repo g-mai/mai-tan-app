@@ -76,6 +76,6 @@ File upload infrastructure is shared across user avatars, organization logos, an
 - [x] Post-signup redirect — superseded by mandatory onboarding: every new user is routed through org creation (`/onboarding/organization`) before reaching the app, see `docs/plans/onboarding.md`
 - [ ] Empty state: no members (besides self) — when an org has only the owner, show a prompt to invite teammates
 - [ ] Empty state: no pending invitations — handled naturally by hiding the invitations section when the list is empty
-- [ ] Add back button to onboarding
+- [x] Add back button to onboarding
 - [ ] Add list of current members in onboarding/invite step (to show fake members)
 

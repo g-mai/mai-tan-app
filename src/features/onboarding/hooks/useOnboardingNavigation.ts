@@ -17,11 +17,12 @@ type OnboardingUserUpdate = {
 };
 
 /**
- * Moves the user to the next step. Always via `updateUser`, never a direct DB
- * write: the session cookie cache would otherwise serve a stale step for up to
- * 5 minutes and the gate would bounce the user backwards.
+ * Moves the user to another step — forwards or back. Always via `updateUser`,
+ * never a direct DB write: the session cookie cache would otherwise serve a
+ * stale step for up to 5 minutes and the gate would bounce the user to the
+ * wrong screen.
  */
-export function useAdvanceOnboarding() {
+export function useOnboardingNavigation() {
   const router = useRouter();
 
   const { mutate, isPending } = useMutation({
@@ -47,5 +48,5 @@ export function useAdvanceOnboarding() {
     },
   });
 
-  return { advance: mutate, isPending };
+  return { navigate: mutate, isPending };
 }

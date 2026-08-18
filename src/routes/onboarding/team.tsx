@@ -7,7 +7,8 @@ import {
   ScreenStrip,
 } from "#/components/shared/screen-shell";
 import { Button } from "#/components/ui/button";
-import { useAdvanceOnboarding } from "#/features/onboarding/hooks/useAdvanceOnboarding";
+import { OnboardingBackButton } from "#/features/onboarding/components/onboarding-back-button";
+import { useOnboardingNavigation } from "#/features/onboarding/hooks/useOnboardingNavigation";
 import { ensureOnboardingStep } from "#/features/onboarding/lib/onboarding";
 import { CreateTeam } from "#/features/organizations/components/create-team";
 
@@ -18,7 +19,7 @@ export const Route = createFileRoute("/onboarding/team")({
 
 function RouteComponent() {
   const session = Route.useRouteContext();
-  const { advance, isPending } = useAdvanceOnboarding();
+  const { navigate, isPending } = useOnboardingNavigation();
 
   // TODO: refine the UI for create team step,
   // by including a list of the teams of the organization,
@@ -45,11 +46,12 @@ function RouteComponent() {
         </div>
       </ScreenBody>
       <ScreenFooter>
+        <OnboardingBackButton step="subscription" disabled={isPending} />
         <span className="font-mono text-[11px]">you can do this later</span>
         <Button
           variant="outline"
           disabled={isPending}
-          onClick={() => advance({ onboardingStep: "invite" })}
+          onClick={() => navigate({ onboardingStep: "invite" })}
         >
           {isPending ? "Saving..." : "Continue"}
         </Button>

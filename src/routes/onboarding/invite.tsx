@@ -7,7 +7,8 @@ import {
   ScreenStrip,
 } from "#/components/shared/screen-shell";
 import { Button } from "#/components/ui/button";
-import { useAdvanceOnboarding } from "#/features/onboarding/hooks/useAdvanceOnboarding";
+import { OnboardingBackButton } from "#/features/onboarding/components/onboarding-back-button";
+import { useOnboardingNavigation } from "#/features/onboarding/hooks/useOnboardingNavigation";
 import { ensureOnboardingStep } from "#/features/onboarding/lib/onboarding";
 import { FakerMember } from "#/features/organizations/components/faker-member";
 import { InviteMember } from "#/features/organizations/components/invite-member";
@@ -24,7 +25,7 @@ export const Route = createFileRoute("/onboarding/invite")({
 function RouteComponent() {
   const invitations = Route.useLoaderData();
   const session = Route.useRouteContext();
-  const { advance, isPending } = useAdvanceOnboarding();
+  const { navigate, isPending } = useOnboardingNavigation();
   const org = session.orgs[0];
 
   // TODO: Add section with current members (to see fake members)
@@ -61,10 +62,11 @@ function RouteComponent() {
           </div>
         </div>
       </ScreenBody>
-      <ScreenFooter className="sm:justify-end">
+      <ScreenFooter>
+        <OnboardingBackButton step="team" disabled={isPending} />
         <Button
           disabled={isPending}
-          onClick={() => advance({ onboardingStep: "complete" })}
+          onClick={() => navigate({ onboardingStep: "complete" })}
         >
           {isPending ? "Saving..." : "Continue"}
         </Button>

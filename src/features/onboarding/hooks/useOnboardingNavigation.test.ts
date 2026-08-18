@@ -24,7 +24,7 @@ vi.mock("sonner", () => ({
   toast: { error: mockToastError },
 }));
 
-import { useAdvanceOnboarding } from "./useAdvanceOnboarding";
+import { useOnboardingNavigation } from "./useOnboardingNavigation";
 
 function createWrapper() {
   const queryClient = new QueryClient();
@@ -32,18 +32,18 @@ function createWrapper() {
     QueryClientProvider({ client: queryClient, children });
 }
 
-describe("useAdvanceOnboarding", () => {
+describe("useOnboardingNavigation", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
   it("updates the user and navigates to the next step's route", async () => {
     mockUpdateUser.mockResolvedValue({ error: null });
-    const { result } = renderHook(() => useAdvanceOnboarding(), {
+    const { result } = renderHook(() => useOnboardingNavigation(), {
       wrapper: createWrapper(),
     });
 
-    result.current.advance({
+    result.current.navigate({
       onboardingStep: "organization",
       favouriteOrganization: "org-1",
     });
@@ -60,13 +60,28 @@ describe("useAdvanceOnboarding", () => {
     });
   });
 
-  it('navigates to /dashboard when the step is "done"', async () => {
+  it("writes the earlier step and navigates back to its route", async () => {
     mockUpdateUser.mockResolvedValue({ error: null });
-    const { result } = renderHook(() => useAdvanceOnboarding(), {
+    const { result } = renderHook(() => useOnboardingNavigation(), {
       wrapper: createWrapper(),
     });
 
-    result.current.advance({ onboardingStep: "done" });
+    result.current.navigate({ onboardingStep: "team" });
+
+    await waitFor(() => expect(mockNavigate).toHaveBeenCalled());
+
+    expect(mockUpdateUser).toHaveBeenCalledWith({ onboardingStep: "team" });
+    expect(mockInvalidate).toHaveBeenCalled();
+    expect(mockNavigate).toHaveBeenCalledWith({ to: "/onboarding/team" });
+  });
+
+  it('navigates to /dashboard when the step is "done"', async () => {
+    mockUpdateUser.mockResolvedValue({ error: null });
+    const { result } = renderHook(() => useOnboardingNavigation(), {
+      wrapper: createWrapper(),
+    });
+
+    result.current.navigate({ onboardingStep: "done" });
 
     await waitFor(() =>
       expect(mockNavigate).toHaveBeenCalledWith({ to: "/dashboard" }),
@@ -77,11 +92,11 @@ describe("useAdvanceOnboarding", () => {
     mockUpdateUser.mockResolvedValue({
       error: { message: "Could not save" },
     });
-    const { result } = renderHook(() => useAdvanceOnboarding(), {
+    const { result } = renderHook(() => useOnboardingNavigation(), {
       wrapper: createWrapper(),
     });
 
-    result.current.advance({ onboardingStep: "team" });
+    result.current.navigate({ onboardingStep: "team" });
 
     await waitFor(() => expect(mockToastError).toHaveBeenCalled());
 

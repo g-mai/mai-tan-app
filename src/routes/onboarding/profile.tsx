@@ -10,7 +10,7 @@ import {
 } from "#/components/shared/screen-shell";
 import { UserAvatar } from "#/features/auth/components/user-avatar";
 import { updateUser } from "#/features/auth/lib/auth-client";
-import { useAdvanceOnboarding } from "#/features/onboarding/hooks/useAdvanceOnboarding";
+import { useOnboardingNavigation } from "#/features/onboarding/hooks/useOnboardingNavigation";
 import { ensureOnboardingStep } from "#/features/onboarding/lib/onboarding";
 import { useAppForm } from "#/hooks/use-app-form";
 
@@ -27,7 +27,7 @@ const profileFormSchema = z.object({
 function RouteComponent() {
   const { user } = Route.useRouteContext();
   const router = useRouter();
-  const { advance, isPending } = useAdvanceOnboarding();
+  const { navigate, isPending } = useOnboardingNavigation();
 
   const form = useAppForm({
     defaultValues: {
@@ -36,7 +36,7 @@ function RouteComponent() {
     },
     validators: { onSubmit: profileFormSchema },
     onSubmit: async ({ value }) => {
-      advance({
+      navigate({
         firstName: value.firstName,
         lastName: value.lastName,
         name: `${value.firstName} ${value.lastName}`,
