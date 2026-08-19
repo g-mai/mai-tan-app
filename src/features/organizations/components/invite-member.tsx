@@ -43,7 +43,6 @@ export function InviteMember({
               <field.SelectField
                 label="Role"
                 placeholder="Select a role"
-                description="Admins can manage teams and invite people."
                 options={[
                   { value: "member", label: "Member" },
                   { value: "admin", label: "Admin" },

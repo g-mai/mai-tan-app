@@ -42,7 +42,9 @@ function RoleBadge({ role }: { role: string }) {
   };
   const cls = colors[role] ?? "bg-gray-100 text-gray-700";
   return (
-    <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${cls}`}>
+    <span
+      className={`rounded-full px-2 py-0.5 text-xs font-medium min-w-fit ${cls}`}
+    >
       {role}
     </span>
   );
@@ -207,6 +209,7 @@ function RouteComponent() {
           <PendingInvitations
             invitations={org.invitations}
             organizationId={org.id}
+            className="bg-white height-full"
           />
         </div>
       )}

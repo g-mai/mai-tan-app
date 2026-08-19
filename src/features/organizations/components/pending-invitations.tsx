@@ -15,10 +15,12 @@ export function PendingInvitations({
   invitations,
   organizationId,
   variant = "card",
+  className,
 }: {
   invitations: Invitation[];
   organizationId: string;
   variant?: "card" | "panel";
+  className?: string;
 }) {
   const { cancel, isPending: isCancelling } = useCancelInvitation();
   const { resend, isPending: isResending } = useResendInvitation();
@@ -92,8 +94,8 @@ export function PendingInvitations({
           </span>
         )
       }
-      className="[&>div:last-child]:p-0"
       variant={variant}
+      className={className}
     >
       {rows}
     </SectionPanel>

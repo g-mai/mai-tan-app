@@ -49,7 +49,7 @@ function RouteComponent() {
         <OnboardingBackButton step="subscription" disabled={isPending} />
         <span className="font-mono text-[11px]">you can do this later</span>
         <Button
-          variant="outline"
+          // variant="outline"
           disabled={isPending}
           onClick={() => navigate({ onboardingStep: "invite" })}
         >

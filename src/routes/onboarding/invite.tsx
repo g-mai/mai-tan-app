@@ -41,8 +41,8 @@ function RouteComponent() {
           <p>
             <strong>Members</strong> can see the organization and the teams they
             belong to. <strong>Admins</strong> can additionally manage teams and
-            invite or remove people. You're the <strong>owner</strong> — the
-            only role that can delete the organization.
+            invite or remove people. You're the <strong>owner</strong>, the only
+            role that can delete the organization.
           </p>
         </ScreenHeader>
 
