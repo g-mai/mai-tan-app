@@ -12,12 +12,14 @@ import {
   getNavOpenState,
   getSidebarState,
 } from "#/features/layout/lib/nav-state";
+import { ensureOnboardingComplete } from "#/features/onboarding/lib/onboarding";
 import { OrganizationSelector } from "#/features/organizations/components/organization-selector";
 import { Separator } from "@/components/ui/separator";
 
 export const Route = createFileRoute("/_protected")({
   beforeLoad: (ctx) => {
     const session = ensureSession(ctx);
+    ensureOnboardingComplete(ctx);
     return session;
   },
   loader: async () => ({

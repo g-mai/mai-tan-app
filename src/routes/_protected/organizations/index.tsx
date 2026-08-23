@@ -2,30 +2,26 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageTitle } from "#/components/shared/page-title";
 import { Card, CardContent, CardHeader, CardTitle } from "#/components/ui/card";
 import { OrganizationLogo } from "#/features/organizations/components/organization-logo";
-import { listOrganizations } from "#/features/organizations/lib/org.functions";
 
 export const Route = createFileRoute("/_protected/organizations/")({
   component: RouteComponent,
-  loader: async () => {
-    const orgs = await listOrganizations();
-    return orgs;
-  },
 });
 
 function RouteComponent() {
-  const data = Route.useLoaderData();
+  const session = Route.useRouteContext();
 
-  if (!data) {
+  if (!session.orgs || session.orgs.length === 0) {
     return <p>Nothing found</p>;
   }
 
+  // TODO: add a button to create a new organization
   return (
     <div className="flex flex-col gap-4">
       <PageTitle
         title="Organizations"
         subtitle="View and manage your organizations"
       />
-      {data.map((org) => (
+      {session.orgs.map((org) => (
         <Link
           to="/organizations/$orgId"
           params={{ orgId: org.id }}

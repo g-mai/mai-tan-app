@@ -1,15 +1,21 @@
 import { drizzleAdapter } from "@better-auth/drizzle-adapter";
 import { type BetterAuthOptions, betterAuth } from "better-auth";
 import {
-  anonymous,
   customSession,
+  emailOTP,
   organization as organizationPlugin,
 } from "better-auth/plugins";
 import { tanstackStartCookies } from "better-auth/tanstack-start";
 import { eq } from "drizzle-orm";
+import { findSoleOwnedOrgs } from "#/features/organizations/lib/org";
 import { db } from "#/lib/db";
 import { authSchema, member, organization } from "#/lib/db/schema";
-import { sendResetPasswordEmail, sendVerifyEmail } from "#/lib/resend/emails";
+import {
+  sendInvitationEmail,
+  sendResetPasswordEmail,
+  sendVerificationOtpEmail,
+  sendVerifyEmail,
+} from "#/lib/resend/emails";
 
 const options = {
   database: drizzleAdapter(db, {
@@ -38,6 +44,35 @@ const options = {
         type: "string",
         required: false,
         defaultValue: "",
+      },
+      onboardingStep: {
+        type: "string",
+        required: false,
+        defaultValue: "",
+      },
+    },
+    deleteUser: {
+      enabled: true,
+      // Delete the orgs that would be with no owner if this user disappeared.
+      beforeDelete: async (user) => {
+        const memberships = await db.query.member.findMany({
+          where: (member, { eq }) => eq(member.userId, user.id),
+          with: {
+            organization: {
+              with: { members: { columns: { userId: true, role: true } } },
+            },
+          },
+        });
+
+        const orgs = findSoleOwnedOrgs(
+          memberships.map((membership) => membership.organization),
+          user.id,
+        );
+
+        for (const org of orgs) {
+          // Teams, members and invitations cascade on organization.id.
+          await db.delete(organization).where(eq(organization.id, org.id));
+        }
       },
     },
     changeEmail: {
@@ -72,11 +107,6 @@ const options = {
   },
   emailVerification: {
     sendVerificationEmail: async ({ user, url, token }, request) => {
-      if (process.env.SKIP_VERIFICATION_EMAIL === "true") {
-        // Skipping verification email (seed mode)
-        return;
-      }
-      console.log("Preparing to send verification email to:", user.email);
       await sendVerifyEmail({
         user: user as Parameters<typeof sendVerifyEmail>[0]["user"],
         url,
@@ -87,6 +117,15 @@ const options = {
   },
   plugins: [
     organizationPlugin({
+      membershipLimit: 100, // TODO: dynamic based on plan
+      sendInvitationEmail: async (data) => {
+        await sendInvitationEmail({
+          email: data.email,
+          organizationName: data.organization.name,
+          inviterName: data.inviter.user.name || data.inviter.user.email,
+          url: `${process.env.BETTER_AUTH_URL}/invite/${data.id}`,
+        });
+      },
       schema: {
         organization: {
           additionalFields: {
@@ -155,14 +194,21 @@ const options = {
         enabled: true,
       },
     }),
-
-    anonymous({
-      emailDomainName: "demo.local",
-      generateName: () =>
-        `Guest McGuestson${Math.floor(Math.random() * 10000)}`,
+    emailOTP({
+      async sendVerificationOTP({ email, otp, type }) {
+        if (type === "sign-in") {
+          await sendVerificationOtpEmail({
+            email,
+            otp,
+          });
+        } else if (type === "email-verification") {
+          // Send the OTP for email verification
+        } else {
+          // Send the OTP for password reset
+        }
+      },
+      expiresIn: 10 * 60, // 10 minutes
     }),
-
-    tanstackStartCookies(),
   ],
 } satisfies BetterAuthOptions;
 
@@ -172,12 +218,15 @@ export const auth = betterAuth({
     ...(options.plugins ?? []),
     customSession(async ({ user, session }) => {
       const rows = await db
-        .select()
+        .select({ organization })
         .from(organization)
         .innerJoin(member, eq(member.organizationId, organization.id))
         .where(eq(member.userId, user.id));
 
       return { user, session, orgs: rows.map((r) => r.organization) };
     }, options),
+
+    // Cookies' plugin must always stay last
+    tanstackStartCookies(),
   ],
 });

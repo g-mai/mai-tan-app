@@ -1,11 +1,10 @@
 import { Link } from "@tanstack/react-router";
-import { Terminal } from "lucide-react";
+import { UserPlus } from "lucide-react";
 import { Button } from "#/components/ui/button";
-import { DemoButton } from "#/features/demo/components/demo-button";
 
 export function HomeCta() {
   return (
-    <section id="demo">
+    <section id="get-started">
       <div className="mx-auto max-w-300 px-6 py-16 lg:py-22">
         <div className="relative overflow-hidden rounded-3xl bg-primary px-6 py-12 text-primary-foreground shadow-[6px_6px_0_0_rgba(0,0,0,0.16)] sm:px-10 sm:py-16">
           <div
@@ -23,26 +22,29 @@ export function HomeCta() {
               {"// see it for yourself"}
             </div>
             <h2 className="mt-3 font-bold text-[32px] leading-[1.08] tracking-tight sm:text-[38px]">
-              Spin up a live demo in one click.
+              Set up your workspace in minutes.
             </h2>
             <p className="mt-4 text-[15px] leading-relaxed opacity-95 sm:text-base">
-              A fully-populated account, no sign-up required. Explore the
-              organizations, teams, and settings exactly as your users would.
+              Sign up with your email and a 6-digit code. A guided setup walks
+              you through your organization, teams, and first invites.
             </p>
             <div className="mt-7 flex flex-wrap gap-3">
-              <DemoButton
+              <Button
                 size="lg"
                 className="gap-2 bg-primary-foreground! text-primary! transition-transform duration-150 hover:-translate-y-0.5 hover:bg-primary-foreground/90! w-fit px-10!"
+                asChild
               >
-                <Terminal /> Explore the demo
-              </DemoButton>
+                <Link to="/register">
+                  <UserPlus /> Create an account
+                </Link>
+              </Button>
               <Button
                 variant="outline"
                 size="lg"
                 className="border-primary-foreground/45 bg-transparent text-primary-foreground shadow-none transition-transform duration-150 hover:-translate-y-0.5 hover:bg-primary-foreground/10 hover:text-primary-foreground"
                 asChild
               >
-                <Link to="/register">Create an account</Link>
+                <Link to="/login">Log in</Link>
               </Button>
             </div>
           </div>

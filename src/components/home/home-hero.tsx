@@ -12,14 +12,12 @@ import {
   Server,
   Settings2,
   ShieldCheck,
-  Terminal,
   UserPlus,
   Users,
   Zap,
 } from "lucide-react";
 import { Badge } from "#/components/ui/badge";
 import { Button } from "#/components/ui/button";
-import { DemoButton } from "#/features/demo/components/demo-button";
 
 export function HomeHero() {
   return (
@@ -55,30 +53,23 @@ export function HomeHero() {
           </p>
 
           <div className="mt-6">
-            <DemoButton
+            <Button
               size="lg"
               className="gap-2 transition-transform duration-150 hover:-translate-y-0.5"
+              asChild
             >
-              <Terminal /> Explore the demo
-            </DemoButton>
+              <Link to="/register">
+                <UserPlus /> Create account
+              </Link>
+            </Button>
             <p className="mt-3.5 flex items-center gap-1.5 font-mono text-muted-foreground text-xs">
-              <Zap className="size-3.5 text-secondary" /> A demo account is
-              created for you — no signup, no setup.
+              <Zap className="size-3.5 text-secondary" /> Your email and a
+              6-digit code — guided setup from there.
             </p>
             <div className="mt-5.5 flex flex-wrap items-center gap-3 border-t pt-5.5">
               <span className="font-mono text-muted-foreground text-xs">
-                Prefer your own account?
+                Already have an account?
               </span>
-              <Button
-                variant="outline"
-                size="lg"
-                className="gap-2 transition-transform duration-150 hover:-translate-y-0.5"
-                asChild
-              >
-                <Link to="/register">
-                  <UserPlus /> Create account
-                </Link>
-              </Button>
               <Button variant="ghost" size="lg" className="gap-2" asChild>
                 <Link to="/login">
                   <LogIn /> Login

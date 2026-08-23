@@ -8,6 +8,7 @@ Demo: [CLICK HERE](https://tan.g-mai.dev/) to check it live!
 
 - **Multi-tenant organizations** — Better Auth organizations plugin with teams, members, roles, and session-persisted context
 - **Organization & team management** — Create and edit organizations and teams from dedicated routes
+- **Guided onboarding** — Email OTP registration followed by a mandatory, resumable 5-step onboarding flow (profile, org, team, invite)
 - **Collapsible sidebar** — Nested navigation with persisted open/closed state
 - **Type-safe forms** — `@tanstack/react-form` + Zod + TanStack Query mutations
 - **Full-stack SSR** — Server-side rendering with TanStack Start, dehydrated/rehydrated query cache
@@ -91,12 +92,14 @@ For variables in `.env`, check .env.example
 src/
 ├── routes/
 │   ├── __root.tsx             # Root shell, loads session, sets theme
-│   ├── _auth/                 # Public auth pages (login, register, forgot/reset password)
+│   ├── _auth/                 # Public auth pages (login, forgot/reset password, register/)
+│   │   └── register/          # Email → verify OTP → set password
 │   ├── _protected/            # Authenticated pages with sidebar layout
 │   │   ├── organizations/     # Organization list, detail, creation
 │   │   ├── teams/             # Team list, detail, creation
 │   │   └── settings.tsx       # User settings
-│   ├── demo/                  # Demo/testing routes (Sentry, TanStack Query)
+│   ├── onboarding/            # 5-step mandatory onboarding flow
+│   ├── invite/                # Invitation acceptance
 │   └── api/auth/$.ts          # Better Auth catch-all API handler
 │
 ├── features/                  # Feature-based modules

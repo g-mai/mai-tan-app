@@ -21,6 +21,7 @@
     "db:pull": "drizzle-kit pull",
     "db:seed": "tsx --env-file=.env src/lib/db/seed.ts",
     "db:reset": "tsx --env-file=.env src/lib/db/seed.ts --reset",
+    "db:purge-abandoned": "tsx --env-file=.env src/lib/db/purge-abandoned.ts",
     "db:studio": "drizzle-kit studio",
     "knip": "knip"
   },

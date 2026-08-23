@@ -12,7 +12,9 @@ import {
 } from "#/components/ui/card";
 import { Separator } from "#/components/ui/separator";
 import { organization } from "#/features/auth/lib/auth-client";
+import { InviteMember } from "#/features/organizations/components/invite-member";
 import { OrganizationLogo } from "#/features/organizations/components/organization-logo";
+import { PendingInvitations } from "#/features/organizations/components/pending-invitations";
 import { getOrganization } from "#/features/organizations/lib/org.functions";
 
 export const Route = createFileRoute("/_protected/organizations/$orgId/")({
@@ -40,7 +42,9 @@ function RoleBadge({ role }: { role: string }) {
   };
   const cls = colors[role] ?? "bg-gray-100 text-gray-700";
   return (
-    <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${cls}`}>
+    <span
+      className={`rounded-full px-2 py-0.5 text-xs font-medium min-w-fit ${cls}`}
+    >
       {role}
     </span>
   );
@@ -48,7 +52,11 @@ function RoleBadge({ role }: { role: string }) {
 
 function RouteComponent() {
   const org = Route.useLoaderData();
+  const session = Route.useRouteContext();
   const router = useRouter();
+
+  const myRole = org.members.find((m) => m.userId === session.user.id)?.role;
+  const canManage = myRole === "owner" || myRole === "admin";
 
   const createdAt = new Date(org.createdAt).toLocaleDateString(undefined, {
     year: "numeric",
@@ -91,6 +99,7 @@ function RouteComponent() {
     }
   }
 
+  // TODO: add subscription section
   return (
     <div className="space-y-6">
       <PageTitle title={org.name} />
@@ -193,6 +202,17 @@ function RouteComponent() {
           </CardContent>
         </Card>
       </div>
+
+      {canManage && (
+        <div className="grid gap-6 md:grid-cols-2">
+          <InviteMember organizationId={org.id} />
+          <PendingInvitations
+            invitations={org.invitations}
+            organizationId={org.id}
+            className="bg-white height-full"
+          />
+        </div>
+      )}
     </div>
   );
 }

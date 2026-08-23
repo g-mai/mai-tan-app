@@ -23,8 +23,8 @@ File upload infrastructure is shared across user avatars, organization logos, an
 
 - [x] List all organizations the current user belongs to
 - [x] View organization detail (name, description, metadata, member list, team list)
-- [ ] Create organization — form (name, slug, description, website) + server function
-- [ ] Edit organization details — form pre-filled with current values, updates via server function
+- [x] Create organization — form (name, slug, description, website) + server function
+- [x] Edit organization details — form pre-filled with current values, updates via server function
 - [ ] Delete organization — confirmation dialog, server function, redirect to org list after
 - [x] Organization logo — see **File Uploads** above
 
@@ -32,11 +32,11 @@ File upload infrastructure is shared across user avatars, organization logos, an
 
 ## Teams
 
-- [ ] List teams — replace the current stub at `/teams` with a real view of all teams the user belongs to across all orgs
-- [ ] Create team — form (name, description) scoped to an organization + server function
-- [ ] View team detail — replace stub at `/teams/$teamId` with real content: team name, description, member list
-- [ ] Edit team — form pre-filled with current values, updates via server function
-- [ ] Delete team — confirmation dialog, server function, redirect to org detail after
+- [x] List teams — replace the current stub at `/teams` with a real view of all teams the user belongs to across all orgs
+- [x] Create team — form (name, description) scoped to an organization + server function
+- [x] View team detail — replace stub at `/teams/$teamId` with real content: team name, description, member list
+- [x] Edit team — form pre-filled with current values, updates via server function
+- [ ] Delete team — confirmation dialog, server function, redirect to org detail after (min 1 team per org)
 - [ ] Add member to team — select from existing org members, assign to team
 - [ ] Remove member from team — confirmation, server function
 - [x] Team logo — see **File Uploads** above
@@ -45,14 +45,14 @@ File upload infrastructure is shared across user avatars, organization logos, an
 
 ## Members & Invitations
 
-- [ ] Configure `sendInvitationEmail` in `auth.ts` — construct the invite URL (`/invite/$invitationId`) and send it via Resend using the existing email infrastructure
-- [ ] Invite member — modal on org detail page with email input and role selector (member / admin); calls Better Auth's `inviteMember` endpoint
-- [ ] Invitation acceptance route — `/invite/$invitationId` page that:
+- [x] Configure `sendInvitationEmail` in `auth.ts` — construct the invite URL (`/invite/$invitationId`) and send it via Resend using the existing email infrastructure
+- [x] Invite member — modal on org detail page with email input and role selector (member / admin); calls Better Auth's `inviteMember` endpoint
+- [x] Invitation acceptance route — `/invite/$invitationId` page that:
   - If authenticated: calls `acceptInvitation` directly, then redirects to the org
   - If unauthenticated: redirects to login/register with the invitation ID preserved in the URL; after auth, resumes acceptance
-- [ ] Pending invitations list — visible to org owners and admins on the org detail page; shows email, role, expiry
-- [ ] Cancel invitation — action on pending invitation, with confirmation
-- [ ] Resend invitation — regenerates and resends the invite email for a pending invitation
+- [x] Pending invitations list — visible to org owners and admins on the org detail page; shows email, role, expiry
+- [x] Cancel invitation — action on pending invitation, with confirmation
+- [x] Resend invitation — regenerates and resends the invite email for a pending invitation
 - [ ] Remove member from organization — action on member list, confirmation dialog, server function
 - [ ] Change member role — inline role selector on member list (owner / admin / member), updates via server function
 
@@ -66,13 +66,16 @@ File upload infrastructure is shared across user avatars, organization logos, an
 - [x] Session management — active sessions list with device/browser info, revoke individual sessions, sign out from current session
 - [ ] Profile section polish — remove "Upload WIP" placeholder, display current email as a read-only field, clean up layout
 - [x] User avatar — see **File Uploads** above
+- [x] Delete user feature
+- [ ] Add timer a to slow down the "delete user" action, to give user one last chance to cancel it.
 
 ---
 
 ## Onboarding & Empty States
 
-- [ ] Post-signup redirect — after registration, check if the user belongs to any org; if not, redirect to the create organization page instead of the generic home page
-- [ ] Empty state: no organizations — when a user has no orgs, show a clear prompt to create one instead of an empty list
-- [ ] Empty state: no teams — when an org has no teams, show a prompt to create the first team
+- [x] Post-signup redirect — superseded by mandatory onboarding: every new user is routed through org creation (`/onboarding/organization`) before reaching the app, see `docs/plans/onboarding.md`
 - [ ] Empty state: no members (besides self) — when an org has only the owner, show a prompt to invite teammates
 - [ ] Empty state: no pending invitations — handled naturally by hiding the invitations section when the list is empty
+- [x] Add back button to onboarding
+- [ ] Add list of current members in onboarding/invite step (to show fake members)
+
