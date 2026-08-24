@@ -19,13 +19,11 @@ import { organization as orgClient } from "@/features/auth/lib/auth-client";
 export type OrganizationSelectorProps = {
   organizations: Organization[];
   activeOrganizationId: string | null | undefined;
-  favouriteOrganizationId: string | null | undefined;
 };
 
 export function OrganizationSelector({
   organizations,
   activeOrganizationId,
-  favouriteOrganizationId,
 }: OrganizationSelectorProps) {
   const router = useRouter();
   if (organizations.length === 0) {
@@ -41,11 +39,8 @@ export function OrganizationSelector({
   // or show more info about current org
   // Do not show "Switch to another organization" if there's only one org
 
-  // Falls back to the user's favourite when the session has no active org yet
-  // (e.g. right after registration, before the first setActive).
   const activeOrg =
-    organizations.find((org) => org.id === activeOrganizationId) ||
-    organizations.find((org) => org.id === favouriteOrganizationId) ||
+    organizations.find((org) => org.id === activeOrganizationId) ??
     organizations[0];
   const inactiveOrgs = organizations.filter((org) => org.id !== activeOrg.id);
 

@@ -21,7 +21,6 @@ export const user = pgTable("user", {
     .notNull(),
   firstName: text("first_name").default(""),
   lastName: text("last_name").default(""),
-  favouriteOrganization: text("favourite_organization").default(""),
   onboardingStep: text("onboarding_step").default(""),
 });
 

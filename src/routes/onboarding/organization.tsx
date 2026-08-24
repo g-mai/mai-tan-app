@@ -31,7 +31,6 @@ function RouteComponent() {
   const { accept, isPending: isAccepting } = useAcceptInvitation({
     onAccepted: (accepted) =>
       navigate({
-        favouriteOrganization: accepted.invitation.organizationId,
         onboardingStep: "complete",
       }),
   });
@@ -58,7 +57,6 @@ function RouteComponent() {
             disabled={isPending}
             onClick={() =>
               navigate({
-                favouriteOrganization: org.id,
                 onboardingStep: "complete",
               })
             }
@@ -125,7 +123,6 @@ function RouteComponent() {
             variant="panel"
             onCreated={(org) =>
               navigate({
-                favouriteOrganization: org.id,
                 onboardingStep: "subscription",
               })
             }
@@ -155,7 +152,6 @@ function RouteComponent() {
             variant="panel"
             onCreated={(org) =>
               navigate({
-                favouriteOrganization: org.id,
                 onboardingStep: "subscription",
               })
             }

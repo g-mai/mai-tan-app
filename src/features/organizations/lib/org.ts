@@ -41,3 +41,20 @@ export function findSoleOwnedOrgs(
       otherMemberCount: org.members.filter((m) => m.userId !== userId).length,
     }));
 }
+
+/**
+ * Which organization a session should point at, given the organizations the
+ * user belongs to (longest-standing membership first).
+ *
+ * Keeps the one the session already has, as long as the user is still a member
+ * — only a missing or stale id falls through to the first. Users who belong to
+ * no organization at all are the one case that legitimately resolves to `null`.
+ */
+export function pickActiveOrganizationId(
+  orgIds: string[],
+  currentId?: string | null,
+): string | null {
+  if (currentId && orgIds.includes(currentId)) return currentId;
+
+  return orgIds[0] ?? null;
+}

@@ -13,7 +13,6 @@ type OnboardingUserUpdate = {
   firstName?: string;
   lastName?: string;
   name?: string;
-  favouriteOrganization?: string;
 };
 
 /**

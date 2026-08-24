@@ -43,6 +43,13 @@
       "when": 1786875394457,
       "tag": "0005_steady_black_bird",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1787566023223,
+      "tag": "0006_lowly_magik",
+      "breakpoints": true
     }
   ]
 }

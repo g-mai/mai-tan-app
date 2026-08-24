@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { findSoleOwnedOrgs } from "./org";
+import { findSoleOwnedOrgs, pickActiveOrganizationId } from "./org";
 
 const ME = "user-me";
 
@@ -83,5 +83,31 @@ describe("findSoleOwnedOrgs", () => {
     ];
 
     expect(findSoleOwnedOrgs(orgs, ME).map((o) => o.id)).toEqual(["a", "c"]);
+  });
+});
+
+const ORGS = ["org-a", "org-b", "org-c"];
+
+describe("pickActiveOrganizationId", () => {
+  it("keeps the current organization when the user is still a member", () => {
+    expect(pickActiveOrganizationId(ORGS, "org-b")).toBe("org-b");
+  });
+
+  it("falls back to the longest-standing membership when the current one is stale", () => {
+    expect(pickActiveOrganizationId(ORGS, "org-gone")).toBe("org-a");
+  });
+
+  it("falls back when there is no current organization", () => {
+    expect(pickActiveOrganizationId(ORGS, null)).toBe("org-a");
+    expect(pickActiveOrganizationId(ORGS, undefined)).toBe("org-a");
+  });
+
+  it("treats an empty string as unset rather than matching on it", () => {
+    expect(pickActiveOrganizationId(ORGS, "")).toBe("org-a");
+  });
+
+  it("returns null when the user belongs to no organization", () => {
+    expect(pickActiveOrganizationId([], "org-gone")).toBeNull();
+    expect(pickActiveOrganizationId([], null)).toBeNull();
   });
 });

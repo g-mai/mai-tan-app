@@ -47,7 +47,6 @@ function ProtectedLayout() {
               <OrganizationSelector
                 organizations={session.orgs}
                 activeOrganizationId={session.session.activeOrganizationId}
-                favouriteOrganizationId={session.user.favouriteOrganization}
               />
               <HeaderNavUser user={session.user} />
             </div>

@@ -6,10 +6,18 @@ import {
   organization as organizationPlugin,
 } from "better-auth/plugins";
 import { tanstackStartCookies } from "better-auth/tanstack-start";
-import { eq } from "drizzle-orm";
-import { findSoleOwnedOrgs } from "#/features/organizations/lib/org";
+import { asc, eq } from "drizzle-orm";
+import {
+  findSoleOwnedOrgs,
+  pickActiveOrganizationId,
+} from "#/features/organizations/lib/org";
 import { db } from "#/lib/db";
-import { authSchema, member, organization } from "#/lib/db/schema";
+import {
+  authSchema,
+  member,
+  organization,
+  session as sessionTable,
+} from "#/lib/db/schema";
 import {
   sendInvitationEmail,
   sendResetPasswordEmail,
@@ -28,6 +36,29 @@ const options = {
       maxAge: 5 * 60,
     },
   },
+  databaseHooks: {
+    session: {
+      create: {
+        // Sets an active organization at sign-in
+        before: async (session) => {
+          const rows = await db
+            .select({ organizationId: member.organizationId })
+            .from(member)
+            .where(eq(member.userId, session.userId))
+            .orderBy(asc(member.createdAt));
+
+          return {
+            data: {
+              ...session,
+              activeOrganizationId: pickActiveOrganizationId(
+                rows.map((row) => row.organizationId),
+              ),
+            },
+          };
+        },
+      },
+    },
+  },
   user: {
     additionalFields: {
       firstName: {
@@ -36,11 +67,6 @@ const options = {
         defaultValue: "",
       },
       lastName: {
-        type: "string",
-        required: false,
-        defaultValue: "",
-      },
-      favouriteOrganization: {
         type: "string",
         required: false,
         defaultValue: "",
@@ -221,9 +247,30 @@ export const auth = betterAuth({
         .select({ organization })
         .from(organization)
         .innerJoin(member, eq(member.organizationId, organization.id))
-        .where(eq(member.userId, user.id));
+        .where(eq(member.userId, user.id))
+        .orderBy(asc(member.createdAt));
 
-      return { user, session, orgs: rows.map((r) => r.organization) };
+      const orgs = rows.map((r) => r.organization);
+
+      // Make sure activeOrganizationId is always set and valid
+      // (covering for deleted memberships and other org changes).
+      const activeOrganizationId = pickActiveOrganizationId(
+        orgs.map((org) => org.id),
+        session.activeOrganizationId,
+      );
+
+      if (activeOrganizationId !== session.activeOrganizationId) {
+        await db
+          .update(sessionTable)
+          .set({ activeOrganizationId })
+          .where(eq(sessionTable.id, session.id));
+      }
+
+      return {
+        user,
+        session: { ...session, activeOrganizationId },
+        orgs,
+      };
     }, options),
 
     // Cookies' plugin must always stay last

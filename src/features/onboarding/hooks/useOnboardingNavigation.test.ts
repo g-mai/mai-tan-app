@@ -45,14 +45,12 @@ describe("useOnboardingNavigation", () => {
 
     result.current.navigate({
       onboardingStep: "organization",
-      favouriteOrganization: "org-1",
     });
 
     await waitFor(() => expect(mockNavigate).toHaveBeenCalled());
 
     expect(mockUpdateUser).toHaveBeenCalledWith({
       onboardingStep: "organization",
-      favouriteOrganization: "org-1",
     });
     expect(mockInvalidate).toHaveBeenCalled();
     expect(mockNavigate).toHaveBeenCalledWith({
