@@ -42,7 +42,7 @@ export function PendingInvitations({
       {pending.map((invitation) => (
         <li
           key={invitation.id}
-          className="flex items-center justify-between gap-4 px-4 py-3"
+          className="flex items-center justify-between gap-4 "
         >
           <div className="min-w-0">
             <p className="truncate text-sm font-medium">{invitation.email}</p>

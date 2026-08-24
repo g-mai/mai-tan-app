@@ -1,4 +1,5 @@
 import { useStore } from "@tanstack/react-form";
+import { REGEXP_ONLY_DIGITS } from "input-otp";
 import { Button } from "#/components/ui/button";
 import {
   Field,
@@ -7,6 +8,11 @@ import {
   FieldLabel,
 } from "#/components/ui/field";
 import { Input } from "#/components/ui/input";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "#/components/ui/input-otp";
 import {
   Select,
   SelectContent,
@@ -190,6 +196,50 @@ export function PasswordField({
         aria-invalid={isInvalid}
         placeholder={placeholder}
       />
+      {description && <FieldDescription>{description}</FieldDescription>}
+      {isInvalid && <FieldError errors={errors} />}
+    </Field>
+  );
+}
+
+export function OtpField({
+  label,
+  description,
+  onComplete,
+}: {
+  label: string;
+  description?: string;
+  onComplete?: () => void;
+}) {
+  const field = useFieldContext<string>();
+  const errors = useStore(field.store, (state) => state.meta.errors);
+  const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
+
+  return (
+    <Field data-invalid={isInvalid}>
+      <FieldLabel htmlFor={field.name}>{label}</FieldLabel>
+      <InputOTP
+        id={field.name}
+        name={field.name}
+        maxLength={6}
+        pattern={REGEXP_ONLY_DIGITS}
+        value={field.state.value}
+        onChange={(value) => field.handleChange(value)}
+        onBlur={field.handleBlur}
+        onComplete={onComplete}
+        autoFocus
+      >
+        <InputOTPGroup className="w-full flex gap-4">
+          {[0, 1, 2, 3, 4, 5].map((index) => (
+            <InputOTPSlot
+              key={index}
+              index={index}
+              aria-invalid={isInvalid}
+              className="w-full text-2xl h-12 border-0 rounded-md shadow-sm ring-1 ring-inset ring-gray-300  focus:ring-2 focus:ring-inset"
+            />
+          ))}
+        </InputOTPGroup>
+      </InputOTP>
       {description && <FieldDescription>{description}</FieldDescription>}
       {isInvalid && <FieldError errors={errors} />}
     </Field>

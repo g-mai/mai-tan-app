@@ -27,6 +27,7 @@ function RouteComponent() {
       ) : (
         <CreateTeam
           organizations={session.orgs}
+          activeOrganizationId={session.session.activeOrganizationId}
           onCreated={(team) =>
             navigate({ to: "/teams/$teamId/edit", params: { teamId: team.id } })
           }

@@ -55,12 +55,14 @@ function RouteComponent() {
           }}
           className="mt-6 grid gap-4"
         >
-          {/* Code reads as a code: mono, tracked out, taller field. */}
-          <div className="[&_input]:h-12 [&_input]:font-mono [&_input]:text-xl [&_input]:tracking-[0.4em]">
-            <form.AppField name="otp">
-              {(field) => <field.TextField label="Code" placeholder="123456" />}
-            </form.AppField>
-          </div>
+          <form.AppField name="otp">
+            {(field) => (
+              <field.OtpField
+                label="Code"
+                onComplete={() => form.handleSubmit()}
+              />
+            )}
+          </form.AppField>
           {error && <FieldError errors={[{ message: error }]} />}
           <form.AppForm>
             <form.SubscribeButton

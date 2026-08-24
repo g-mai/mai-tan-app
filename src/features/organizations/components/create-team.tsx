@@ -4,19 +4,19 @@ import {
   useCreateTeam,
 } from "#/features/organizations/hooks/useCreateTeam";
 
-// TODO: add preselected organization for dropdown
 export function CreateTeam({
   organizations,
   onCreated,
   variant = "card",
+  activeOrganizationId,
 }: {
   organizations: { id: string; name: string }[];
   onCreated?: (team: CreatedTeam) => void;
   variant?: "card" | "panel";
+  activeOrganizationId: string | null;
 }) {
   const { form, isPending } = useCreateTeam({
-    defaultOrganizationId:
-      organizations.length === 1 ? organizations[0].id : undefined,
+    defaultOrganizationId: activeOrganizationId,
     onCreated,
   });
 
@@ -37,7 +37,7 @@ export function CreateTeam({
           <field.SelectField
             label="Organization"
             placeholder="Select an organization"
-            description="Only owners and admins can create teams."
+            description="Note: only owners and admins can create teams."
             options={organizations.map((org) => ({
               value: org.id,
               label: org.name,

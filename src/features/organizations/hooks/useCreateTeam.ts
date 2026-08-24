@@ -12,7 +12,7 @@ export function useCreateTeam({
   defaultOrganizationId,
   onCreated,
 }: {
-  defaultOrganizationId?: string;
+  defaultOrganizationId: string | null;
   onCreated?: (team: CreatedTeam) => void;
 }) {
   const createTeamFormSchema = z.object({

@@ -40,10 +40,10 @@ function RouteComponent() {
             it, so you already have one.
           </p>
           <p>
-            Teams scope people and work inside an organization — use them for
-            departments, projects, or clients. Add a second one now, or skip and
-            do it later.
+            Teams help group people and work inside an organization, you can use
+            them for departments, projects, etc.
           </p>
+          <p>Add a more teams now, or skip and do it later.</p>
         </ScreenHeader>
 
         <div className="mt-6 grid gap-4">
@@ -51,6 +51,7 @@ function RouteComponent() {
             variant="panel"
             organizations={session.orgs}
             onCreated={() => router.invalidate()}
+            activeOrganizationId={session.session.activeOrganizationId}
           />
 
           {teams.length > 0 && (
@@ -67,9 +68,6 @@ function RouteComponent() {
                     <div className="min-w-0">
                       <p className="truncate text-sm font-medium">
                         {team.name}
-                      </p>
-                      <p className="truncate text-xs text-muted-foreground">
-                        {team.organization.name}
                       </p>
                     </div>
                   </li>
