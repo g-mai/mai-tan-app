@@ -14,8 +14,8 @@ export function generateFakeMember(): FakeMember {
   const email = faker.internet
     .email({
       firstName,
-      lastName,
-      provider: `${faker.string.alphanumeric({ length: 6, casing: "lower" })}.demo.local`,
+      lastName: `${lastName}-${faker.string.alphanumeric({ length: 6, casing: "lower" })}`,
+      provider: `fake.member`,
     })
     .toLowerCase();
 

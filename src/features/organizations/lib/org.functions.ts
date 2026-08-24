@@ -120,3 +120,18 @@ export const getUserTeams = createServerFn({ method: "GET" })
     });
     return teams ?? [];
   });
+
+const listOrgMembersSchema = z.object({
+  organizationId: z.string().optional(),
+});
+
+/** Current members of an organization — the caller must be a member. */
+export const listOrgMembers = createServerFn({ method: "GET" })
+  .validator(listOrgMembersSchema)
+  .handler(async ({ data }) => {
+    const { members } = await auth.api.listMembers({
+      headers: getRequestHeaders(),
+      query: { organizationId: data.organizationId },
+    });
+    return members;
+  });
