@@ -8,6 +8,7 @@ const {
   mockInvalidate,
   mockSignInEmailOtp,
   mockSendVerificationOtp,
+  mockNotifyAdmin,
   mockToastSuccess,
   mockToastError,
 } = vi.hoisted(() => ({
@@ -15,6 +16,7 @@ const {
   mockInvalidate: vi.fn().mockResolvedValue(undefined),
   mockSignInEmailOtp: vi.fn(),
   mockSendVerificationOtp: vi.fn(),
+  mockNotifyAdmin: vi.fn().mockResolvedValue(undefined),
   mockToastSuccess: vi.fn(),
   mockToastError: vi.fn(),
 }));
@@ -27,6 +29,10 @@ vi.mock("@tanstack/react-router", async (importOriginal) => ({
 vi.mock("#/features/auth/lib/auth-client", () => ({
   signIn: { emailOtp: mockSignInEmailOtp },
   emailOtp: { sendVerificationOtp: mockSendVerificationOtp },
+}));
+
+vi.mock("#/features/auth/lib/auth.functions", () => ({
+  notifyAdminOfNewUser: mockNotifyAdmin,
 }));
 
 vi.mock("sonner", () => ({
@@ -65,6 +71,7 @@ describe("useVerifyEmailOtp", () => {
       otp: "123456",
       onboardingStep: "password",
     });
+    expect(mockNotifyAdmin).toHaveBeenCalled();
     expect(mockInvalidate).toHaveBeenCalled();
     expect(mockNavigate).toHaveBeenCalledWith({ to: "/register/password" });
   });
