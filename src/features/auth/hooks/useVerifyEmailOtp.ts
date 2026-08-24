@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import z from "zod";
 import { emailOtp, signIn } from "#/features/auth/lib/auth-client";
 import { useAppForm } from "#/hooks/use-app-form";
+import { sendNotificationToAdmin } from "#/lib/resend/emails";
 
 type OtpError = { code?: string; message?: string; status?: number };
 
@@ -58,6 +59,11 @@ export function useVerifyEmailOtp(email: string) {
       return data;
     },
     onSuccess: async () => {
+      sendNotificationToAdmin({
+        subject: "New user registered",
+        message: `A new user has registered with the email: ${email}`,
+      });
+      toast.success("Email verified!");
       await router.invalidate();
       router.navigate({ to: "/register/password" });
     },

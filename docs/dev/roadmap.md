@@ -18,13 +18,13 @@ The goal of this starter kit is simple: a developer with a B2B SaaS idea should 
 
 ### 1. Feature Completeness
 
-The multi-tenant foundation is in place at the data and auth layer, but the surface area exposed to users is incomplete. Before open sourcing, the following flows need to be fully functional end-to-end:
+The multi-tenant foundation is in place at the data and auth layer, and most of the surface area exposed to users now exists. What is left is the destructive half of each flow:
 
-- **Organization management** — create, view, edit, and delete organizations
-- **Team management** — create, view, edit, and delete teams within an organization
-- **Member management** — invite members by email, accept or decline invitations, remove members, change member roles
-- **User profile** — view and edit personal details, upload an avatar, manage account settings (email, password)
-- **Onboarding** — a guided flow for new users: create their first organization, invite their first team member
+- **Organization management** — create, view and edit are done; **delete is not**
+- **Team management** — create, view and edit are done; **delete is not**
+- **Member management** — invite by email, accept, and cancel are done; **removing a member and changing a member's role are not**
+- **User profile** — done: personal details, avatar upload, email, password, active sessions, and permanent account deletion
+- **Onboarding** — done: email-OTP registration into a mandatory, resumable seven-step flow, documented in [onboarding.md](./onboarding.md)
 
 Each of these is not a stretch goal — they are table stakes for any B2B SaaS, and their absence makes the starter incomplete for the use case it claims to serve.
 
@@ -63,9 +63,9 @@ The starter is only as good as the experience of working with it. The codebase i
 
 ### 5. Testing
 
-Currently there are no tests. A starter kit without tests sends a signal that testing is optional or an afterthought. The goal isn't exhaustive coverage — it's to establish the patterns:
+The pattern is established — Vitest, with hook and pure-logic tests colocated next to what they cover (`pnpm test`). Registration, the onboarding gate, invitation previews, the sole-owned-org rule, and the abandoned-registration rule are covered. The goal isn't exhaustive coverage, it's that every kind of thing worth testing has one worked example:
 
-- **Auth flows** — registration, login, session handling, password reset
+- **Auth flows** — registration and login are covered; password reset is not
 - **Protected routes** — that unauthorized access is correctly rejected
 - **Critical mutations** — that the core data operations behave correctly and reject invalid input
 - **Billing flows** — that subscription state correctly gates access to features and seat limits are enforced
@@ -74,7 +74,7 @@ The test suite should be small enough to read in an afternoon and thorough enoug
 
 ### 6. Documentation
 
-Two developer guides already exist (auth/session and forms). The same treatment needs to be applied to the remaining architectural concerns:
+Four developer guides already exist (auth/session, forms, onboarding, maintenance). The same treatment needs to be applied to the remaining architectural concerns:
 
 - **Organizations & teams** — the multi-tenancy model, how data is scoped, how to build features within it
 - **Platform roles** — how the platform admin layer works and how to extend it
