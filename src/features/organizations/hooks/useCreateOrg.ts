@@ -69,8 +69,10 @@ export function useCreateOrg({
     validators: {
       onSubmit: createOrgFormSchema,
     },
-    onSubmit: async ({ value }) => {
-      mutate(value);
+    onSubmit: async ({ value, formApi }) => {
+      mutate(value, {
+        onSuccess: () => formApi.reset(),
+      });
     },
   });
 

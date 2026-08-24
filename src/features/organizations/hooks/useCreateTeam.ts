@@ -62,8 +62,10 @@ export function useCreateTeam({
     validators: {
       onSubmit: createTeamFormSchema,
     },
-    onSubmit: async ({ value }) => {
-      mutate(value);
+    onSubmit: async ({ value, formApi }) => {
+      mutate(value, {
+        onSuccess: () => formApi.reset(),
+      });
     },
   });
 
