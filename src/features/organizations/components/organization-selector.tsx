@@ -1,6 +1,6 @@
 "use client";
 
-import { Link } from "@tanstack/react-router";
+import { Link, useRouter } from "@tanstack/react-router";
 import { Plus } from "lucide-react";
 import type { Organization } from "#/features/auth/types";
 import { OrganizationLogo } from "#/features/organizations/components/organization-logo";
@@ -19,14 +19,13 @@ import { organization as orgClient } from "@/features/auth/lib/auth-client";
 export type OrganizationSelectorProps = {
   organizations: Organization[];
   activeOrganizationId: string | null | undefined;
-  favouriteOrganizationId: string | null | undefined;
 };
 
 export function OrganizationSelector({
   organizations,
   activeOrganizationId,
-  favouriteOrganizationId,
 }: OrganizationSelectorProps) {
+  const router = useRouter();
   if (organizations.length === 0) {
     // button to create organization
     return (
@@ -36,12 +35,14 @@ export function OrganizationSelector({
     );
   }
 
+  // TODO: Move to sidebar, add button to go to current org settings
+  // or show more info about current org
+  // Do not show "Switch to another organization" if there's only one org
+
   const activeOrg =
-    organizations.find((org) => org.id === activeOrganizationId) ||
+    organizations.find((org) => org.id === activeOrganizationId) ??
     organizations[0];
-  const inactiveOrgs = organizations.filter(
-    (org) => org.id !== activeOrganizationId,
-  );
+  const inactiveOrgs = organizations.filter((org) => org.id !== activeOrg.id);
 
   async function setActiveOrganization(orgId: string) {
     const { data, error } = await orgClient.setActive({
@@ -53,7 +54,7 @@ export function OrganizationSelector({
     } else {
       console.log("Active organization set successfully", data);
       // reload the page to update the active organization
-      window.location.reload();
+      await router.invalidate();
     }
   }
 

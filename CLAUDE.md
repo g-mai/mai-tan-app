@@ -44,7 +44,7 @@ Auth is handled by **Better Auth** (`src/features/auth/lib/auth.ts`):
 - Server-side: `auth` instance with Drizzle adapter and organization plugin.
 - Client-side: `authClient` in `src/features/auth/lib/auth-client.ts` — named exports like `signIn`, `signOut`, `useSession`, `organization` are imported from here throughout the app.
 - Session is fetched server-side via the `getSession` server function and threaded through router context. Protected routes call `ensureSession` (throws redirect) in `beforeLoad`.
-- Additional user fields: `firstName`, `lastName`, `favouriteOrganization`.
+- Additional user fields: `firstName`, `lastName`.
 - Email flows (verification, reset password) go through Resend via `src/lib/resend/emails.ts`. Set `SKIP_VERIFICATION_EMAIL=true` in env to skip during seeding.
 
 ### Database

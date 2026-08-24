@@ -48,14 +48,23 @@ export const { fieldContext, useFieldContext, formContext, useFormContext } =
 ```ts
 import { createFormHook } from "@tanstack/react-form";
 import {
+  ColorField,
+  OtpField,
   PasswordField,
+  SelectField,
   SubscribeButton,
   TextField,
 } from "#/components/shared/form-components";
 import { fieldContext, formContext } from "./use-form-context";
 
 export const { useAppForm } = createFormHook({
-  fieldComponents: { TextField, PasswordField },
+  fieldComponents: {
+    TextField,
+    PasswordField,
+    SelectField,
+    ColorField,
+    OtpField,
+  },
   formComponents: { SubscribeButton },
   fieldContext,
   formContext,
@@ -125,11 +134,23 @@ Key points:
 
 ### Available components
 
-| Component         | Field type | Notes                            |
-| ----------------- | ---------- | -------------------------------- |
-| `TextField`       | `string`   | Single-line text input           |
-| `PasswordField`   | `string`   | Single-line password input       |
-| `SubscribeButton` | —          | Form-level, reads `isSubmitting` |
+| Component         | Field type | Notes                                                              |
+| ----------------- | ---------- | ------------------------------------------------------------------ |
+| `TextField`       | `string`   | Single-line text input                                              |
+| `PasswordField`   | `string`   | Single-line password input                                          |
+| `SelectField`     | `string`   | Takes `options: { value, label }[]`; blur fires on the trigger      |
+| `ColorField`      | `string`   | Native colour picker with the hex value shown alongside             |
+| `OtpField`        | `string`   | 6-digit, digits-only `InputOTP`; autofocuses, takes `onComplete`    |
+| `SubscribeButton` | —          | Form-level, reads `isSubmitting`                                    |
+
+`OtpField`'s `onComplete` fires when the sixth digit lands — pass `form.handleSubmit` to submit
+without a click, as `/register/verify` does:
+
+```tsx
+<form.AppField name="otp">
+  {(field) => <field.OtpField label="Code" onComplete={() => form.handleSubmit()} />}
+</form.AppField>
+```
 
 ### Adding a new field type
 

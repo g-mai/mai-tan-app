@@ -1,4 +1,5 @@
 import { useStore } from "@tanstack/react-form";
+import { REGEXP_ONLY_DIGITS } from "input-otp";
 import { Button } from "#/components/ui/button";
 import {
   Field,
@@ -7,6 +8,11 @@ import {
   FieldLabel,
 } from "#/components/ui/field";
 import { Input } from "#/components/ui/input";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "#/components/ui/input-otp";
 import {
   Select,
   SelectContent,
@@ -33,27 +39,52 @@ export function TextField({
   label,
   description,
   placeholder,
+  prefix,
 }: {
   label: string;
   description?: string;
   placeholder?: string;
+  prefix?: string;
 }) {
   const field = useFieldContext<string>();
+  // TODO: check useStore deprecation
   const errors = useStore(field.store, (state) => state.meta.errors);
   const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
+
+  const input = (
+    <Input
+      id={field.name}
+      name={field.name}
+      value={field.state.value}
+      onBlur={field.handleBlur}
+      onChange={(e) => field.handleChange(e.target.value)}
+      aria-invalid={isInvalid}
+      placeholder={placeholder}
+      // The wrapper owns the border and focus ring when there's an affix.
+      className={
+        prefix
+          ? "rounded-none border-0 shadow-none focus-visible:ring-0"
+          : undefined
+      }
+    />
+  );
 
   return (
     <Field data-invalid={isInvalid}>
       <FieldLabel htmlFor={field.name}>{label}</FieldLabel>
-      <Input
-        id={field.name}
-        name={field.name}
-        value={field.state.value}
-        onBlur={field.handleBlur}
-        onChange={(e) => field.handleChange(e.target.value)}
-        aria-invalid={isInvalid}
-        placeholder={placeholder}
-      />
+      {prefix ? (
+        <div
+          aria-invalid={isInvalid}
+          className="flex h-9 items-stretch overflow-hidden rounded-md border border-input shadow-xs focus-within:border-ring focus-within:ring-[3px] focus-within:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20"
+        >
+          <span className="flex min-w-fit items-center border-r border-input bg-muted px-2 font-mono text-xs text-muted-foreground">
+            {prefix}
+          </span>
+          {input}
+        </div>
+      ) : (
+        input
+      )}
       {description && <FieldDescription>{description}</FieldDescription>}
       {isInvalid && <FieldError errors={errors} />}
     </Field>
@@ -165,6 +196,50 @@ export function PasswordField({
         aria-invalid={isInvalid}
         placeholder={placeholder}
       />
+      {description && <FieldDescription>{description}</FieldDescription>}
+      {isInvalid && <FieldError errors={errors} />}
+    </Field>
+  );
+}
+
+export function OtpField({
+  label,
+  description,
+  onComplete,
+}: {
+  label: string;
+  description?: string;
+  onComplete?: () => void;
+}) {
+  const field = useFieldContext<string>();
+  const errors = useStore(field.store, (state) => state.meta.errors);
+  const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
+
+  return (
+    <Field data-invalid={isInvalid}>
+      <FieldLabel htmlFor={field.name}>{label}</FieldLabel>
+      <InputOTP
+        id={field.name}
+        name={field.name}
+        maxLength={6}
+        pattern={REGEXP_ONLY_DIGITS}
+        value={field.state.value}
+        onChange={(value) => field.handleChange(value)}
+        onBlur={field.handleBlur}
+        onComplete={onComplete}
+        autoFocus
+      >
+        <InputOTPGroup className="w-full flex gap-4">
+          {[0, 1, 2, 3, 4, 5].map((index) => (
+            <InputOTPSlot
+              key={index}
+              index={index}
+              aria-invalid={isInvalid}
+              className="w-full text-2xl h-12 border-0 rounded-md shadow-sm ring-1 ring-inset ring-gray-300  focus:ring-2 focus:ring-inset"
+            />
+          ))}
+        </InputOTPGroup>
+      </InputOTP>
       {description && <FieldDescription>{description}</FieldDescription>}
       {isInvalid && <FieldError errors={errors} />}
     </Field>

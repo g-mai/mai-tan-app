@@ -1,5 +1,4 @@
 import { useMutation } from "@tanstack/react-query";
-import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 import z from "zod";
 import { organization } from "#/features/auth/lib/auth-client";
@@ -11,11 +10,11 @@ export type CreatedTeam = NonNullable<
 
 export function useCreateTeam({
   defaultOrganizationId,
+  onCreated,
 }: {
-  defaultOrganizationId?: string;
+  defaultOrganizationId: string | null;
+  onCreated?: (team: CreatedTeam) => void;
 }) {
-  const navigate = useNavigate();
-
   const createTeamFormSchema = z.object({
     name: z.string().min(2, "Name must be at least 2 characters"),
     organizationId: z.string().min(1, "Select an organization"),
@@ -38,11 +37,11 @@ export function useCreateTeam({
       return team;
     },
     onSuccess: (team) => {
-      toast.success("Team created! Add a few more details.", {
+      toast.success("Team created!", {
         duration: 5000,
         position: "top-center",
       });
-      navigate({ to: "/teams/$teamId/edit", params: { teamId: team.id } });
+      onCreated?.(team);
     },
     onError: (error) => {
       console.error("Create team error:", error);
@@ -63,8 +62,10 @@ export function useCreateTeam({
     validators: {
       onSubmit: createTeamFormSchema,
     },
-    onSubmit: async ({ value }) => {
-      mutate(value);
+    onSubmit: async ({ value, formApi }) => {
+      mutate(value, {
+        onSuccess: () => formApi.reset(),
+      });
     },
   });
 

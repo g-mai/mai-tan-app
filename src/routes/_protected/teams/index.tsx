@@ -9,7 +9,7 @@ import {
   CardTitle,
 } from "#/components/ui/card";
 import { TeamLogo } from "#/features/organizations/components/team-logo";
-import { listTeams } from "#/features/organizations/lib/org.functions";
+import { listTeams } from "#/features/organizations/lib/team.functions";
 
 export const Route = createFileRoute("/_protected/teams/")({
   component: RouteComponent,

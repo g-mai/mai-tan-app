@@ -1,18 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageTitle } from "#/components/shared/page-title";
 import { CreateTeam } from "#/features/organizations/components/create-team";
-import { listOrganizations } from "#/features/organizations/lib/org.functions";
 
 export const Route = createFileRoute("/_protected/teams/new")({
   component: RouteComponent,
-  loader: async () => {
-    const orgs = await listOrganizations();
-    return orgs ?? [];
-  },
 });
 
 function RouteComponent() {
-  const organizations = Route.useLoaderData();
+  const session = Route.useRouteContext();
+  const navigate = Route.useNavigate();
 
   return (
     <div className="w-2xl flex flex-col gap-4">
@@ -20,7 +16,7 @@ function RouteComponent() {
         title="Create Team"
         subtitle="Create a new team inside one of your organizations"
       />
-      {organizations.length === 0 ? (
+      {session.orgs.length === 0 ? (
         <p className="text-sm text-muted-foreground">
           You need an organization first.{" "}
           <Link to="/organizations/new" className="underline">
@@ -29,7 +25,13 @@ function RouteComponent() {
           .
         </p>
       ) : (
-        <CreateTeam organizations={organizations} />
+        <CreateTeam
+          organizations={session.orgs}
+          activeOrganizationId={session.session.activeOrganizationId}
+          onCreated={(team) =>
+            navigate({ to: "/teams/$teamId/edit", params: { teamId: team.id } })
+          }
+        />
       )}
     </div>
   );

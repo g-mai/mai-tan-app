@@ -23,7 +23,7 @@ const getPresignedUploadImgUrlSchema = z.object({
 export const getPresignedUploadImgUrl = createServerFn({
   method: "POST",
 })
-  .inputValidator(getPresignedUploadImgUrlSchema)
+  .validator(getPresignedUploadImgUrlSchema)
   .middleware([authMiddleware])
   .handler(async ({ data, context }) => {
     try {
@@ -75,7 +75,7 @@ const deleteImageSchema = z.object({
 export const deleteImage = createServerFn({
   method: "POST",
 })
-  .inputValidator(deleteImageSchema)
+  .validator(deleteImageSchema)
   .middleware([authMiddleware])
   .handler(async ({ data, context }) => {
     try {

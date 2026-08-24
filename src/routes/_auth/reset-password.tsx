@@ -1,5 +1,12 @@
 import { createFileRoute, Link, useSearch } from "@tanstack/react-router";
+import { TriangleAlert } from "lucide-react";
 import { z } from "zod";
+import {
+  ScreenBody,
+  ScreenCard,
+  ScreenHeader,
+  ScreenStrip,
+} from "#/components/shared/screen-shell";
 import { Button } from "#/components/ui/button";
 import { useResetPassword } from "#/features/auth/hooks/useResetPassword";
 
@@ -19,32 +26,34 @@ function RouteComponent() {
 
   if (!token) {
     return (
-      <div className="flex justify-center py-10 px-4">
-        <div className="w-full max-w-md p-6">
-          <h1 className="text-lg font-semibold leading-none tracking-tight">
-            Invalid Reset Link
-          </h1>
-          <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-2 mb-6">
-            This password reset link is invalid or has expired. Please request a
-            new one.
-          </p>
-          <Button variant="outline" asChild>
+      <ScreenCard>
+        <ScreenStrip
+          path="/reset-password"
+          state="token invalid"
+          tone="destructive"
+        />
+        <ScreenBody>
+          <ScreenHeader
+            icon={<TriangleAlert className="size-5" />}
+            title="Invalid Reset Link"
+            description="This password reset link is invalid or has expired. Please request a new one."
+          />
+          <Button variant="outline" className="mt-6" asChild>
             <Link to="/forgot-password">Request new link</Link>
           </Button>
-        </div>
-      </div>
+        </ScreenBody>
+      </ScreenCard>
     );
   }
 
   return (
-    <div className="flex justify-center py-10 px-4">
-      <div className="w-full max-w-md p-6">
-        <h1 className="text-lg font-semibold leading-none tracking-tight">
-          Reset your password
-        </h1>
-        <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-2 mb-6">
-          Enter your new password below.
-        </p>
+    <ScreenCard>
+      <ScreenStrip path="/reset-password" state="token ok" />
+      <ScreenBody>
+        <ScreenHeader
+          title="Reset your password"
+          description="Enter your new password below."
+        />
 
         <form
           onSubmit={(e) => {
@@ -52,7 +61,7 @@ function RouteComponent() {
             e.stopPropagation();
             form.handleSubmit();
           }}
-          className="grid gap-4"
+          className="mt-6 grid gap-4"
         >
           <form.AppField name="password">
             {(field) => (
@@ -78,7 +87,7 @@ function RouteComponent() {
             />
           </form.AppForm>
         </form>
-      </div>
-    </div>
+      </ScreenBody>
+    </ScreenCard>
   );
 }

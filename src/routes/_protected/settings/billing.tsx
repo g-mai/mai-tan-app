@@ -13,9 +13,11 @@ function RouteComponent() {
         title="Billing"
         subtitle="Manage your organization's subscription and payment methods"
       />
+
       <ComingSoon
         title="Billing & subscriptions"
-        description="Plan management, invoices, and payment methods are on their way."
+        description="Billing arrives once Stripe is integrated: plans are scoped to an organization and priced per seat, so every member you invite counts towards it. Until then every organization has full access."
+        variant="card"
       />
     </div>
   );

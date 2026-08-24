@@ -26,7 +26,6 @@ const roadmap: RoadmapGroup[] = [
       "Secure sign-up, login & sessions",
       "Account settings — email, password, profile",
       "Transactional emails",
-      "Instant guest demo mode",
       "Light & dark themes",
     ],
   },

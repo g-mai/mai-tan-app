@@ -1,27 +1,34 @@
-import { createFileRoute, Link, redirect } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import z from "zod";
+import {
+  ScreenBody,
+  ScreenCard,
+  ScreenFooter,
+  ScreenHeader,
+  ScreenStrip,
+} from "#/components/shared/screen-shell";
 import { useLogin } from "#/features/auth/hooks/useLogin";
 
+// Signed-in visitors are redirected by the _auth layout's onboarding gate.
 export const Route = createFileRoute("/_auth/login")({
+  validateSearch: z.object({
+    invitation: z.string().optional().catch(undefined),
+  }),
   component: RouteComponent,
-  beforeLoad: (ctx) => {
-    if (ctx.context.session) {
-      throw redirect({ to: "/dashboard" });
-    }
-  },
 });
 
 function RouteComponent() {
-  const { form, isPending, isSuccess, isError } = useLogin();
+  const { invitation } = Route.useSearch();
+  const { form, isPending, isSuccess, isError } = useLogin({ invitation });
 
   return (
-    <div className="flex justify-center">
-      <div className="w-full max-w-md p-6">
-        <h1 className="text-lg font-semibold leading-none tracking-tight">
-          Sign in to your account
-        </h1>
-        <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-2 mb-6">
-          Enter your email and password to login to your account
-        </p>
+    <ScreenCard>
+      <ScreenStrip path="/login" state="session" />
+      <ScreenBody>
+        <ScreenHeader
+          title="Sign in to your account"
+          description="Enter your email and password to login to your account"
+        />
 
         <form
           onSubmit={(e) => {
@@ -29,40 +36,40 @@ function RouteComponent() {
             e.stopPropagation();
             form.handleSubmit();
           }}
-          className="grid gap-4"
+          className="mt-6 grid gap-4"
         >
           <form.AppField name="email">
             {(field) => (
               <field.TextField label="Email" placeholder="john@email.com" />
             )}
           </form.AppField>
-          <form.AppField name="password">
-            {(field) => (
-              <field.PasswordField label="Password" placeholder="***" />
-            )}
-          </form.AppField>
-
-          <Link
-            to="/forgot-password"
-            className="-mt-2 w-full text-xs text-right text-primary-500 dark:text-primary-400 underline hover:text-primary"
-          >
-            Forgot password?
-          </Link>
+          <div className="grid gap-1.5">
+            <form.AppField name="password">
+              {(field) => (
+                <field.PasswordField label="Password" placeholder="***" />
+              )}
+            </form.AppField>
+            <Link
+              to="/forgot-password"
+              className="justify-self-end text-xs text-primary underline underline-offset-4"
+            >
+              Forgot password?
+            </Link>
+          </div>
           <form.AppForm>
             <form.SubscribeButton label={isPending ? "Loading..." : "Login"} />
           </form.AppForm>
         </form>
-
-        <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-6">
-          Don't have an account?{" "}
-          <Link
-            to="/register"
-            className="text-sm text-primary-500 dark:text-primary-400 underline hover:text-primary"
-          >
-            Register
-          </Link>
-        </p>
-      </div>
-    </div>
+      </ScreenBody>
+      <ScreenFooter>
+        <span>Don't have an account?</span>
+        <Link
+          to="/register"
+          className="text-primary underline underline-offset-4"
+        >
+          Register
+        </Link>
+      </ScreenFooter>
+    </ScreenCard>
   );
 }
