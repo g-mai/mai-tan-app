@@ -9,17 +9,17 @@ importers:
   .:
     dependencies:
       '@aws-sdk/client-s3':
-        specifier: ~3.1109.0
-        version: 3.1109.0
+        specifier: ~3.1119.0
+        version: 3.1119.0
       '@aws-sdk/s3-request-presigner':
-        specifier: ~3.1109.0
-        version: 3.1109.0
+        specifier: ~3.1119.0
+        version: 3.1119.0
       '@better-auth/drizzle-adapter':
         specifier: ^1.7.2
         version: 1.7.2(@better-auth/core@1.7.2(@better-auth/utils@0.4.2)(@better-fetch/fetch@1.3.1)(@opentelemetry/api@1.9.1)(better-call@1.4.0(zod@4.4.3))(jose@6.2.10)(kysely@0.29.5)(nanostores@1.5.2))(@better-auth/utils@0.4.2)(drizzle-orm@0.45.2(@electric-sql/pglite@0.3.16)(@opentelemetry/api@1.9.1)(@types/pg@8.23.1)(kysely@0.29.5)(pg@8.23.0))
       '@faker-js/faker':
-        specifier: ~10.5.0
-        version: 10.5.0
+        specifier: ~10.6.0
+        version: 10.6.0
       '@sentry/tanstackstart-react':
         specifier: ^10.71.0
         version: 10.71.0(@opentelemetry/core@2.10.0(@opentelemetry/api@1.9.1))(react@19.2.8)
@@ -96,8 +96,8 @@ importers:
         specifier: ^19.2.8
         version: 19.2.8(react@19.2.8)
       react-email:
-        specifier: 6.9.2
-        version: 6.9.2(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        specifier: 6.9.3
+        version: 6.9.3(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       resend:
         specifier: ^6.24.0
         version: 6.24.0(@react-email/render@2.1.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8))
@@ -203,8 +203,8 @@ packages:
     resolution: {integrity: sha512-Dtu0gr4dnATZAPwEYbpCsG+MpLM7OAliy2gTepEFQwl1vZ6DL3QMH2FveMa3HLvPsOdhJsPRB3KtxVhph9T75A==, tarball: https://registry.npmjs.org/@aws-sdk/checksums/-/checksums-3.1000.29.tgz}
     engines: {node: '>=20.0.0'}
 
-  '@aws-sdk/client-s3@3.1109.0':
-    resolution: {integrity: sha512-iPWzBeGkAe5H5+dBBGCOdIT4uMhpu12OK+nFnDzjvOChVnHIws4LeoG7Yl0kJHSRWZnNEkVcF4vQYTJny0e5xA==, tarball: https://registry.npmjs.org/@aws-sdk/client-s3/-/client-s3-3.1109.0.tgz}
+  '@aws-sdk/client-s3@3.1119.0':
+    resolution: {integrity: sha512-8+UH1uBWwjbRu0ugTBhJ/cu3rL/vzf1tm9/3+xZGf1uybIO3HTF2xLJJaTKkRPvzxz8/n/w+YrwoHGZ2Q/a2Zg==, tarball: https://registry.npmjs.org/@aws-sdk/client-s3/-/client-s3-3.1119.0.tgz}
     engines: {node: '>=20.0.0'}
 
   '@aws-sdk/core@3.977.9':
@@ -251,8 +251,8 @@ packages:
     resolution: {integrity: sha512-NhEgryjlBF9w38ZXqGymQV28IhkYa1mKhlbYnqIis57AYwWGVYfUPgg/qC2rLRqOUfblxx++irvju10kVTa8Vw==, tarball: https://registry.npmjs.org/@aws-sdk/nested-clients/-/nested-clients-3.997.44.tgz}
     engines: {node: '>=20.0.0'}
 
-  '@aws-sdk/s3-request-presigner@3.1109.0':
-    resolution: {integrity: sha512-tVoeEJ1sERyMrzmFnE1blsKrwg40xzAPgrlk4dlqAUN317GeJAD1hUcY3kciqTH7T/QvxVr6PE5iQAaASnPWRg==, tarball: https://registry.npmjs.org/@aws-sdk/s3-request-presigner/-/s3-request-presigner-3.1109.0.tgz}
+  '@aws-sdk/s3-request-presigner@3.1119.0':
+    resolution: {integrity: sha512-yEqb0ispm9uXZ7nk5stErMB7yn43j3XCAaHM15MsdWaCk7RvEmGjYdbyHZcH86JpUg7mk1v1m2xwzLj2o+3uCg==, tarball: https://registry.npmjs.org/@aws-sdk/s3-request-presigner/-/s3-request-presigner-3.1119.0.tgz}
     engines: {node: '>=20.0.0'}
 
   '@aws-sdk/signature-v4-multi-region@3.996.46':
@@ -1188,8 +1188,8 @@ packages:
       '@noble/hashes':
         optional: true
 
-  '@faker-js/faker@10.5.0':
-    resolution: {integrity: sha512-bsxD8WLS5lIj7aaoCx1YJkktqYj5vlBUE6HWzu2Q51ksrGJ0H737ECCKlFU7Yf8Br45z9t99frBp/J7kzbMPAg==, tarball: https://registry.npmjs.org/@faker-js/faker/-/faker-10.5.0.tgz}
+  '@faker-js/faker@10.6.0':
+    resolution: {integrity: sha512-3RQHgEtvL1Frl/d1cSreo7qhJ3Gk1OdNUai/CtZ8G+wYeRQnJih3s9xJ9/kgYekPQRdwgh0HXRPqMlzWGwivIQ==, tarball: https://registry.npmjs.org/@faker-js/faker/-/faker-10.6.0.tgz}
     engines: {node: ^20.19.0 || ^22.13.0 || ^23.5.0 || >=24.0.0, npm: '>=10'}
 
   '@fastify/accept-negotiator@2.1.0':
@@ -6034,8 +6034,8 @@ packages:
     peerDependencies:
       react: ^19.2.8
 
-  react-email@6.9.2:
-    resolution: {integrity: sha512-A6SiRdH1U7qJcfgpaJ1BYGud8GbnPwDw61l3PP3JR1qMAmBgTlL02UuCPwPOClwc1x+saUU9OxJfPQHMNaTBMA==, tarball: https://registry.npmjs.org/react-email/-/react-email-6.9.2.tgz}
+  react-email@6.9.3:
+    resolution: {integrity: sha512-z2YOtq5EDNeMMz8uuZtVxmtB43nIkoPWEr8Heajkljm2clKlfE8oODtI6Me2NunmqXWaYfpv4aEFOr4ZiLmk+g==, tarball: https://registry.npmjs.org/react-email/-/react-email-6.9.3.tgz}
     engines: {node: '>=20.0.0'}
     hasBin: true
     peerDependencies:
@@ -7127,7 +7127,7 @@ snapshots:
       '@smithy/types': 4.17.2
       tslib: 2.8.1
 
-  '@aws-sdk/client-s3@3.1109.0':
+  '@aws-sdk/client-s3@3.1119.0':
     dependencies:
       '@aws-sdk/checksums': 3.1000.29
       '@aws-sdk/core': 3.977.9
@@ -7256,7 +7256,7 @@ snapshots:
       '@smithy/types': 4.17.2
       tslib: 2.8.1
 
-  '@aws-sdk/s3-request-presigner@3.1109.0':
+  '@aws-sdk/s3-request-presigner@3.1119.0':
     dependencies:
       '@aws-sdk/core': 3.977.9
       '@aws-sdk/signature-v4-multi-region': 3.996.46
@@ -7896,7 +7896,7 @@ snapshots:
     optionalDependencies:
       '@noble/hashes': 2.4.0
 
-  '@faker-js/faker@10.5.0': {}
+  '@faker-js/faker@10.6.0': {}
 
   '@fastify/accept-negotiator@2.1.0': {}
 
@@ -12939,7 +12939,7 @@ snapshots:
       react: 19.2.8
       scheduler: 0.27.0
 
-  react-email@6.9.2(react-dom@19.2.8(react@19.2.8))(react@19.2.8):
+  react-email@6.9.3(react-dom@19.2.8(react@19.2.8))(react@19.2.8):
     dependencies:
       '@babel/parser': 7.29.2
       '@babel/traverse': 7.29.0
@@ -14001,11 +14001,11 @@ snapshots:
   zod@4.4.3: {}
 
 time:
-  '@aws-sdk/client-s3@3.1109.0': '2026-08-12T18:50:34.871Z'
-  '@aws-sdk/s3-request-presigner@3.1109.0': '2026-08-12T18:50:32.766Z'
+  '@aws-sdk/client-s3@3.1119.0': '2026-08-26T19:11:55.238Z'
+  '@aws-sdk/s3-request-presigner@3.1119.0': '2026-08-26T19:10:51.364Z'
   '@better-auth/drizzle-adapter@1.7.2': '2026-08-26T19:05:22.113Z'
   '@biomejs/biome@2.5.10': '2026-08-21T17:40:42.374Z'
-  '@faker-js/faker@10.5.0': '2026-06-17T18:02:33.374Z'
+  '@faker-js/faker@10.6.0': '2026-08-14T16:57:41.640Z'
   '@netlify/vite-plugin-tanstack-start@1.3.18': '2026-08-26T12:34:56.231Z'
   '@sentry/tanstackstart-react@10.71.0': '2026-08-24T12:49:10.933Z'
   '@tailwindcss/typography@0.5.20': '2026-06-08T10:34:41.124Z'
@@ -14043,7 +14043,7 @@ time:
   pg@8.23.0: '2026-08-08T19:27:05.108Z'
   radix-ui@1.6.7: '2026-07-24T23:51:30.916Z'
   react-dom@19.2.8: '2026-07-21T15:41:41.267Z'
-  react-email@6.9.2: '2026-08-07T20:52:46.957Z'
+  react-email@6.9.3: '2026-08-25T18:33:37.549Z'
   react@19.2.8: '2026-07-21T15:41:28.716Z'
   resend@6.24.0: '2026-08-26T13:44:00.498Z'
   sonner@2.0.8: '2026-08-09T08:46:10.174Z'
