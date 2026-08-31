@@ -7,8 +7,13 @@ import {
   SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
+  SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { NavCollapsibleItem, type NavItem } from "./nav-collapsible-item";
+import {
+  NavCollapsibleItem,
+  type NavItem,
+  navMenuButtonClassName,
+} from "./nav-collapsible-item";
 
 const items: NavItem[] = [
   {
@@ -75,18 +80,24 @@ export function NavMain({ defaultOpenNav }: { defaultOpenNav: string[] }) {
   };
 
   return (
-    <SidebarGroup>
-      <SidebarGroupLabel>Platform</SidebarGroupLabel>
-      <SidebarMenuButton isActive={location.pathname === "/dashboard"} asChild>
-        <Link
-          to="/dashboard"
-          activeProps={{ className: "underline bg-sidebar-accent" }}
-        >
-          <Home />
-          Dashboard
-        </Link>
-      </SidebarMenuButton>
-      <SidebarMenu>
+    <SidebarGroup className="p-3">
+      <SidebarGroupLabel className="font-mono text-2xs tracking-widest text-muted-foreground uppercase">
+        Platform
+      </SidebarGroupLabel>
+      <SidebarMenu className="gap-0.5">
+        <SidebarMenuItem>
+          <SidebarMenuButton
+            asChild
+            tooltip="Dashboard"
+            isActive={location.pathname === "/dashboard"}
+            className={navMenuButtonClassName}
+          >
+            <Link to="/dashboard">
+              <Home />
+              Dashboard
+            </Link>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
         {items.map((item) => (
           <NavCollapsibleItem
             key={item.key}

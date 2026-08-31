@@ -3,8 +3,8 @@ import { LogoTitle } from "#/components/shared/logo-title";
 import { GridBackdrop } from "#/components/shared/screen-shell";
 import { ensureSession } from "#/features/auth/lib/auth.functions";
 import Footer from "#/features/layout/components/footer";
-import { HeaderNavUser } from "#/features/layout/components/header-nav-user";
 import { OnboardingProgress } from "#/features/onboarding/components/onboarding-progress";
+import { UserButton } from "#/features/onboarding/components/user-button";
 import { getOnboardingStep } from "#/features/onboarding/lib/onboarding";
 
 export const Route = createFileRoute("/onboarding")({
@@ -36,7 +36,7 @@ function OnboardingLayout() {
               href="/"
               className="flex items-center justify-center gap-3"
             />
-            <HeaderNavUser user={session.user} variant="onboarding" />
+            <UserButton user={session.user} variant="onboarding" />
           </div>
           <OnboardingProgress step={step} />
           <Outlet />
