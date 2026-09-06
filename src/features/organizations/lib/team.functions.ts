@@ -78,3 +78,35 @@ export const getFullTeam = createServerFn({ method: "GET" })
       role: orgMember.role,
     };
   });
+
+const listOrgTeamsSchema = z.object({ organizationId: z.string() });
+
+/**
+ * Teams in an organization with their member counts — `getFullOrganization`
+ * returns bare team rows, and the dashboard shows "3 members" per team.
+ */
+export const listOrgTeamsWithCounts = createServerFn({ method: "GET" })
+  .validator(listOrgTeamsSchema)
+  .middleware([authMiddleware])
+  .handler(async ({ data, context }) => {
+    const orgMember = await db.query.member.findFirst({
+      where: (member, { eq, and }) =>
+        and(
+          eq(member.organizationId, data.organizationId),
+          eq(member.userId, context.session.user.id),
+        ),
+    });
+    if (!orgMember)
+      throw new Error("User is not a member of this organization");
+
+    const teams = await db.query.team.findMany({
+      where: (team, { eq }) => eq(team.organizationId, data.organizationId),
+      with: { teamMembers: { columns: { id: true } } },
+      orderBy: (team, { asc }) => asc(team.name),
+    });
+
+    return teams.map(({ teamMembers, ...team }) => ({
+      ...team,
+      memberCount: teamMembers.length,
+    }));
+  });

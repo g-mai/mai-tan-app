@@ -1,7 +1,7 @@
 "use client";
 
 import { Link, useRouter } from "@tanstack/react-router";
-import { Plus } from "lucide-react";
+import { Check, ChevronsUpDown, Plus } from "lucide-react";
 import type { Organization } from "#/features/auth/types";
 import { OrganizationLogo } from "#/features/organizations/components/organization-logo";
 import { Button } from "@/components/ui/button";
@@ -10,7 +10,6 @@ import {
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -35,9 +34,7 @@ export function OrganizationSelector({
     );
   }
 
-  // TODO: Move to sidebar, add button to go to current org settings
-  // or show more info about current org
-  // Do not show "Switch to another organization" if there's only one org
+  // TODO: add button to go to current org settings or show more info about current org
 
   const activeOrg =
     organizations.find((org) => org.id === activeOrganizationId) ??
@@ -60,49 +57,72 @@ export function OrganizationSelector({
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger>
-        <div className="bg-card flex items-center justify-start gap-2 rounded-full py-2 px-4 shadow-xs">
-          <OrganizationLogo
-            logoUrl={activeOrg.logo}
-            height={32}
-            width={32}
-            className="size-6 rounded-full border"
-          />
-          <p className="text-muted-foreground text-sm">{activeOrg.name}</p>
+      <DropdownMenuTrigger className="flex w-full items-center gap-3 rounded-xl border border-sidebar-border bg-sidebar-accent px-3 py-2 text-left shadow-xs transition-colors hover:border-muted-foreground group-data-[collapsible=icon]:border-transparent group-data-[collapsible=icon]:bg-transparent group-data-[collapsible=icon]:p-0 group-data-[collapsible=icon]:shadow-none">
+        <OrganizationLogo
+          logoUrl={activeOrg.logo}
+          height={32}
+          width={32}
+          className="size-8 shrink-0 rounded-lg border bg-muted"
+        />
+        <div className="min-w-0 flex-1 group-data-[collapsible=icon]:hidden">
+          <p className="truncate text-sm text-sidebar-foreground">
+            {activeOrg.name}
+          </p>
+          <p className="truncate font-mono text-2xs text-muted-foreground">
+            /{activeOrg.slug}
+          </p>
         </div>
+        <ChevronsUpDown className="size-4 shrink-0 text-muted-foreground group-data-[collapsible=icon]:hidden" />
       </DropdownMenuTrigger>
 
       <DropdownMenuContent
-        className="min-w-64 rounded-lg"
+        className="w-(--radix-dropdown-menu-trigger-width) min-w-60 rounded-xl p-2"
         side="bottom"
-        align="end"
+        align="start"
         sideOffset={6}
       >
-        <DropdownMenuLabel className="font-normal p-2 text-muted-foreground text-sm">
-          Switch to another organization
-        </DropdownMenuLabel>
-        <DropdownMenuSeparator />
+        <p className="px-2 pt-1 pb-2 font-mono text-2xs tracking-widest text-muted-foreground uppercase">
+          {inactiveOrgs.length > 0
+            ? "Switch organization"
+            : "Your organizations"}
+        </p>
         <DropdownMenuGroup>
-          {inactiveOrgs.map((org) => (
-            <DropdownMenuItem
-              key={org.id}
-              className="flex items-center p-2 gap-2"
-              onClick={() => setActiveOrganization(org.id)}
-            >
+          {inactiveOrgs.length > 0 ? (
+            inactiveOrgs.map((org) => (
+              <DropdownMenuItem
+                key={org.id}
+                className="gap-2 rounded-lg p-2 text-sm"
+                onClick={() => setActiveOrganization(org.id)}
+              >
+                <OrganizationLogo
+                  logoUrl={org.logo}
+                  height={24}
+                  width={24}
+                  className="size-6 shrink-0 rounded-lg border bg-muted"
+                />
+                <span className="flex-1 truncate">{org.name}</span>
+                <span className="font-mono text-2xs text-muted-foreground">
+                  /{org.slug}
+                </span>
+              </DropdownMenuItem>
+            ))
+          ) : (
+            <div className="flex items-center gap-2 rounded-lg bg-accent p-2 text-sm">
               <OrganizationLogo
-                logoUrl={org.logo}
-                height={30}
-                width={30}
-                className="size-7 rounded-full border"
+                logoUrl={activeOrg.logo}
+                height={24}
+                width={24}
+                className="size-6 shrink-0 rounded-lg border bg-card"
               />
-              <span>{org.name}</span>
-            </DropdownMenuItem>
-          ))}
+              <span className="flex-1 truncate">{activeOrg.name}</span>
+              <Check className="size-4 shrink-0 text-primary" />
+            </div>
+          )}
         </DropdownMenuGroup>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem className=" hover:bg-accent rounded-md text-sm p-2">
-          <Link to="/organizations/new" className="flex items-center gap-2">
-            <Plus size={16} />
+        <DropdownMenuSeparator className="mx-0" />
+        <DropdownMenuItem asChild className="gap-2 rounded-lg p-2 text-sm">
+          <Link to="/organizations/new">
+            <Plus className="size-4" />
             Create a new organization
           </Link>
         </DropdownMenuItem>

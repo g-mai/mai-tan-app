@@ -51,12 +51,37 @@ export const listOrgInvitations = createServerFn({ method: "GET" })
     });
   });
 
-/** Pending invitations for the signed-in user's verified email address. */
+/**
+ * Pending invitations for the signed-in user's verified email address.
+ *
+ * Better Auth joins only the organization, so the inviter is read separately —
+ * the dashboard shows who sent the invitation, not just where it leads.
+ */
 export const listMyInvitations = createServerFn({ method: "GET" }).handler(
   async () => {
     const session = await auth.api.getSession({ headers: getRequestHeaders() });
     if (!session) return [];
 
-    return auth.api.listUserInvitations({ headers: getRequestHeaders() });
+    const invitations = await auth.api.listUserInvitations({
+      headers: getRequestHeaders(),
+    });
+    if (invitations.length === 0) return [];
+
+    const rows = await db.query.invitation.findMany({
+      where: (invitation, { inArray }) =>
+        inArray(
+          invitation.id,
+          invitations.map((invitation) => invitation.id),
+        ),
+      columns: { id: true },
+      with: { user: { columns: { name: true, email: true } } },
+    });
+    const inviters = new Map(rows.map((row) => [row.id, row.user]));
+
+    return invitations.map((invitation) => ({
+      ...invitation,
+      inviterName: inviters.get(invitation.id)?.name ?? null,
+      inviterEmail: inviters.get(invitation.id)?.email ?? null,
+    }));
   },
 );

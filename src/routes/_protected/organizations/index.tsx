@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageTitle } from "#/components/shared/page-title";
+import { Wip } from "#/components/shared/wip";
 import { Card, CardContent, CardHeader, CardTitle } from "#/components/ui/card";
 import { OrganizationLogo } from "#/features/organizations/components/organization-logo";
 
@@ -21,6 +22,7 @@ function RouteComponent() {
         title="Organizations"
         subtitle="View and manage your organizations"
       />
+      <Wip />
       {session.orgs.map((org) => (
         <Link
           to="/organizations/$orgId"

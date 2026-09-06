@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageTitle } from "#/components/shared/page-title";
+import { Wip } from "#/components/shared/wip";
 import { Button } from "#/components/ui/button";
 import {
   Card,
@@ -28,6 +29,7 @@ function RouteComponent() {
         title="Teams"
         subtitle="A unified view of every team across your organizations."
       />
+      <Wip />
 
       <div>
         <Button asChild>
