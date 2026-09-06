@@ -3,6 +3,7 @@ import { Edit } from "lucide-react";
 import { toast } from "sonner";
 import { ImageUpload } from "#/components/shared/image-upload";
 import { PageTitle } from "#/components/shared/page-title";
+import { Wip } from "#/components/shared/wip";
 import {
   Card,
   CardContent,
@@ -15,6 +16,7 @@ import { organization } from "#/features/auth/lib/auth-client";
 import { InviteMember } from "#/features/organizations/components/invite-member";
 import { OrganizationLogo } from "#/features/organizations/components/organization-logo";
 import { PendingInvitations } from "#/features/organizations/components/pending-invitations";
+import { RoleBadge } from "#/features/organizations/components/role-badge";
 import { getOrganization } from "#/features/organizations/lib/org.functions";
 
 export const Route = createFileRoute("/_protected/organizations/$orgId/")({
@@ -33,22 +35,6 @@ export const Route = createFileRoute("/_protected/organizations/$orgId/")({
     );
   },
 });
-
-function RoleBadge({ role }: { role: string }) {
-  const colors: Record<string, string> = {
-    owner: "bg-amber-100 text-amber-800",
-    admin: "bg-blue-100 text-blue-800",
-    member: "bg-gray-100 text-gray-700",
-  };
-  const cls = colors[role] ?? "bg-gray-100 text-gray-700";
-  return (
-    <span
-      className={`rounded-full px-2 py-0.5 text-xs font-medium min-w-fit ${cls}`}
-    >
-      {role}
-    </span>
-  );
-}
 
 function RouteComponent() {
   const org = Route.useLoaderData();
@@ -103,6 +89,7 @@ function RouteComponent() {
   return (
     <div className="space-y-6">
       <PageTitle title={org.name} />
+      <Wip />
 
       {/* Overview card */}
       <Card>

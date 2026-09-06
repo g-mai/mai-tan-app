@@ -14,6 +14,11 @@ import {
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
 
+// Shared row shape: muted by default, active rows get the hairline + hard
+// shadow and a primary-tinted icon.
+export const navMenuButtonClassName =
+  "h-auto gap-3 rounded-lg border border-transparent px-3 py-2 text-muted-foreground hover:text-sidebar-foreground data-[active=true]:border-sidebar-border data-[active=true]:font-normal data-[active=true]:shadow-xs data-[active=true]:[&_svg]:text-primary";
+
 export type NavItem = {
   key: string;
   title: string;
@@ -48,12 +53,13 @@ export function NavCollapsibleItem({
       className="group/collapsible"
     >
       <SidebarMenuItem>
-        <SidebarMenuButton asChild tooltip={item.title} isActive={isActive}>
-          <Link
-            to={item.url}
-            onClick={onItemClick}
-            className="flex items-center gap-2"
-          >
+        <SidebarMenuButton
+          asChild
+          tooltip={item.title}
+          isActive={isActive}
+          className={navMenuButtonClassName}
+        >
+          <Link to={item.url} onClick={onItemClick}>
             {item.icon && <item.icon size={16} />}
             <span>{item.title}</span>
           </Link>
@@ -61,24 +67,21 @@ export function NavCollapsibleItem({
         {item.items?.length ? (
           <>
             <CollapsibleTrigger asChild>
-              <SidebarMenuAction className="data-[state=open]:rotate-90 hover:cursor-pointer">
+              <SidebarMenuAction className="top-2.5 text-muted-foreground opacity-70 hover:cursor-pointer data-[state=open]:rotate-90">
                 <ChevronRight />
                 <span className="sr-only">Toggle {item.title}</span>
               </SidebarMenuAction>
             </CollapsibleTrigger>
             <CollapsibleContent>
-              <SidebarMenuSub>
+              <SidebarMenuSub className="mt-0.5 mr-0 mb-2 ml-6 gap-px py-0 pr-0 pl-3">
                 {item.items.map((subItem) => (
                   <SidebarMenuSubItem key={subItem.title}>
                     <SidebarMenuSubButton
                       asChild
                       isActive={subItem.url === location.pathname}
+                      className="h-auto rounded-lg px-2 py-1 text-muted-foreground hover:text-sidebar-foreground"
                     >
-                      <Link
-                        to={subItem.url}
-                        activeProps={{ className: "underline bg-amber-100" }}
-                        activeOptions={{ exact: true }}
-                      >
+                      <Link to={subItem.url} activeOptions={{ exact: true }}>
                         <span>{subItem.title}</span>
                       </Link>
                     </SidebarMenuSubButton>

@@ -27,9 +27,9 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useThemeMode } from "../hooks/useThemeToggle";
+import { useThemeMode } from "../../layout/hooks/useThemeToggle";
 
-export function HeaderNavUser({
+export function UserButton({
   user,
   variant,
 }: {

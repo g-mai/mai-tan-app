@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { PageTitle } from "#/components/shared/page-title";
+import { Wip } from "#/components/shared/wip";
 import { CreateOrg } from "#/features/organizations/components/create-org";
 import { EditOrg } from "#/features/organizations/components/edit-org";
 import type { CreatedOrganization } from "#/features/organizations/hooks/useCreateOrg";
@@ -18,6 +19,7 @@ function RouteComponent() {
         title="Create Organization"
         subtitle="Create a new organization to manage your projects and teams"
       />
+      <Wip />
       {org ? (
         <EditOrg org={org} setOrg={setOrg} />
       ) : (

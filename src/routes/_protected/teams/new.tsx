@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageTitle } from "#/components/shared/page-title";
+import { Wip } from "#/components/shared/wip";
 import { CreateTeam } from "#/features/organizations/components/create-team";
 
 export const Route = createFileRoute("/_protected/teams/new")({
@@ -16,6 +17,7 @@ function RouteComponent() {
         title="Create Team"
         subtitle="Create a new team inside one of your organizations"
       />
+      <Wip />
       {session.orgs.length === 0 ? (
         <p className="text-sm text-muted-foreground">
           You need an organization first.{" "}
