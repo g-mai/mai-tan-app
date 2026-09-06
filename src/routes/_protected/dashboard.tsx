@@ -1,87 +1,91 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { Bot, Building2, Settings2, Users } from "lucide-react";
-import { PageTitle } from "#/components/shared/page-title";
-import { Card, CardContent, CardHeader, CardTitle } from "#/components/ui/card";
+import { createFileRoute } from "@tanstack/react-router";
+import { DashboardHero } from "#/features/dashboard/components/dashboard-hero";
+import { DocsCard } from "#/features/dashboard/components/docs-card";
+import { InvitationsCard } from "#/features/dashboard/components/invitations-card";
+import { MembersTeamsRow } from "#/features/dashboard/components/members-teams-row";
+import { OrgPlanRow } from "#/features/dashboard/components/org-plan-row";
+import { RunLocallyCard } from "#/features/dashboard/components/run-locally-card";
+import { listMyInvitations } from "#/features/organizations/lib/invitation.functions";
+import { getOrganization } from "#/features/organizations/lib/org.functions";
+import { listOrgTeamsWithCounts } from "#/features/organizations/lib/team.functions";
 
 export const Route = createFileRoute("/_protected/dashboard")({
   component: RouteComponent,
-});
+  loader: async ({ context }) => {
+    // Onboarding guarantees a membership, but not that one was ever made
+    // active — fall back the way the org switcher does.
+    const orgId = context.session.activeOrganizationId ?? context.orgs[0]?.id;
+    const myInvitations = await listMyInvitations();
 
-const quickLinks = [
-  {
-    title: "Organizations",
-    description: "View and manage the organizations you belong to.",
-    href: "/organizations",
-    icon: Building2,
+    if (!orgId) return { org: null, teams: [], myInvitations };
+
+    const [org, teams] = await Promise.all([
+      getOrganization({ data: { id: orgId } }),
+      listOrgTeamsWithCounts({ data: { organizationId: orgId } }),
+    ]);
+
+    return { org, teams, myInvitations };
   },
-  {
-    title: "Teams",
-    description: "See the teams you're a part of across your organizations.",
-    href: "/teams",
-    icon: Users,
-  },
-  {
-    title: "Settings",
-    description: "Update your profile, email, password, and sessions.",
-    href: "/settings",
-    icon: Settings2,
-  },
-] as const;
+});
 
 function RouteComponent() {
   const { user, orgs } = Route.useRouteContext();
-  const orgCount = orgs.length;
+  const { org, teams, myInvitations } = Route.useLoaderData();
+
+  const incoming = myInvitations.filter(
+    (invitation) =>
+      invitation.status === "pending" &&
+      new Date(invitation.expiresAt) > new Date(),
+  );
+  const sent =
+    org?.invitations.filter(
+      (invitation) =>
+        invitation.status === "pending" &&
+        new Date(invitation.expiresAt) > new Date(),
+    ) ?? [];
+
+  const role = org?.members.find((member) => member.userId === user.id)?.role;
+  const memberCount = org?.members.length ?? 0;
+
+  const chips = [
+    `${orgs.length} organization${orgs.length === 1 ? "" : "s"}`,
+    `${memberCount} member${memberCount === 1 ? "" : "s"}`,
+    teams.length === 0
+      ? "no teams yet"
+      : `${teams.length} team${teams.length === 1 ? "" : "s"}`,
+  ];
 
   return (
-    <div>
-      <PageTitle
-        title={`Welcome back, ${user.firstName || user.name}`}
-        subtitle={
-          orgCount > 0
-            ? `You're a member of ${orgCount} organization${orgCount === 1 ? "" : "s"}.`
-            : "You're not part of any organization yet."
-        }
+    <div className="flex flex-col gap-4">
+      <DashboardHero
+        firstName={user.firstName || user.name}
+        chips={chips}
+        role={role}
+        orgId={org?.id}
       />
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {quickLinks.map(({ title, description, href, icon: Icon }) => (
-          <Link to={href} key={title}>
-            <Card className="h-full transition hover:border-primary/50 hover:shadow-md">
-              <CardHeader>
-                <div className="mb-2 flex size-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                  <Icon className="size-5" />
-                </div>
-                <CardTitle>{title}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground">{description}</p>
-              </CardContent>
-            </Card>
-          </Link>
-        ))}
-      </div>
+      {org && (
+        <>
+          <OrgPlanRow
+            org={org}
+            role={role}
+            memberCount={memberCount}
+            teamCount={teams.length}
+            pendingInviteCount={sent.length}
+          />
+          <MembersTeamsRow
+            orgId={org.id}
+            orgSlug={org.slug}
+            members={org.members}
+            teams={teams}
+            currentUserId={user.id}
+          />
+          <InvitationsCard orgId={org.id} incoming={incoming} sent={sent} />
+        </>
+      )}
 
-      <Card className="mt-4">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Bot className="size-4" />
-            Built on
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm text-muted-foreground">
-            TanStack Start, Better Auth, Drizzle ORM, and shadcn/ui. See the{" "}
-            <Link to="/stack" className="underline underline-offset-4">
-              tech stack
-            </Link>{" "}
-            or{" "}
-            <Link to="/docs" className="underline underline-offset-4">
-              docs
-            </Link>{" "}
-            for more on this starter kit.
-          </p>
-        </CardContent>
-      </Card>
+      <RunLocallyCard />
+      <DocsCard />
     </div>
   );
 }
