@@ -22,7 +22,7 @@ The multi-tenant foundation is in place at the data and auth layer, and most of 
 
 - **Organization management** — create, view and edit are done; **delete is not**
 - **Team management** — create, view and edit are done; **delete is not**
-- **Member management** — invite by email, accept, and cancel are done; **removing a member and changing a member's role are not**
+- **Member management** — invite by email, accept, decline, and cancel are done; **removing a member and changing a member's role are not**
 - **User profile** — done: personal details, avatar upload, email, password, active sessions, and permanent account deletion
 - **Onboarding** — done: email-OTP registration into a mandatory, resumable seven-step flow, documented in [onboarding.md](./onboarding.md)
 
@@ -57,7 +57,7 @@ The billing model (per-seat, flat-rate, usage-based) will vary by product, but t
 
 The starter is only as good as the experience of working with it. The codebase itself needs to be something a developer is happy to inherit:
 
-- **No partial implementations** — every route, component, and server function that exists should be complete and production-ready; anything unfinished should be removed until it is
+- **No partial implementations** — every route, component, and server function that exists should be complete and production-ready; anything unfinished should be removed until it is. As an interim measure the organization, team and settings pages that are still being reworked carry a visible work-in-progress notice, so nothing reads as finished when it isn't. The notices are a stopgap, not the goal: each one comes off when the page behind it is complete
 - **Consistent patterns** — the same problem should be solved the same way throughout the codebase; inconsistencies force developers to make decisions they shouldn't have to
 - **Clean conventions** — naming, file placement, and code style should be so consistent that a developer can guess where something lives before searching for it
 
@@ -88,7 +88,8 @@ Four developer guides already exist (auth/session, forms, onboarding, maintenanc
 
 This project is intended to be **source-available**: free to use and fork, but not a community-maintained project. The goal is for someone to land on the repository, understand immediately what it is and whether it fits their needs, and get started without friction:
 
-- **README** — polished, accurate, and oriented toward a developer evaluating the project; covers what it is, what it includes, how to get started, and what to expect
+- **README** — done: what the project is, the stack, a step-by-step manual install (prerequisites, `.env`, migrations, seed, run), the seeded logins, a troubleshooting table, a reference for every environment variable, and a copy-paste prompt for setting the project up with a coding agent. `.env.example` now ships working local defaults so the app boots straight from a copy
+- **In-app getting started** — done: the dashboard doubles as the landing surface for a new developer, with the local-setup commands, the agent prompt, and links into the stack and developer docs
 - **License** — clearly stated (MIT), with no ambiguity about what is and isn't permitted
 - **No contribution expectations** — the repository does not accept pull requests; this should be stated clearly so developers know what they're getting into before forking
 

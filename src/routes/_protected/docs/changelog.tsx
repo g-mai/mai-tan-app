@@ -15,8 +15,46 @@ function RouteComponent() {
       <Card>
         <CardHeader>
           <div className="flex items-center gap-2">
-            <CardTitle>v0.1.3</CardTitle>
+            <CardTitle>v0.1.4</CardTitle>
             <Badge variant="secondary">Latest</Badge>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <ul className="list-disc space-y-1 pl-5 text-sm text-muted-foreground">
+            <li>
+              Redesigned dashboard: a welcome panel with your organization at a
+              glance, plan and usage, members and teams, and your invitations.
+            </li>
+            <li>
+              Incoming invitations now show who sent them, and can be accepted
+              or declined straight from the dashboard.
+            </li>
+            <li>
+              Redesigned sidebar: the organization switcher sits at the top, the
+              user menu moved down into the footer, and the header now shows
+              breadcrumbs for where you are.
+            </li>
+            <li>
+              Pages that are still being built now say so, instead of looking
+              finished.
+            </li>
+            <li>
+              The dashboard explains how to run the project locally, with the
+              commands to copy and a ready-made prompt for a coding agent.
+            </li>
+            <li>
+              Rewritten README and <code>.env.example</code>: working local
+              defaults, step-by-step setup, seeded logins, a troubleshooting
+              table, and a reference for every environment variable.
+            </li>
+          </ul>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <div className="flex items-center gap-2">
+            <CardTitle>v0.1.3</CardTitle>
           </div>
         </CardHeader>
         <CardContent>
