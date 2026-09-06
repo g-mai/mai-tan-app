@@ -3,6 +3,7 @@ import { Edit } from "lucide-react";
 import { toast } from "sonner";
 import { ImageUpload } from "#/components/shared/image-upload";
 import { PageTitle } from "#/components/shared/page-title";
+import { Wip } from "#/components/shared/wip";
 import {
   Card,
   CardContent,
@@ -88,6 +89,7 @@ function RouteComponent() {
   return (
     <div className="space-y-6">
       <PageTitle title={org.name} />
+      <Wip />
 
       {/* Overview card */}
       <Card>

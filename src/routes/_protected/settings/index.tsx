@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PageTitle } from "#/components/shared/page-title";
+import { Wip } from "#/components/shared/wip";
 import { Card, CardContent, CardHeader, CardTitle } from "#/components/ui/card";
 import { ActiveSessionsSection } from "#/features/auth/components/active-sessions-section";
 import { ChangeEmailSection } from "#/features/auth/components/change-email-section";
@@ -30,6 +31,7 @@ function RouteComponent() {
         title="Settings"
         subtitle="Manage your account settings and preferences"
       />
+      <Wip />
       <ProfileSection user={user} />
       <Card>
         <CardHeader>

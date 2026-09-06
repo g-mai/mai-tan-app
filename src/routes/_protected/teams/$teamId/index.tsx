@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Edit } from "lucide-react";
 import { PageTitle } from "#/components/shared/page-title";
+import { Wip } from "#/components/shared/wip";
 import {
   Card,
   CardContent,
@@ -44,6 +45,7 @@ function RouteComponent() {
   return (
     <div className="space-y-6">
       <PageTitle title={team.name} />
+      <Wip />
 
       {/* Overview card */}
       <Card>

@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PageTitle } from "#/components/shared/page-title";
+import { Wip } from "#/components/shared/wip";
 import { EditTeam } from "#/features/organizations/components/edit-team";
 import { getFullTeam } from "#/features/organizations/lib/team.functions";
 
@@ -29,6 +30,7 @@ function RouteComponent() {
   return (
     <div className="w-2xl flex flex-col gap-4">
       <PageTitle title="Edit team" subtitle={team.organization.name} />
+      <Wip />
       {canManage ? (
         <EditTeam team={team} />
       ) : (

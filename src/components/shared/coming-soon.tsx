@@ -27,7 +27,7 @@ export function ComingSoon({
           <p className="text-sm font-semibold">{title}</p>
           <Badge variant="secondary">Coming soon</Badge>
         </div>
-        <p className="mt-2 max-w-[52ch] text-xs leading-relaxed text-muted-foreground text-pretty">
+        <p className="mt-2 text-xs leading-relaxed text-muted-foreground text-pretty">
           {description}
         </p>
       </div>
