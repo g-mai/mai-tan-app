@@ -24,11 +24,6 @@ export const ONBOARDING_ROUTES: Record<OnboardingStep, LinkProps["to"]> = {
 
 type OnboardingUser = { onboardingStep?: string | null };
 
-type OnboardingContext = {
-  context: { session: { user: OnboardingUser } | null | undefined };
-  location: { pathname: string };
-};
-
 /**
  * `null` means onboarding is finished. That covers "done", the "" column
  * default every existing user has, and any unrecognized value — the field is
@@ -46,12 +41,15 @@ export function getOnboardingStep(
 }
 
 /** Sends a user with onboarding still in progress back to their current step. */
-export function ensureOnboardingComplete(ctx: OnboardingContext) {
-  const step = getOnboardingStep(ctx.context.session?.user);
+export function ensureOnboardingComplete(
+  user: OnboardingUser | null | undefined,
+  pathname: string,
+) {
+  const step = getOnboardingStep(user);
   if (!step) return;
 
   const route = ONBOARDING_ROUTES[step];
-  if (ctx.location.pathname !== route) {
+  if (pathname !== route) {
     throw redirect({ to: route });
   }
 }

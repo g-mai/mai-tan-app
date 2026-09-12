@@ -15,11 +15,7 @@ export const getSession = createServerFn({ method: "GET" }).handler(
   },
 );
 
-export function ensureSession(beforeLoadCtx: {
-  context: { session: Session | null };
-}) {
-  const session = beforeLoadCtx.context.session;
-
+export function ensureSession(session: Session | null) {
   if (!session) {
     throw redirect({ to: "/login" });
   }

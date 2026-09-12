@@ -1,6 +1,7 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { LogoTitle } from "#/components/shared/logo-title";
 import { GridBackdrop } from "#/components/shared/screen-shell";
+import { getSession } from "#/features/auth/lib/auth.functions";
 import Footer from "#/features/layout/components/footer";
 import {
   ensureOnboardingComplete,
@@ -8,16 +9,20 @@ import {
 } from "#/features/onboarding/lib/onboarding";
 
 export const Route = createFileRoute("/_auth")({
-  beforeLoad: (ctx) => {
-    if (!ctx.context.session) return;
+  beforeLoad: async ({ location }) => {
+    const session = await getSession();
 
-    // Signed in, so none of these pages apply — except /register/password,
-    // which is itself the target for the "password" step.
-    if (!getOnboardingStep(ctx.context.session.user)) {
-      throw redirect({ to: "/dashboard" });
+    if (session) {
+      // Signed in, so none of these pages apply — except /register/password,
+      // which is itself the target for the "password" step.
+      if (!getOnboardingStep(session.user)) {
+        throw redirect({ to: "/dashboard" });
+      }
+
+      ensureOnboardingComplete(session.user, location.pathname);
     }
 
-    ensureOnboardingComplete(ctx);
+    return { authSession: session };
   },
   component: AuthLayout,
 });

@@ -2,6 +2,7 @@ import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { LogoTitle } from "#/components/shared/logo-title";
 import { Button } from "#/components/ui/button";
 import { Card } from "#/components/ui/card";
+import { getSession } from "#/features/auth/lib/auth.functions";
 import { signOut, updateUser } from "#/features/auth/lib/auth-client";
 import Footer from "#/features/layout/components/footer";
 import { getOnboardingStep } from "#/features/onboarding/lib/onboarding";
@@ -9,8 +10,14 @@ import { useAcceptInvitation } from "#/features/organizations/hooks/useAcceptInv
 import { getInvitationPreview } from "#/features/organizations/lib/invitation.functions";
 
 export const Route = createFileRoute("/invite/$invitationId")({
-  loader: async ({ params }) =>
-    getInvitationPreview({ data: { id: params.invitationId } }),
+  loader: async ({ params }) => {
+    const [invitation, session] = await Promise.all([
+      getInvitationPreview({ data: { id: params.invitationId } }),
+      getSession(),
+    ]);
+
+    return { invitation, session };
+  },
   component: RouteComponent,
 });
 
@@ -27,9 +34,8 @@ function InviteShell({ children }: { children: React.ReactNode }) {
 }
 
 function RouteComponent() {
-  const invitation = Route.useLoaderData();
+  const { invitation, session } = Route.useLoaderData();
   const { invitationId } = Route.useParams();
-  const { session } = Route.useRouteContext();
   const router = useRouter();
 
   const { accept, isPending } = useAcceptInvitation({
