@@ -5,7 +5,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "#/components/ui/sidebar";
-import { ensureSession } from "#/features/auth/lib/auth.functions";
+import { ensureSession, getSession } from "#/features/auth/lib/auth.functions";
 import { AppSidebar } from "#/features/layout/components/app-sidebar";
 import Footer from "#/features/layout/components/footer";
 import { HeaderBreadcrumb } from "#/features/layout/components/header-breadcrumb";
@@ -16,9 +16,9 @@ import {
 import { ensureOnboardingComplete } from "#/features/onboarding/lib/onboarding";
 
 export const Route = createFileRoute("/_protected")({
-  beforeLoad: (ctx) => {
-    const session = ensureSession(ctx);
-    ensureOnboardingComplete(ctx);
+  beforeLoad: async ({ location }) => {
+    const session = ensureSession(await getSession());
+    ensureOnboardingComplete(session.user, location.pathname);
     return session;
   },
   loader: async () => ({

@@ -1,15 +1,15 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { LogoTitle } from "#/components/shared/logo-title";
 import { GridBackdrop } from "#/components/shared/screen-shell";
-import { ensureSession } from "#/features/auth/lib/auth.functions";
+import { ensureSession, getSession } from "#/features/auth/lib/auth.functions";
 import Footer from "#/features/layout/components/footer";
 import { OnboardingProgress } from "#/features/onboarding/components/onboarding-progress";
 import { UserButton } from "#/features/onboarding/components/user-button";
 import { getOnboardingStep } from "#/features/onboarding/lib/onboarding";
 
 export const Route = createFileRoute("/onboarding")({
-  beforeLoad: (ctx) => {
-    const session = ensureSession(ctx);
+  beforeLoad: async () => {
+    const session = ensureSession(await getSession());
 
     if (!getOnboardingStep(session.user)) {
       throw redirect({ to: "/dashboard" });

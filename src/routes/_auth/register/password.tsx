@@ -11,7 +11,7 @@ export const Route = createFileRoute("/_auth/register/password")({
   beforeLoad: ({ context }) => {
     // Verifying the code creates the session, so reaching this route without
     // one means the flow was never started.
-    if (!context.session) {
+    if (!context.authSession) {
       throw redirect({ to: "/register" });
     }
   },

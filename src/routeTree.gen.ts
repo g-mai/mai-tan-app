@@ -17,6 +17,7 @@ import { Route as AuthForgotPasswordRouteImport } from './routes/_auth/forgot-pa
 import { Route as AuthLoginRouteImport } from './routes/_auth/login'
 import { Route as AuthResetPasswordRouteImport } from './routes/_auth/reset-password'
 import { Route as ProtectedDashboardRouteImport } from './routes/_protected/dashboard'
+import { Route as ApiHealthRouteImport } from './routes/api/health'
 import { Route as InviteInvitationIdRouteImport } from './routes/invite/$invitationId'
 import { Route as OnboardingCompleteRouteImport } from './routes/onboarding/complete'
 import { Route as OnboardingInviteRouteImport } from './routes/onboarding/invite'
@@ -83,6 +84,11 @@ const ProtectedDashboardRoute = ProtectedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
   getParentRoute: () => ProtectedRouteRoute,
+} as any)
+const ApiHealthRoute = ApiHealthRouteImport.update({
+  id: '/api/health',
+  path: '/api/health',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const InviteInvitationIdRoute = InviteInvitationIdRouteImport.update({
   id: '/invite/$invitationId',
@@ -242,6 +248,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof AuthLoginRoute
   '/reset-password': typeof AuthResetPasswordRoute
   '/dashboard': typeof ProtectedDashboardRoute
+  '/api/health': typeof ApiHealthRoute
   '/invite/$invitationId': typeof InviteInvitationIdRoute
   '/onboarding/complete': typeof OnboardingCompleteRoute
   '/onboarding/invite': typeof OnboardingInviteRoute
@@ -278,6 +285,7 @@ export interface FileRoutesByTo {
   '/login': typeof AuthLoginRoute
   '/reset-password': typeof AuthResetPasswordRoute
   '/dashboard': typeof ProtectedDashboardRoute
+  '/api/health': typeof ApiHealthRoute
   '/invite/$invitationId': typeof InviteInvitationIdRoute
   '/onboarding/complete': typeof OnboardingCompleteRoute
   '/onboarding/invite': typeof OnboardingInviteRoute
@@ -317,6 +325,7 @@ export interface FileRoutesById {
   '/_auth/login': typeof AuthLoginRoute
   '/_auth/reset-password': typeof AuthResetPasswordRoute
   '/_protected/dashboard': typeof ProtectedDashboardRoute
+  '/api/health': typeof ApiHealthRoute
   '/invite/$invitationId': typeof InviteInvitationIdRoute
   '/onboarding/complete': typeof OnboardingCompleteRoute
   '/onboarding/invite': typeof OnboardingInviteRoute
@@ -355,6 +364,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/reset-password'
     | '/dashboard'
+    | '/api/health'
     | '/invite/$invitationId'
     | '/onboarding/complete'
     | '/onboarding/invite'
@@ -391,6 +401,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/reset-password'
     | '/dashboard'
+    | '/api/health'
     | '/invite/$invitationId'
     | '/onboarding/complete'
     | '/onboarding/invite'
@@ -429,6 +440,7 @@ export interface FileRouteTypes {
     | '/_auth/login'
     | '/_auth/reset-password'
     | '/_protected/dashboard'
+    | '/api/health'
     | '/invite/$invitationId'
     | '/onboarding/complete'
     | '/onboarding/invite'
@@ -464,6 +476,7 @@ export interface RootRouteChildren {
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
   ProtectedRouteRoute: typeof ProtectedRouteRouteWithChildren
   OnboardingRouteRoute: typeof OnboardingRouteRouteWithChildren
+  ApiHealthRoute: typeof ApiHealthRoute
   InviteInvitationIdRoute: typeof InviteInvitationIdRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
@@ -525,6 +538,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/dashboard'
       preLoaderRoute: typeof ProtectedDashboardRouteImport
       parentRoute: typeof ProtectedRouteRoute
+    }
+    '/api/health': {
+      id: '/api/health'
+      path: '/api/health'
+      fullPath: '/api/health'
+      preLoaderRoute: typeof ApiHealthRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/invite/$invitationId': {
       id: '/invite/$invitationId'
@@ -820,6 +840,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRouteRoute: AuthRouteRouteWithChildren,
   ProtectedRouteRoute: ProtectedRouteRouteWithChildren,
   OnboardingRouteRoute: OnboardingRouteRouteWithChildren,
+  ApiHealthRoute: ApiHealthRoute,
   InviteInvitationIdRoute: InviteInvitationIdRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
 }
