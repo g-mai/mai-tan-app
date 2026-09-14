@@ -5,14 +5,13 @@ import {
   ScreenFooter,
   ScreenHeader,
   ScreenStrip,
-  SectionPanel,
 } from "#/components/shared/screen-shell";
 import { Button } from "#/components/ui/button";
 import { OnboardingBackButton } from "#/features/onboarding/components/onboarding-back-button";
 import { useOnboardingNavigation } from "#/features/onboarding/hooks/useOnboardingNavigation";
 import { ensureOnboardingStep } from "#/features/onboarding/lib/onboarding";
 import { CreateTeam } from "#/features/organizations/components/create-team";
-import { TeamLogo } from "#/features/organizations/components/team-logo";
+import { TeamList } from "#/features/organizations/components/team-list";
 import { listTeams } from "#/features/organizations/lib/team.functions";
 
 export const Route = createFileRoute("/onboarding/team")({
@@ -55,25 +54,7 @@ function RouteComponent() {
           />
 
           {teams.length > 0 && (
-            <SectionPanel title="Teams you already have">
-              <ul className="grid gap-3">
-                {teams.map((team) => (
-                  <li key={team.id} className="flex items-center gap-3">
-                    <TeamLogo
-                      logoUrl={team.logo}
-                      name={team.name}
-                      color={team.color}
-                      size={28}
-                    />
-                    <div className="min-w-0">
-                      <p className="truncate text-sm font-medium">
-                        {team.name}
-                      </p>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </SectionPanel>
+            <TeamList teams={teams} title="Teams you already have" />
           )}
         </div>
       </ScreenBody>

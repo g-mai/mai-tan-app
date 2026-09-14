@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { toInvitationPreview } from "./invitation";
+import { filterPending, toInvitationPreview } from "./invitation";
 
 const now = new Date("2026-01-10T12:00:00Z");
 
@@ -44,5 +44,50 @@ describe("toInvitationPreview", () => {
     ["rejected", row({ status: "rejected" })],
   ])("collapses %s into a detail-free invalid", (_label, invitation) => {
     expect(toInvitationPreview(invitation, now)).toEqual({ status: "invalid" });
+  });
+});
+
+describe("filterPending", () => {
+  const live = {
+    id: "live",
+    status: "pending",
+    expiresAt: "2026-01-12T12:00:00Z",
+  };
+  const expired = {
+    id: "expired",
+    status: "pending",
+    expiresAt: "2026-01-01T12:00:00Z",
+  };
+  const accepted = {
+    id: "accepted",
+    status: "accepted",
+    expiresAt: "2026-01-12T12:00:00Z",
+  };
+  const cancelled = {
+    id: "cancelled",
+    status: "canceled",
+    expiresAt: "2026-01-12T12:00:00Z",
+  };
+
+  it("keeps only invitations that are pending and unexpired", () => {
+    const rows = [live, expired, accepted, cancelled];
+
+    expect(filterPending(rows, now).map((r) => r.id)).toEqual(["live"]);
+  });
+
+  it("drops a pending invitation that has run out", () => {
+    expect(filterPending([expired], now)).toEqual([]);
+  });
+
+  it("accepts Date expiries as well as strings", () => {
+    const rows = [
+      { status: "pending", expiresAt: new Date("2026-01-12T12:00:00Z") },
+    ];
+
+    expect(filterPending(rows, now)).toHaveLength(1);
+  });
+
+  it("returns an empty list unchanged", () => {
+    expect(filterPending([], now)).toEqual([]);
   });
 });

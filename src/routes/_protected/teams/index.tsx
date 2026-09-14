@@ -2,14 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageTitle } from "#/components/shared/page-title";
 import { Wip } from "#/components/shared/wip";
 import { Button } from "#/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "#/components/ui/card";
-import { TeamLogo } from "#/features/organizations/components/team-logo";
+import { TeamCard } from "#/features/organizations/components/team-card";
 import { listTeams } from "#/features/organizations/lib/team.functions";
 
 export const Route = createFileRoute("/_protected/teams/")({
@@ -46,31 +39,7 @@ function RouteComponent() {
           .
         </p>
       ) : (
-        teams.map((team) => (
-          <Link to="/teams/$teamId" params={{ teamId: team.id }} key={team.id}>
-            <Card className="min-w-sm cursor-pointer">
-              <CardHeader>
-                <div className="flex items-center gap-4">
-                  <TeamLogo
-                    logoUrl={team.logo}
-                    name={team.name}
-                    color={team.color}
-                    size={48}
-                  />
-                  <div>
-                    <CardTitle>{team.name}</CardTitle>
-                    <CardDescription>{team.organization.name}</CardDescription>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground text-sm">
-                  {team.description || "No description"}
-                </p>
-              </CardContent>
-            </Card>
-          </Link>
-        ))
+        teams.map((team) => <TeamCard key={team.id} team={team} />)
       )}
     </div>
   );
