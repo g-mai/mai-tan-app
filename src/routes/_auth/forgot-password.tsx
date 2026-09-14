@@ -15,8 +15,7 @@ export const Route = createFileRoute("/_auth/forgot-password")({
 });
 
 function RouteComponent() {
-  const { form, isPending, isSuccess, isError, handleReset } =
-    useForgotPassword();
+  const { form, isPending, isSuccess, handleReset } = useForgotPassword();
 
   if (isSuccess) {
     return (
