@@ -14,8 +14,12 @@ export type SoleOwnedOrg = {
 };
 
 /** Better Auth stores roles comma-joined, e.g. "admin,sales". */
+function rolesArray(role: string | null | undefined) {
+  return (role ?? "").split(",");
+}
+
 function isOwner(membership: OrgMembership) {
-  return (membership.role ?? "").split(",").includes("owner");
+  return rolesArray(membership.role).includes("owner");
 }
 
 /**
@@ -57,4 +61,24 @@ export function pickActiveOrganizationId(
   if (currentId && orgIds.includes(currentId)) return currentId;
 
   return orgIds[0] ?? null;
+}
+
+/** The role this user holds in the organization, or `undefined` if not a member. */
+export function findMemberRole(
+  members: OrgMembership[],
+  userId: string,
+): string | undefined {
+  return members.find((member) => member.userId === userId)?.role ?? undefined;
+}
+
+/**
+ * Whether a role may administer the organization — invite and remove people,
+ * manage teams, edit settings.
+ *
+ * Roles arrive comma-joined, so "admin,sales" manages exactly as "admin" does.
+ */
+export function canManage(role: string | null | undefined): boolean {
+  const roles = rolesArray(role);
+
+  return roles.includes("owner") || roles.includes("admin");
 }

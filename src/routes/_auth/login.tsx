@@ -19,7 +19,7 @@ export const Route = createFileRoute("/_auth/login")({
 
 function RouteComponent() {
   const { invitation } = Route.useSearch();
-  const { form, isPending, isSuccess, isError } = useLogin({ invitation });
+  const { form, isPending } = useLogin({ invitation });
 
   return (
     <ScreenCard>

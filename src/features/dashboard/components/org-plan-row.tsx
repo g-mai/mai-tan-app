@@ -2,6 +2,9 @@ import { Link } from "@tanstack/react-router";
 import { CreditCard } from "lucide-react";
 import { OrganizationLogo } from "#/features/organizations/components/organization-logo";
 import { RoleBadge } from "#/features/organizations/components/role-badge";
+import { filterPending } from "#/features/organizations/lib/invitation";
+import { findMemberRole } from "#/features/organizations/lib/org";
+import { formatDate } from "#/lib/format";
 
 type Org = {
   id: string;
@@ -9,31 +12,28 @@ type Org = {
   slug: string;
   logo?: string | null;
   createdAt: Date | string;
+  members: { userId: string; role: string | null }[];
+  invitations: { status: string; expiresAt: Date | string }[];
 };
+
+type Team = { id: string };
 
 export function OrgPlanRow({
   org,
-  role,
-  memberCount,
-  teamCount,
-  pendingInviteCount,
+  teams,
+  currentUserId,
 }: {
   org: Org;
-  role?: string;
-  memberCount: number;
-  teamCount: number;
-  pendingInviteCount: number;
+  teams: Team[];
+  currentUserId: string;
 }) {
-  const created = new Date(org.createdAt).toLocaleDateString(undefined, {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
+  const role = findMemberRole(org.members, currentUserId);
+  const created = formatDate(org.createdAt, "short");
 
   const stats = [
-    { label: "Members", value: memberCount },
-    { label: "Teams", value: teamCount },
-    { label: "Pending invites", value: pendingInviteCount },
+    { label: "Members", value: org.members.length },
+    { label: "Teams", value: teams.length },
+    { label: "Pending invites", value: filterPending(org.invitations).length },
   ];
 
   return (

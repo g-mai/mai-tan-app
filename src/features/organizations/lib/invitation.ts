@@ -38,3 +38,16 @@ export function toInvitationPreview(
     email: invitation.email,
   };
 }
+
+/**
+ * The invitations still worth showing: accepted, rejected, cancelled and
+ * expired rows all come back from Better Auth alongside the live ones.
+ */
+export function filterPending<
+  T extends { status: string; expiresAt: Date | string },
+>(invitations: T[], now = new Date()): T[] {
+  return invitations.filter(
+    (invitation) =>
+      invitation.status === "pending" && new Date(invitation.expiresAt) > now,
+  );
+}
