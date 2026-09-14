@@ -5,15 +5,14 @@ import {
   ScreenFooter,
   ScreenHeader,
   ScreenStrip,
-  SectionPanel,
 } from "#/components/shared/screen-shell";
-import { Avatar, AvatarFallback, AvatarImage } from "#/components/ui/avatar";
 import { Button } from "#/components/ui/button";
 import { OnboardingBackButton } from "#/features/onboarding/components/onboarding-back-button";
 import { useOnboardingNavigation } from "#/features/onboarding/hooks/useOnboardingNavigation";
 import { ensureOnboardingStep } from "#/features/onboarding/lib/onboarding";
 import { FakerMember } from "#/features/organizations/components/faker-member";
 import { InviteMember } from "#/features/organizations/components/invite-member";
+import { MemberList } from "#/features/organizations/components/member-list";
 import { PendingInvitations } from "#/features/organizations/components/pending-invitations";
 import { listOrgInvitations } from "#/features/organizations/lib/invitation.functions";
 import { listOrgMembers } from "#/features/organizations/lib/org.functions";
@@ -63,34 +62,11 @@ function RouteComponent() {
           />
 
           {members.length > 0 && (
-            <SectionPanel title="Members you already have">
-              <ul className="grid gap-3">
-                {members.map((member) => (
-                  <li key={member.id} className="flex items-center gap-3">
-                    <Avatar className="size-7">
-                      <AvatarImage
-                        src={member.user.image ?? undefined}
-                        alt={`${member.user.name}'s avatar`}
-                      />
-                      <AvatarFallback className="text-xs">
-                        {member.user.name.charAt(0).toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="min-w-0">
-                      <p className="truncate text-sm font-medium">
-                        {member.user.name}
-                      </p>
-                      <p className="truncate text-xs text-muted-foreground">
-                        {member.user.email}
-                      </p>
-                    </div>
-                    <span className="ml-auto shrink-0 font-mono text-[11px] text-muted-foreground">
-                      {member.role}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </SectionPanel>
+            <MemberList
+              members={members}
+              title="Members you already have"
+              variant="panel"
+            />
           )}
           {/* Dashed = optional escape hatch, not a primary path. */}
           <div className="flex flex-col gap-3 rounded-lg border border-dashed p-3 sm:flex-row sm:items-center sm:justify-between">

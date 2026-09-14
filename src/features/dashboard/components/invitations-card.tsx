@@ -4,18 +4,22 @@ import { useAcceptInvitation } from "#/features/organizations/hooks/useAcceptInv
 import { useCancelInvitation } from "#/features/organizations/hooks/useCancelInvitation";
 import { useDeclineInvitation } from "#/features/organizations/hooks/useDeclineInvitation";
 import { useResendInvitation } from "#/features/organizations/hooks/useResendInvitation";
+import { filterPending } from "#/features/organizations/lib/invitation";
 import { Button } from "@/components/ui/button";
 
 type IncomingInvitation = {
   id: string;
+  status: string;
   role?: string | null;
   organizationName?: string | null;
   inviterEmail?: string | null;
+  expiresAt: Date | string;
 };
 
 type SentInvitation = {
   id: string;
   email: string;
+  status: string;
   role?: string | null;
   expiresAt: Date | string;
 };
@@ -32,17 +36,21 @@ function expiresIn(expiresAt: Date | string) {
 
 export function InvitationsCard({
   orgId,
-  incoming,
-  sent,
+  myInvitations,
+  orgInvitations,
 }: {
   orgId: string;
-  incoming: IncomingInvitation[];
-  sent: SentInvitation[];
+  myInvitations: IncomingInvitation[];
+  orgInvitations: SentInvitation[];
 }) {
   const { accept, isPending: isAccepting } = useAcceptInvitation();
   const { decline, isPending: isDeclining } = useDeclineInvitation();
   const { resend, isPending: isResending } = useResendInvitation();
   const { cancel, isPending: isCancelling } = useCancelInvitation();
+
+  // Better Auth returns every status, expired rows included.
+  const incoming = filterPending(myInvitations);
+  const sent = filterPending(orgInvitations);
 
   if (incoming.length === 0 && sent.length === 0) {
     return (

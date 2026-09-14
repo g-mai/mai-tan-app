@@ -1,18 +1,38 @@
 import { Link } from "@tanstack/react-router";
 import { RoleBadge } from "#/features/organizations/components/role-badge";
+import { findMemberRole } from "#/features/organizations/lib/org";
 import { Button } from "@/components/ui/button";
+
+type Member = { userId: string; role: string | null };
+type Team = { id: string };
+
+function plural(count: number, noun: string) {
+  return `${count} ${noun}${count === 1 ? "" : "s"}`;
+}
 
 export function DashboardHero({
   firstName,
-  chips,
-  role,
   orgId,
+  orgCount,
+  members,
+  teams,
+  currentUserId,
 }: {
   firstName: string;
-  chips: string[];
-  role?: string;
   orgId?: string;
+  orgCount: number;
+  members: Member[];
+  teams: Team[];
+  currentUserId: string;
 }) {
+  const role = findMemberRole(members, currentUserId);
+
+  const chips = [
+    plural(orgCount, "organization"),
+    plural(members.length, "member"),
+    teams.length === 0 ? "no teams yet" : plural(teams.length, "team"),
+  ];
+
   return (
     <div className="flex flex-col gap-7 rounded-xl border bg-card p-7 shadow-sm sm:flex-row sm:items-center sm:px-8">
       <div className="flex min-w-0 flex-1 flex-col gap-3">
