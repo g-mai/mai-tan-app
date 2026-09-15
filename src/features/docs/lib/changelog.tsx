@@ -11,8 +11,36 @@ export type ChangelogEntry = {
 /** Newest first. Entries carry markup, hence a .tsx data module. */
 export const CHANGELOG: ChangelogEntry[] = [
   {
-    version: "v0.1.4",
+    version: "v0.1.5",
     badge: "Latest",
+    changes: [
+      <>
+        The app now runs on <strong>Cloudflare Workers</strong>. A single{" "}
+        <code>pnpm deploy</code> builds and ships it; the Netlify setup has been
+        retired.
+      </>,
+      <>
+        PostgreSQL has been replaced by <strong>Cloudflare D1</strong>, bound
+        straight to the Worker. Local development no longer needs Docker —{" "}
+        <code>pnpm dev</code> starts Vite with a local D1 database.
+      </>,
+      <>
+        Migrations are applied by Wrangler as a deliberate step, with{" "}
+        <code>pnpm db:migrate:local</code> and{" "}
+        <code>pnpm db:migrate:remote</code>. Drizzle Studio can be pointed at
+        either database.
+      </>,
+      <>
+        Environment variables are split in two: <code>.env</code> for the build
+        tooling and <code>.dev.vars</code> for the Worker's secrets, validated
+        when the Worker starts.
+      </>,
+      "The docs section covers the new setup: the tech stack, the install steps, and a reference for every environment variable.",
+      "Better Auth updated to 1.7.4.",
+    ],
+  },
+  {
+    version: "v0.1.4",
     changes: [
       "Redesigned dashboard: a welcome panel with your organization at a glance, plan and usage, members and teams, and your invitations.",
       "Incoming invitations now show who sent them, and can be accepted or declined straight from the dashboard.",

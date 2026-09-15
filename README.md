@@ -1,4 +1,4 @@
-# Mai Tan App - B2B SaaS Starter Kit - v 0.1.4
+# Mai Tan App - B2B SaaS Starter Kit - v 0.1.5
 
 A production-ready, feature-complete starter kit for building multi-tenant B2B SaaS applications. Built with TanStack Start, Better Auth, Drizzle ORM, and shadcn/ui.
 
