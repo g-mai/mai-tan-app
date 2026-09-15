@@ -1,13 +1,11 @@
 import { defineConfig } from "drizzle-kit";
+import { getRemoteD1Credentials } from "./src/lib/env.tooling";
+
+const dbCredentials = getRemoteD1Credentials();
 
 export default defineConfig({
   out: "./src/lib/db/drizzle",
   schema: "./src/lib/db/schema.ts",
   dialect: "sqlite",
-  driver: "d1-http",
-  dbCredentials: {
-    accountId: process.env.CLOUDFLARE_ACCOUNT_ID as string,
-    databaseId: process.env.CLOUDFLARE_DATABASE_ID as string,
-    token: process.env.CLOUDFLARE_D1_TOKEN as string,
-  },
+  ...(dbCredentials && { driver: "d1-http", dbCredentials }),
 });

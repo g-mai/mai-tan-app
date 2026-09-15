@@ -29,9 +29,9 @@ const features: { title: string; description: string; icon: LucideIcon }[] = [
     icon: Mail,
   },
   {
-    title: "Observability",
+    title: "Observability-ready",
     description:
-      "Sentry error tracking wired through @sentry/tanstackstart-react.",
+      "Sentry dependency and configuration scaffolding, ready for integration.",
     icon: Activity,
   },
   {

@@ -114,7 +114,6 @@ export function RunLocallyCard() {
                 "s|^BETTER_AUTH_SECRET=.*|BETTER_AUTH_SECRET=$(openssl rand
                 -base64 32)|" .dev.vars
               </Line>
-              <Line glyph="$">ln -s .dev.vars .env.local</Line>
               <Line comment># 3 · local D1 schema</Line>
               <Line glyph="$">pnpm db:migrate:local</Line>
               <Line comment># 4 · run</Line>
@@ -129,12 +128,9 @@ export function RunLocallyCard() {
             <p className="mb-1 text-[13px] font-semibold">Two env files</p>
             <p className="text-xs leading-relaxed text-muted-foreground text-pretty">
               <Code>.env</Code> is read by Node — Drizzle Kit and the Vite
-              build. <Code>.dev.vars</Code> is read by the Worker, and{" "}
-              <Code>.env.local</Code> symlinks to it so both loaders see the
-              same values. <Code>src/lib/env.ts</Code> validates with Zod at
-              import time, so never empty <Code>RESEND_API_KEY</Code> or{" "}
-              <Code>R2_*</Code>. On Linux, <Code>sed -i</Code> in place of{" "}
-              <Code>perl -pi -e</Code>.
+              build. <Code>.dev.vars</Code> is read by the Worker. Resend and R2
+              may stay blank until you use email or image uploads. On Linux,{" "}
+              <Code>sed -i</Code> can replace <Code>perl -pi -e</Code>.
             </p>
           </div>
           <div>

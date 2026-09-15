@@ -7,6 +7,10 @@
   "observability": { "enabled": true },
   "workers_dev": false,
   "preview_urls": false,
+  "vars": {
+    "BETTER_AUTH_URL": "https://tan.g-mai.dev",
+    "SKIP_VERIFICATION_EMAIL": "false"
+  },
   "d1_databases": [
     {
       "binding": "DB",

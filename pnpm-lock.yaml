@@ -23,6 +23,9 @@ importers:
       '@sentry/tanstackstart-react':
         specifier: ^10.73.0
         version: 10.73.0(@opentelemetry/core@2.11.0(@opentelemetry/api@1.9.1))(react@19.2.8)
+      '@t3-oss/env-core':
+        specifier: ~0.13.11
+        version: 0.13.11(typescript@7.0.2)(zod@4.5.4)
       '@tailwindcss/vite':
         specifier: ^4.3.3
         version: 4.3.3(vite@8.2.2(@types/node@26.4.0)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.12)(yaml@2.9.0))
@@ -2998,6 +3001,23 @@ packages:
 
   '@standard-schema/spec@1.1.0':
     resolution: {integrity: sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w==, tarball: https://registry.npmjs.org/@standard-schema/spec/-/spec-1.1.0.tgz}
+
+  '@t3-oss/env-core@0.13.11':
+    resolution: {integrity: sha512-sM7GYY+KL7H/Hl0BE0inWfk3nRHZOLhmVn7sHGxaZt9FAR6KqREXAE+6TqKfiavfXmpRxO/OZ2QgKRd+oiBYRQ==, tarball: https://registry.npmjs.org/@t3-oss/env-core/-/env-core-0.13.11.tgz}
+    peerDependencies:
+      arktype: ^2.1.0
+      typescript: '>=5.0.0'
+      valibot: ^1.0.0-beta.7 || ^1.0.0
+      zod: ^3.24.0 || ^4.0.0
+    peerDependenciesMeta:
+      arktype:
+        optional: true
+      typescript:
+        optional: true
+      valibot:
+        optional: true
+      zod:
+        optional: true
 
   '@tailwindcss/node@4.3.3':
     resolution: {integrity: sha512-/T8IKEsf9VTU6tLjgC7+sv2mOPtQxzE2jMw7u4Tt40Tx+QSZxpzh95/H6cMKoja9XuW7iMdLJYBB0o9G1CaAgg==, tarball: https://registry.npmjs.org/@tailwindcss/node/-/node-4.3.3.tgz}
@@ -7865,6 +7885,11 @@ snapshots:
 
   '@standard-schema/spec@1.1.0': {}
 
+  '@t3-oss/env-core@0.13.11(typescript@7.0.2)(zod@4.5.4)':
+    optionalDependencies:
+      typescript: 7.0.2
+      zod: 4.5.4
+
   '@tailwindcss/node@4.3.3':
     dependencies:
       '@jridgewell/remapping': 2.3.5
@@ -10249,6 +10274,7 @@ time:
   '@cloudflare/vite-plugin@1.54.8': '2026-09-11T14:09:24.450Z'
   '@faker-js/faker@10.6.0': '2026-08-14T16:57:41.640Z'
   '@sentry/tanstackstart-react@10.73.0': '2026-08-31T16:56:22.696Z'
+  '@t3-oss/env-core@0.13.11': '2026-03-22T19:16:09.121Z'
   '@tailwindcss/typography@0.5.20': '2026-06-08T10:34:41.124Z'
   '@tailwindcss/vite@4.3.3': '2026-07-16T12:04:06.316Z'
   '@tanstack/devtools-vite@0.8.5': '2026-08-20T10:44:43.278Z'

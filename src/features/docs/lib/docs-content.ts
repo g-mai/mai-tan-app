@@ -19,9 +19,9 @@ export const FEATURES = [
       "Transactional email via Resend (verification, password reset).",
   },
   {
-    title: "Observability",
+    title: "Observability-ready",
     description:
-      "Sentry error tracking integrated via @sentry/tanstackstart-react.",
+      "Sentry dependency and configuration scaffolding; integration is pending.",
   },
   {
     title: "Theme toggle",
@@ -46,7 +46,6 @@ pnpm install
 # Set up environment variables — .env for tooling, .dev.vars for the Worker
 cp .env.example .env
 cp .dev.vars.example .dev.vars
-ln -s .dev.vars .env.local
 
 # Create the local D1 database
 pnpm db:migrate:local

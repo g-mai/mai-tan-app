@@ -13,7 +13,7 @@ Demo: [CLICK HERE](https://tan.g-mai.dev/) to check it live!
 - **Type-safe forms** — `@tanstack/react-form` + Zod + TanStack Query mutations
 - **Full-stack SSR** — Server-side rendering with TanStack Start, dehydrated/rehydrated query cache
 - **Email flows** — Transactional email via Resend (verification, password reset)
-- **Observability** — Sentry error tracking integrated via `@sentry/tanstackstart-react`
+- **Observability-ready** — Sentry dependency and configuration scaffolding (integration pending)
 - **Theme toggle** — Light/dark mode with init script, no flash on load
 
 ## Tech Stack
@@ -89,27 +89,29 @@ There are two environment files, because two different runtimes read them:
 
 | File | Read by | Holds |
 | ---- | ------- | ----- |
-| `.env` | Node — Drizzle Kit and the Vite build | `CLOUDFLARE_*` for remote D1, `VITE_*` |
-| `.dev.vars` | The Worker, via Wrangler | Better Auth, Resend and R2 secrets |
+| `.env` | Node — Drizzle Kit and the Vite build | `CLOUDFLARE_*` for remote D1, `VITE_*`, Sentry build settings |
+| `.dev.vars` | The Worker, via Wrangler | Local Worker configuration and secrets |
 
 ```bash
 cp .env.example .env
 cp .dev.vars.example .dev.vars && perl -pi -e "s|^BETTER_AUTH_SECRET=.*|BETTER_AUTH_SECRET=$(openssl rand -base64 32)|" .dev.vars
-ln -s .dev.vars .env.local
 ```
 
 That copies both templates and replaces the session-signing secret with a real random one in the
 same step. On Linux you can use `sed -i` in place of `perl -pi -e`.
 
-The `.env.local` symlink is a convenience: Vite's own loader reads `.env.local`, so pointing it at
-`.dev.vars` keeps Vite and Wrangler on one set of values instead of two copies that drift. It is
-gitignored, so a fresh clone has to recreate it.
+Both templates ship with the core local defaults needed to boot. Resend and R2 are optional and may
+stay blank until email delivery or image uploads are used. The `CLOUDFLARE_*` entries in `.env` may
+also stay empty until you talk to the remote database.
 
-Both templates ship with working local defaults — `localhost:3000` URLs and placeholders for the
-third-party services — so the app boots as soon as they are copied. Placeholders rather than blanks
-because `src/lib/env.ts` validates the environment with Zod at import time and rejects empty
-`RESEND_API_KEY` or `R2_*` values. The `CLOUDFLARE_*` entries in `.env` are the exception: they may
-stay empty until you talk to the remote database.
+Validation lives in three [T3 Env](https://env.t3.gg) modules: `src/lib/env.tooling.ts` for Node tooling,
+`src/lib/env.server.ts` for the Worker, and `src/lib/env.public.ts` for browser-exposed `VITE_*`
+values. Importing the server module from client code fails the build, so a secret cannot reach the
+bundle by accident.
+
+One consequence for CI: `pnpm build` prerenders pages by running the Worker, which reads `.dev.vars`.
+A fresh checkout has no such file, so a pipeline has to create one — `cp .dev.vars.example .dev.vars`
+before the build is enough because prerendering does not call Resend or R2.
 
 ### 3. Create the local database
 
@@ -137,7 +139,8 @@ Open [http://localhost:3000](http://localhost:3000) and register an account.
 
 | Symptom | Cause and fix |
 | ------- | ------------- |
-| `ZodError` mentioning `R2_*` / `RESEND_API_KEY` on boot | A variable in `.dev.vars` was blanked out — `src/lib/env.ts` requires a non-empty value, placeholder or real |
+| `Email is not configured` | Set `RESEND_API_KEY` before using registration or another email flow |
+| `Image storage is not configured` | Set all five `R2_*` values before uploading an avatar or logo |
 | `no such table: user` | Migrations never ran — `pnpm db:migrate:local` |
 | Changes to `.dev.vars` seem ignored | Wrangler reads it at startup only; restart `pnpm dev` |
 | `drizzle-kit` errors about account or token | The `CLOUDFLARE_*` values in `.env` are empty; they are needed only for remote D1 |
@@ -157,20 +160,20 @@ pnpm db:migrate:local
 | Variable | Required | Notes |
 | -------- | -------- | ----- |
 | `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_DATABASE_ID`, `CLOUDFLARE_D1_TOKEN` | Only for remote D1 | Used by `drizzle.config.ts` for `pnpm db:studio` and any `drizzle-kit` command that hits the deployed database |
-| `VITE_APP_URL` | Yes | Exposed to the browser bundle; shown as the host affix on organization slugs |
-| `VITE_SENTRY_*`, `SENTRY_AUTH_TOKEN` | No | Leave empty to disable error reporting |
+| `VITE_APP_URL` | No | Exposed to the browser bundle; shown as the host affix on organization slugs |
+| `VITE_SENTRY_DSN`, `SENTRY_ORG`, `SENTRY_PROJECT`, `SENTRY_AUTH_TOKEN` | No | Reserved for the planned Sentry integration; currently unused |
 
-**`.dev.vars`** — Worker runtime. In production these are Worker secrets
-(`wrangler secret put <NAME>`), not a file:
+**`.dev.vars`** — Worker runtime. In production, non-sensitive values belong in
+`wrangler.jsonc` and credentials are Worker secrets (`wrangler secret put <NAME>`), not a file:
 
 | Variable | Required | Notes |
 | -------- | -------- | ----- |
 | `BETTER_AUTH_URL` | Yes | Base URL of the app; also used to build invitation links |
 | `BETTER_AUTH_SECRET` | Yes | Signs sessions — `openssl rand -base64 32` |
-| `RESEND_API_KEY` | Yes (placeholder ok) | Validated as non-empty; must be real to deliver email, and therefore to register |
-| `FROM_ADDRESS_EMAIL` | Yes (placeholder ok) | Sender address for transactional email |
+| `RESEND_API_KEY` | Only for email flows | Must be real to deliver email, and therefore to register |
+| `FROM_ADDRESS_EMAIL` | Only for email flows | Sender address used with `RESEND_API_KEY` |
 | `ADMIN_EMAIL` | No | Recipient for admin notification emails |
-| `R2_*` | Yes (placeholders ok) | Cloudflare R2 credentials; only exercised by avatar and logo uploads |
+| `R2_*` | Only for image uploads | All five values are required together for avatar and logo uploads |
 | `SKIP_VERIFICATION_EMAIL` | No | `true` suppresses verification and invitation email sending |
 
 The database is not an environment variable. D1 arrives as the `DB` binding declared in
@@ -183,8 +186,8 @@ pnpm db:migrate:remote   # apply migrations to the deployed D1 database
 pnpm deploy              # vite build && wrangler deploy
 ```
 
-Migrations are a deliberate, separate step — they are not part of the build. Set the `.dev.vars`
-values as Worker secrets before the first deploy:
+Migrations are a deliberate, separate step — they are not part of the build. Set required
+credentials as Worker secrets before the first deploy:
 
 ```bash
 wrangler secret put BETTER_AUTH_SECRET
@@ -208,14 +211,11 @@ and stop to ask me only if a step genuinely cannot be completed without a decisi
 3. If the repository is not already in the current directory, clone
    https://github.com/g-mai/mai-tan-app and cd into it. Then run `pnpm install`.
 4. Create the two environment files from their templates, generating a real session secret in the
-   same step, and link `.env.local` at `.dev.vars` so Vite and Wrangler read the same values:
+   same step:
    cp .env.example .env
    cp .dev.vars.example .dev.vars && perl -pi -e "s|^BETTER_AUTH_SECRET=.*|BETTER_AUTH_SECRET=$(openssl rand -base64 32)|" .dev.vars
-   ln -s .dev.vars .env.local
-   Leave every other value as it is: the Resend and R2 entries are deliberate placeholders, and
-   `src/lib/env.ts` parses the environment with Zod at import time and rejects empty values, so do
-   not blank any of them out. The `CLOUDFLARE_*` entries in `.env` are meant to stay empty until
-   the remote database is used. Never invent credentials that look real, and never put secrets of
+   Leave the optional Resend, R2, Cloudflare, and Sentry entries blank until those integrations are
+   used. Never invent credentials that look real, and never put secrets of
    mine in the file unless I give them to you. Leave `.env` and `.dev.vars` untracked; do not
    commit them or any other file.
 5. Run `pnpm db:migrate:local` to create the schema in the local D1 database.

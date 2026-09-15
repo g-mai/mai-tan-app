@@ -86,11 +86,21 @@ Forms use a custom hook factory in `src/hooks/use-app-form.ts` built on `@tansta
 
 ### Environment
 
-Two files, two runtimes. `.env` is read by Node — Drizzle Kit and the Vite build — and holds the
-`CLOUDFLARE_*` and `VITE_*` values. `.dev.vars` is read by Wrangler and loaded into the Worker
-environment; it holds the Better Auth, Resend and R2 secrets, which `src/lib/env.ts` validates with
-Zod at import time. `.env.local` is a symlink to `.dev.vars` so Vite's loader sees the same values.
-In production the `.dev.vars` entries are Worker secrets (`wrangler secret put <NAME>`).
+Two files, three configuration domains. `.env` is read by Node — Drizzle Kit and the Vite build — and holds the
+`CLOUDFLARE_*`, `VITE_*`, and Sentry build values. `.dev.vars` is read by Wrangler and loaded into the Worker
+environment; it holds local Worker configuration and secrets. In production, non-sensitive values
+belong in `wrangler.jsonc` and credentials are Worker secrets (`wrangler secret put <NAME>`).
+
+Three modules validate them with T3 Env: `src/lib/env.tooling.ts` covers Node tooling,
+`src/lib/env.server.ts` covers the Worker, and `src/lib/env.public.ts` covers browser-exposed `VITE_*` values. TanStack Start's
+import-protection plugin denies `**/*.server.*` in the client bundle, so importing `env.server.ts`
+from a component fails the build instead of leaking a secret into it. The public module is named
+`env.public.ts` rather than `env.client.ts` because `**/*.client.*` is denied on the server, and
+those values are read during SSR too.
+
+Resend and R2 are optional at boot and checked when their features are called. `pnpm build`
+prerenders pages by running the Worker, so CI copies `.dev.vars.example` before checking Worker
+types and building.
 
 ### Deployment
 
@@ -100,7 +110,7 @@ Apply migrations with `pnpm db:migrate:remote` as a separate, deliberate step be
 
 ### Observability
 
-- Sentry integrated via `@sentry/tanstackstart-react`; instrumentation loaded by `instrument.server.mjs` (included in production build output).
+- The Sentry dependency, environment placeholders, and `instrument.server.mjs` are present, but client/server entry-point and Vite plugin integration is still pending.
 
 ## Development guidelines
 

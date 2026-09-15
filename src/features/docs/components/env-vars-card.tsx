@@ -10,13 +10,12 @@ export function EnvVarsCard() {
         <p className="text-sm text-muted-foreground">
           There are two files, because two runtimes read them.{" "}
           <code className="text-xs">.env.example</code> covers what Node reads —
-          the Cloudflare credentials for Drizzle Kit and the{" "}
-          <code className="text-xs">VITE_*</code> build values.{" "}
-          <code className="text-xs">.dev.vars.example</code> covers what the
-          Worker reads — the Better Auth secret, Resend API key, and R2
-          credentials. Both are at the root of the repo, with descriptions
-          inline. The database is not among them: D1 arrives as a Worker
-          binding.
+          Cloudflare credentials for Drizzle Kit, public{" "}
+          <code className="text-xs">VITE_*</code> values, and Sentry build
+          settings. <code className="text-xs">.dev.vars.example</code> covers
+          what the Worker reads — the Better Auth secret, Resend API key, and R2
+          credentials. Resend and R2 are optional until their features are used.
+          The database is not among them: D1 arrives as a Worker binding.
         </p>
       </CardContent>
     </Card>

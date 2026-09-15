@@ -1,27 +1,28 @@
 # Worker runtime secrets. Copy to `.dev.vars`.
 # Wrangler loads this file into the Worker environment during `pnpm dev`, and
-# `src/lib/env.ts` parses it with Zod at import time — placeholders rather than
-# blanks, because empty values are rejected.
+# `src/lib/env.server.ts` validates core auth settings at import time. Optional
+# integrations may be left blank until you use them.
 #
 # In production these are Worker secrets, not a file:
 #   wrangler secret put BETTER_AUTH_SECRET
 #
-# Vite also reads `.env.local`, which is a symlink to this file, so both loaders
-# see the same values. Never commit `.dev.vars` — it is gitignored.
+# `pnpm build` prerenders pages by running the Worker, so CI needs this file too:
+#   cp .dev.vars.example .dev.vars
+#
+# Never commit `.dev.vars` — it is gitignored.
 
 # Better Auth — generate the secret with: openssl rand -base64 32
 BETTER_AUTH_URL=http://localhost:3000
 BETTER_AUTH_SECRET=replace-with-a-random-32-byte-string
 
-# Resend — placeholders are fine to boot; a real key is needed to send email,
-# and registration cannot complete without one (sign-up sends a 6-digit OTP)
-RESEND_API_KEY=re_placeholder
+# Resend — optional at boot; registration needs a real key to send its OTP
+RESEND_API_KEY=
 FROM_ADDRESS_EMAIL=Mai Tan <onboarding@resend.dev>
 ADMIN_EMAIL=admin@example.com
 
-# Cloudflare R2 — placeholders are fine locally; real values needed for image uploads
-R2_ACCOUNT_ID=placeholder
-R2_ACCESS_KEY_ID=placeholder
-R2_SECRET_ACCESS_KEY=placeholder
-R2_BUCKET_NAME=placeholder
-R2_PUBLIC_URL=http://localhost:3000
+# Cloudflare R2 — optional; all five values are required for image uploads
+R2_ACCOUNT_ID=
+R2_ACCESS_KEY_ID=
+R2_SECRET_ACCESS_KEY=
+R2_BUCKET_NAME=
+R2_PUBLIC_URL=

@@ -3,10 +3,11 @@ import {
   type CreatedOrganization,
   useCreateOrg,
 } from "#/features/organizations/hooks/useCreateOrg";
+import { env } from "#/lib/env.public";
 import { slugify } from "#/lib/utils";
 
-const SLUG_PREFIX = import.meta.env.VITE_APP_URL
-  ? `${import.meta.env.VITE_APP_URL.replace(/^https?:\/\//, "").replace(/\/$/, "")}/`
+const SLUG_PREFIX = env.VITE_APP_URL
+  ? `${env.VITE_APP_URL.replace(/^https?:\/\//, "").replace(/\/$/, "")}/`
   : undefined;
 
 export function CreateOrg({
@@ -45,7 +46,7 @@ export function CreateOrg({
       <form.AppField name="slug">
         {(field) => (
           <field.TextField
-            label="Slug"
+            label="URL"
             placeholder="acme-inc"
             prefix={SLUG_PREFIX}
             description="Lowercase letters, numbers and dashes only."
