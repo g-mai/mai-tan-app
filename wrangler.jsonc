@@ -1,0 +1,16 @@
+{
+  "name": "mai-tan-app",
+  "main": "@tanstack/react-start/server-entry",
+  "compatibility_date": "2026-09-12",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": { "directory": "dist/client" },
+  "observability": { "enabled": true },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "mai-tan-db",
+      "database_id": "7f286f9a-befe-4e99-8e55-25abda53fa59",
+      "migrations_dir": "src/lib/db/drizzle"
+    }
+  ]
+}

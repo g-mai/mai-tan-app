@@ -27,7 +27,7 @@ import {
 
 const options = {
   database: drizzleAdapter(db, {
-    provider: "pg",
+    provider: "sqlite",
     schema: authSchema,
   }),
   session: {

@@ -99,8 +99,7 @@ organization step, so losing it costs a prefilled field and nothing more.
 ## Abandoned registrations
 
 Stopping at `/register/password` leaves a real user row with a verified email, no credential
-account, and no way to sign in again. A scheduled purge deletes those after 48 hours — see
-[maintenance.md](./maintenance.md).
+account, and no way to sign in again.
 
 ---
 

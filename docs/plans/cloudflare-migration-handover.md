@@ -32,6 +32,16 @@ allowBuilds:
   workerd: true
 ```
 
+---
+
+**My note**: I installed wrangler as project dev dependency instead of globally
+as recommended by [the docs](https://developers.cloudflare.com/workers/wrangler/install-and-update/)
+Because of that I need to add "pnpm" before every "wrangler" command.
+
+```bash
+pnpm add -D wrangler@latest
+```
+
 Then:
 
 ```bash
@@ -83,7 +93,7 @@ wrangler types
 ---
 
 ## 4. `vite.config.ts` (replace whole file)
-
+**GM Note**: fixed prerender, it was wrong in the plan
 ```ts
 import { cloudflare } from "@cloudflare/vite-plugin";
 import tailwindcss from "@tailwindcss/vite";
@@ -99,14 +109,20 @@ export default defineConfig({
     devtools(),
     tailwindcss(),
     tanstackStart({
-      prerender: {
-        enabled: true,
-        routes: ["/", "/login", "/register", "/forgot-password"],
-      },
+      pages: [
+        {
+          path: "/",
+          prerender: {
+            enabled: true,
+            outputPath: "dist/prerender",
+          },
+        },
+      ],
     }),
     viteReact(),
   ],
 });
+
 ```
 
 `cloudflare()` must be first. Do not add `/reset-password` to `prerender.routes`.
@@ -195,7 +211,7 @@ This writes a fresh SQLite baseline. The eight Postgres migrations are discarded
 pnpm db:migrate:local     # Miniflare
 pnpm db:migrate:remote    # Cloudflare
 ```
-
+**GM note**: update the scripts first!
 Scripts are defined in step 9.
 
 ---

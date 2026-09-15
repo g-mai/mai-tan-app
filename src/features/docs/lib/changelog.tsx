@@ -35,7 +35,6 @@ export const CHANGELOG: ChangelogEntry[] = [
       "Accepting an invitation skips the setup steps that belong to the organization's owner.",
       "Delete your account permanently from Settings. Organizations you are the only owner of are named up front before they go with it.",
       "The active organization is always valid now, even after leaving or deleting one.",
-      "A maintenance job clears out registrations abandoned before the password step.",
       "The removable guest/demo login has been retired.",
     ],
   },

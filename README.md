@@ -265,7 +265,6 @@ pnpm db:migrate        # Run pending migrations
 pnpm db:push           # Push schema directly to DB (dev only)
 pnpm db:seed           # Seed the database
 pnpm db:reset          # Reset and re-seed the database
-pnpm db:purge-abandoned # Delete abandoned registrations (see docs/dev/maintenance.md)
 pnpm db:studio         # Open Drizzle Studio
 pnpm db:auth-generate  # Regenerate Better Auth schema
 ```

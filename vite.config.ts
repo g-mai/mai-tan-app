@@ -1,15 +1,34 @@
-import netlify from "@netlify/vite-plugin-tanstack-start";
+import { cloudflare } from "@cloudflare/vite-plugin";
 import tailwindcss from "@tailwindcss/vite";
 import { devtools } from "@tanstack/devtools-vite";
-
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
-
 import viteReact from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
-const config = defineConfig({
+export default defineConfig({
   resolve: { tsconfigPaths: true },
-  plugins: [devtools(), tailwindcss(), tanstackStart(), viteReact(), netlify()],
+  environments: {
+    ssr: {
+      optimizeDeps: {
+        exclude: ["@tanstack/react-devtools"],
+      },
+    },
+  },
+  plugins: [
+    cloudflare({ viteEnvironment: { name: "ssr" } }),
+    devtools(),
+    tailwindcss(),
+    tanstackStart({
+      pages: [
+        {
+          path: "/",
+          prerender: {
+            enabled: true,
+            outputPath: "dist/prerender",
+          },
+        },
+      ],
+    }),
+    viteReact(),
+  ],
 });
-
-export default config;

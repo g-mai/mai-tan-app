@@ -1,3 +1,0 @@
-[build]
-  command = "pnpm db:migrate && vite build"
-  publish = "dist/client"
