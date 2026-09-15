@@ -13,7 +13,7 @@ export const Route = createFileRoute("/api/health")({
   server: {
     handlers: {
       GET: async () => {
-        await db.execute(sql`select 1`);
+        await db.run(sql`select 1`);
 
         return Response.json(
           { ok: true },
