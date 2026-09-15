@@ -10,7 +10,6 @@ import {
 import type { auth } from "./auth";
 
 export const authClient = createAuthClient({
-  baseURL: process.env.BETTER_AUTH_URL,
   plugins: [
     organizationClient({
       schema: inferOrgAdditionalFields<typeof auth>(),

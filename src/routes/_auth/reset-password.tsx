@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useSearch } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { TriangleAlert } from "lucide-react";
 import { z } from "zod";
 import {
@@ -20,9 +20,8 @@ export const Route = createFileRoute("/_auth/reset-password")({
 });
 
 function RouteComponent() {
-  const { token } = useSearch({ from: "/_auth/reset-password" });
-  const { form, isPending, isSuccess, isError, handleReset } =
-    useResetPassword(token);
+  const { token } = Route.useSearch();
+  const { form, isPending } = useResetPassword(token);
 
   if (!token) {
     return (

@@ -1,61 +1,12 @@
 {
   "version": "7",
-  "dialect": "postgresql",
+  "dialect": "sqlite",
   "entries": [
     {
       "idx": 0,
-      "version": "7",
-      "when": 1777137716030,
-      "tag": "0000_quick_bug",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1777142394252,
-      "tag": "0001_violet_wolfsbane",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1778498654081,
-      "tag": "0002_loud_wallow",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1779822791892,
-      "tag": "0003_pretty_firebird",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1783329590251,
-      "tag": "0004_burly_black_tom",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "7",
-      "when": 1786875394457,
-      "tag": "0005_steady_black_bird",
-      "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "7",
-      "when": 1787566023223,
-      "tag": "0006_lowly_magik",
-      "breakpoints": true
-    },
-    {
-      "idx": 7,
-      "version": "7",
-      "when": 1788094005020,
-      "tag": "0007_conscious_mephisto",
+      "version": "6",
+      "when": 1789411067119,
+      "tag": "0000_tidy_the_fallen",
       "breakpoints": true
     }
   ]

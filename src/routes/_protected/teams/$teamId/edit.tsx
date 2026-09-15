@@ -1,7 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PageTitle } from "#/components/shared/page-title";
+import { RouteError } from "#/components/shared/route-error";
 import { Wip } from "#/components/shared/wip";
 import { EditTeam } from "#/features/organizations/components/edit-team";
+import { canManage } from "#/features/organizations/lib/org";
 import { getFullTeam } from "#/features/organizations/lib/team.functions";
 
 export const Route = createFileRoute("/_protected/teams/$teamId/edit")({
@@ -10,28 +12,23 @@ export const Route = createFileRoute("/_protected/teams/$teamId/edit")({
     const team = await getFullTeam({ data: { id: params.teamId } });
     return team;
   },
-  errorComponent: (props) => {
-    return (
-      <div>
-        <PageTitle title="Team not found" />
-        <p className="text-sm text-muted-foreground">Error loading team.</p>
-        {props.error instanceof Error && (
-          <p className="text-sm text-muted-foreground">{props.error.message}</p>
-        )}
-      </div>
-    );
-  },
+  errorComponent: ({ error }) => (
+    <RouteError
+      title="Team not found"
+      message="Error loading team."
+      error={error}
+    />
+  ),
 });
 
 function RouteComponent() {
   const team = Route.useLoaderData();
-  const canManage = team.role === "owner" || team.role === "admin";
 
   return (
     <div className="w-2xl flex flex-col gap-4">
       <PageTitle title="Edit team" subtitle={team.organization.name} />
       <Wip />
-      {canManage ? (
+      {canManage(team.role) ? (
         <EditTeam team={team} />
       ) : (
         <p className="text-sm text-muted-foreground">

@@ -10,8 +10,7 @@ import { authMiddleware } from "#/features/auth/middleware";
 import type { Session } from "#/features/auth/types";
 import { db } from "#/lib/db";
 import { team } from "#/lib/db/schema";
-import { env } from "#/lib/env";
-import { r2 } from "#/lib/storage/r2";
+import { getR2 } from "#/lib/storage/r2";
 
 const getPresignedUploadImgUrlSchema = z.object({
   prefix: z.enum(["avatars", "orgs", "teams"]),
@@ -26,6 +25,8 @@ export const getPresignedUploadImgUrl = createServerFn({
   .validator(getPresignedUploadImgUrlSchema)
   .middleware([authMiddleware])
   .handler(async ({ data, context }) => {
+    const { client, bucketName, publicUrl } = getR2();
+
     try {
       const { prefix, entityId, fileType, fileSize } = data;
 
@@ -44,11 +45,10 @@ export const getPresignedUploadImgUrl = createServerFn({
       await checkUploadAuthorization(prefix, entityId, session);
 
       // generate unique key and presigned URL
-      const bucketName = env.R2_BUCKET_NAME;
       const fileExtension = fileType.split("/")[1];
       const key = `${prefix}/${entityId}/${nanoid()}.${fileExtension}`;
       const signedUrl = await getSignedUrl(
-        r2,
+        client,
         new PutObjectCommand({
           Bucket: bucketName,
           Key: key,
@@ -58,7 +58,7 @@ export const getPresignedUploadImgUrl = createServerFn({
       );
       return {
         uploadUrl: signedUrl,
-        publicUrl: `${env.R2_PUBLIC_URL}/${key}`,
+        publicUrl: `${publicUrl}/${key}`,
       };
     } catch (error) {
       console.error("Error generating presigned URL:", error);
@@ -78,6 +78,8 @@ export const deleteImage = createServerFn({
   .validator(deleteImageSchema)
   .middleware([authMiddleware])
   .handler(async ({ data, context }) => {
+    const { client, bucketName } = getR2();
+
     try {
       const { imageUrl, prefix, entityId } = data;
       const session = context.session;
@@ -87,9 +89,10 @@ export const deleteImage = createServerFn({
 
       await checkUploadAuthorization(prefix, entityId, session);
 
-      const bucketName = env.R2_BUCKET_NAME;
       const key = url.pathname.substring(1); // remove leading '/'
-      await r2.send(new DeleteObjectCommand({ Bucket: bucketName, Key: key }));
+      await client.send(
+        new DeleteObjectCommand({ Bucket: bucketName, Key: key }),
+      );
     } catch (error) {
       console.error("Error deleting image:", error);
       throw new Error("Failed to delete image");

@@ -8,6 +8,7 @@ import {
   user as userTable,
 } from "#/lib/db/schema";
 import { seedData } from "#/lib/db/seed-data";
+import { disableVerificationEmail } from "#/lib/resend/emails";
 
 const { users, organizations } = seedData;
 
@@ -20,7 +21,7 @@ async function seed(dropAllTable = false) {
 
   console.log("Seeding database...");
   try {
-    process.env.SKIP_VERIFICATION_EMAIL = "true";
+    disableVerificationEmail();
 
     const seededUsers = [];
     const seededOrgs = [];

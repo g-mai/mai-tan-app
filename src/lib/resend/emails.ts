@@ -5,25 +5,42 @@ import {
   VerificationEmailTemplate,
 } from "#/features/auth/emails/verification-email";
 import { InvitationEmailTemplate } from "#/features/organizations/emails/invitation-email";
-import { env } from "#/lib/env";
+import { env } from "#/lib/env.server";
 import type { User } from "@/features/auth/types";
 
 // TODO: find better way to manage emails rather than having
 // all of them here in one file.
-const resend = new Resend(env.RESEND_API_KEY);
+let resend: Resend | undefined;
+let skipVerificationEmail = env.SKIP_VERIFICATION_EMAIL;
+
+export function disableVerificationEmail() {
+  skipVerificationEmail = true;
+}
+
+function getResend() {
+  if (!env.RESEND_API_KEY || !env.FROM_ADDRESS_EMAIL) {
+    throw new Error(
+      "Email is not configured. Set RESEND_API_KEY and FROM_ADDRESS_EMAIL to enable email delivery.",
+    );
+  }
+
+  resend ??= new Resend(env.RESEND_API_KEY);
+  return { client: resend, fromAddress: env.FROM_ADDRESS_EMAIL };
+}
 
 export async function sendVerifyEmail(
   { user, url, token }: { user: User; url: string; token: string },
   request?: unknown,
 ) {
-  if (process.env.SKIP_VERIFICATION_EMAIL === "true") {
+  if (skipVerificationEmail) {
     // Skipping verification email (seed mode)
     return;
   }
   console.log("Sending verification email to:", user.email);
   try {
+    const { client: resend, fromAddress } = getResend();
     const { data, error } = await resend.emails.send({
-      from: env.FROM_ADDRESS_EMAIL,
+      from: fromAddress,
       to: [user.email],
       subject: "Verify Your Email Address",
       react: VerificationEmailTemplate({ user, url, token }),
@@ -46,14 +63,15 @@ export async function sendVerificationOtpEmail(
   { email, otp }: { email: string; otp: string },
   request?: unknown,
 ) {
-  if (process.env.SKIP_VERIFICATION_EMAIL === "true") {
+  if (skipVerificationEmail) {
     // Skipping verification email (seed mode)
     return;
   }
   console.log("Sending verification OTP email to:", email);
   try {
+    const { client: resend, fromAddress } = getResend();
     const { data, error } = await resend.emails.send({
-      from: env.FROM_ADDRESS_EMAIL,
+      from: fromAddress,
       to: [email],
       subject: "Your Verification OTP",
       react: VerificationEmailOTPTemplate({ email, otp }),
@@ -85,14 +103,15 @@ export async function sendInvitationEmail({
   inviterName: string;
   url: string;
 }) {
-  if (process.env.SKIP_VERIFICATION_EMAIL === "true") {
+  if (skipVerificationEmail) {
     // Skipping invitation email (seed mode)
     return;
   }
   console.log("Sending invitation email to:", email);
   try {
+    const { client: resend, fromAddress } = getResend();
     const { data, error } = await resend.emails.send({
-      from: env.FROM_ADDRESS_EMAIL,
+      from: fromAddress,
       to: [email],
       subject: `You've been invited to ${organizationName}`,
       react: InvitationEmailTemplate({ organizationName, inviterName, url }),
@@ -117,8 +136,9 @@ export async function sendResetPasswordEmail(
 ) {
   console.log("Sending reset password email to:", user.email);
   try {
+    const { client: resend, fromAddress } = getResend();
     const { data, error } = await resend.emails.send({
-      from: env.FROM_ADDRESS_EMAIL,
+      from: fromAddress,
       to: [user.email],
       subject: "Reset Your Password",
       react: ResetPasswordEmailTemplate({ user, url, token }),
@@ -143,7 +163,7 @@ export async function sendNotificationToAdmin(
   { subject, message }: { subject: string; message: string },
   request?: unknown,
 ) {
-  if (!process.env.ADMIN_EMAIL) {
+  if (!env.ADMIN_EMAIL) {
     console.warn(
       "ADMIN_EMAIL is not set in environment variables. Skipping notification email.",
     );
@@ -151,9 +171,10 @@ export async function sendNotificationToAdmin(
   }
 
   try {
+    const { client: resend, fromAddress } = getResend();
     const { data, error } = await resend.emails.send({
-      from: env.FROM_ADDRESS_EMAIL,
-      to: [process.env.ADMIN_EMAIL],
+      from: fromAddress,
+      to: [env.ADMIN_EMAIL],
       subject,
       text: message,
     });

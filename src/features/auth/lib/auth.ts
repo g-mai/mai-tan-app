@@ -18,6 +18,7 @@ import {
   organization,
   session as sessionTable,
 } from "#/lib/db/schema";
+import { env } from "#/lib/env.server";
 import {
   sendInvitationEmail,
   sendResetPasswordEmail,
@@ -26,8 +27,10 @@ import {
 } from "#/lib/resend/emails";
 
 const options = {
+  baseURL: env.BETTER_AUTH_URL,
+  secret: env.BETTER_AUTH_SECRET,
   database: drizzleAdapter(db, {
-    provider: "pg",
+    provider: "sqlite",
     schema: authSchema,
   }),
   session: {
@@ -149,7 +152,7 @@ const options = {
           email: data.email,
           organizationName: data.organization.name,
           inviterName: data.inviter.user.name || data.inviter.user.email,
-          url: `${process.env.BETTER_AUTH_URL}/invite/${data.id}`,
+          url: `${env.BETTER_AUTH_URL}/invite/${data.id}`,
         });
       },
       schema: {

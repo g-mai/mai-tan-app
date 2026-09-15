@@ -2,13 +2,13 @@ name: CI
 
 on:
   push:
-    branches: [master, dev]
+    branches: [main, dev]
   pull_request:
-    branches: [master, dev]
+    branches: [main, dev]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   ci:
@@ -26,8 +26,14 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Prepare Worker environment
+        run: cp .dev.vars.example .dev.vars
+
       - name: Lint and format check
         run: pnpm check
+
+      - name: Check Worker types
+        run: pnpm exec wrangler types --check
 
       - name: Typecheck
         run: pnpm typecheck

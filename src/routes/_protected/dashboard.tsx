@@ -32,47 +32,20 @@ function RouteComponent() {
   const { user, orgs } = Route.useRouteContext();
   const { org, teams, myInvitations } = Route.useLoaderData();
 
-  const incoming = myInvitations.filter(
-    (invitation) =>
-      invitation.status === "pending" &&
-      new Date(invitation.expiresAt) > new Date(),
-  );
-  const sent =
-    org?.invitations.filter(
-      (invitation) =>
-        invitation.status === "pending" &&
-        new Date(invitation.expiresAt) > new Date(),
-    ) ?? [];
-
-  const role = org?.members.find((member) => member.userId === user.id)?.role;
-  const memberCount = org?.members.length ?? 0;
-
-  const chips = [
-    `${orgs.length} organization${orgs.length === 1 ? "" : "s"}`,
-    `${memberCount} member${memberCount === 1 ? "" : "s"}`,
-    teams.length === 0
-      ? "no teams yet"
-      : `${teams.length} team${teams.length === 1 ? "" : "s"}`,
-  ];
-
   return (
     <div className="flex flex-col gap-4">
       <DashboardHero
         firstName={user.firstName || user.name}
-        chips={chips}
-        role={role}
         orgId={org?.id}
+        orgCount={orgs.length}
+        members={org?.members ?? []}
+        teams={teams}
+        currentUserId={user.id}
       />
 
       {org && (
         <>
-          <OrgPlanRow
-            org={org}
-            role={role}
-            memberCount={memberCount}
-            teamCount={teams.length}
-            pendingInviteCount={sent.length}
-          />
+          <OrgPlanRow org={org} teams={teams} currentUserId={user.id} />
           <MembersTeamsRow
             orgId={org.id}
             orgSlug={org.slug}
@@ -80,7 +53,11 @@ function RouteComponent() {
             teams={teams}
             currentUserId={user.id}
           />
-          <InvitationsCard orgId={org.id} incoming={incoming} sent={sent} />
+          <InvitationsCard
+            orgId={org.id}
+            myInvitations={myInvitations}
+            orgInvitations={org.invitations}
+          />
         </>
       )}
 

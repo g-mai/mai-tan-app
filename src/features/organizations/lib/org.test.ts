@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { findSoleOwnedOrgs, pickActiveOrganizationId } from "./org";
+import {
+  canManage,
+  findMemberRole,
+  findSoleOwnedOrgs,
+  pickActiveOrganizationId,
+} from "./org";
 
 const ME = "user-me";
 
@@ -109,5 +114,47 @@ describe("pickActiveOrganizationId", () => {
   it("returns null when the user belongs to no organization", () => {
     expect(pickActiveOrganizationId([], "org-gone")).toBeNull();
     expect(pickActiveOrganizationId([], null)).toBeNull();
+  });
+});
+
+describe("findMemberRole", () => {
+  const members = [
+    { userId: "u1", role: "owner" },
+    { userId: ME, role: "admin" },
+  ];
+
+  it("returns the role this user holds", () => {
+    expect(findMemberRole(members, ME)).toBe("admin");
+  });
+
+  it("returns undefined for someone who is not a member", () => {
+    expect(findMemberRole(members, "stranger")).toBeUndefined();
+  });
+
+  it("normalises a null role to undefined", () => {
+    expect(findMemberRole([{ userId: ME, role: null }], ME)).toBeUndefined();
+  });
+});
+
+describe("canManage", () => {
+  it("lets owners and admins manage", () => {
+    expect(canManage("owner")).toBe(true);
+    expect(canManage("admin")).toBe(true);
+  });
+
+  it("keeps plain members out", () => {
+    expect(canManage("member")).toBe(false);
+  });
+
+  it("reads comma-joined roles, not just the whole string", () => {
+    expect(canManage("admin,sales")).toBe(true);
+    expect(canManage("sales,owner")).toBe(true);
+    expect(canManage("member,sales")).toBe(false);
+  });
+
+  it("treats a missing role as no permission", () => {
+    expect(canManage(null)).toBe(false);
+    expect(canManage(undefined)).toBe(false);
+    expect(canManage("")).toBe(false);
   });
 });
