@@ -17,7 +17,7 @@
   ],
   "routes":   [
     {
-    "pattern": "maitan.g-mai.dev",
+    "pattern": "tan.g-mai.dev",
     "zone_name": "g-mai.dev",
     "custom_domain": true,
     "enabled": true,
