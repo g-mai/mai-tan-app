@@ -1,0 +1,27 @@
+# Worker runtime secrets. Copy to `.dev.vars`.
+# Wrangler loads this file into the Worker environment during `pnpm dev`, and
+# `src/lib/env.ts` parses it with Zod at import time — placeholders rather than
+# blanks, because empty values are rejected.
+#
+# In production these are Worker secrets, not a file:
+#   wrangler secret put BETTER_AUTH_SECRET
+#
+# Vite also reads `.env.local`, which is a symlink to this file, so both loaders
+# see the same values. Never commit `.dev.vars` — it is gitignored.
+
+# Better Auth — generate the secret with: openssl rand -base64 32
+BETTER_AUTH_URL=http://localhost:3000
+BETTER_AUTH_SECRET=replace-with-a-random-32-byte-string
+
+# Resend — placeholders are fine to boot; a real key is needed to send email,
+# and registration cannot complete without one (sign-up sends a 6-digit OTP)
+RESEND_API_KEY=re_placeholder
+FROM_ADDRESS_EMAIL=Mai Tan <onboarding@resend.dev>
+ADMIN_EMAIL=admin@example.com
+
+# Cloudflare R2 — placeholders are fine locally; real values needed for image uploads
+R2_ACCOUNT_ID=placeholder
+R2_ACCESS_KEY_ID=placeholder
+R2_SECRET_ACCESS_KEY=placeholder
+R2_BUCKET_NAME=placeholder
+R2_PUBLIC_URL=http://localhost:3000

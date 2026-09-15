@@ -6,12 +6,7 @@ import { Button } from "@/components/ui/button";
 const prerequisites = [
   { label: "Node.js 22.22.2+", check: "node -v" },
   { label: "pnpm 11+", check: "pnpm -v" },
-  { label: "Docker with Compose v2", check: "docker compose version" },
-];
-
-const seededLogins = [
-  { email: "gordon.freeman@blackmesa.com", password: "Crowbar123" },
-  { email: "lara.croft@tombraider.com", password: "DualPistols123" },
+  { label: "Port 3000 free", check: "lsof -i :3000" },
 ];
 
 function Code({ children }: { children: React.ReactNode }) {
@@ -70,7 +65,7 @@ export function RunLocallyCard() {
           <p className="text-base font-semibold">Run it locally</p>
         </div>
         <span className="font-mono text-2xs text-muted-foreground">
-          fresh clone to demo data in about five minutes
+          fresh clone to a running app in about five minutes
         </span>
       </div>
 
@@ -111,15 +106,17 @@ export function RunLocallyCard() {
               <Line comment>
                 # 2 · env — local defaults plus a real session secret
               </Line>
-              <Line glyph="$">cp .env.example .env && perl -pi -e \</Line>
+              <Line glyph="$">cp .env.example .env</Line>
+              <Line glyph="$">
+                cp .dev.vars.example .dev.vars && perl -pi -e \
+              </Line>
               <Line indent>
                 "s|^BETTER_AUTH_SECRET=.*|BETTER_AUTH_SECRET=$(openssl rand
-                -base64 32)|" .env
+                -base64 32)|" .dev.vars
               </Line>
-              <Line comment># 3 · database and schema</Line>
-              <Line glyph="$">docker compose up -d</Line>
-              <Line glyph="$">pnpm db:migrate</Line>
-              <Line glyph="$">pnpm db:seed</Line>
+              <Line glyph="$">ln -s .dev.vars .env.local</Line>
+              <Line comment># 3 · local D1 schema</Line>
+              <Line glyph="$">pnpm db:migrate:local</Line>
               <Line comment># 4 · run</Line>
               <Line glyph="$">pnpm dev</Line>
               <Line glyph="→">local&nbsp;&nbsp;http://localhost:3000</Line>
@@ -129,50 +126,39 @@ export function RunLocallyCard() {
 
         <div className="flex flex-col gap-4 px-6 py-5">
           <div>
-            <p className="mb-1 text-[13px] font-semibold">
-              Placeholders, not blanks
-            </p>
+            <p className="mb-1 text-[13px] font-semibold">Two env files</p>
             <p className="text-xs leading-relaxed text-muted-foreground text-pretty">
-              <Code>.env.example</Code> ships working local defaults.{" "}
-              <Code>src/lib/env.ts</Code> validates the env with Zod at import
-              time, so never empty <Code>DATABASE_URL</Code>,{" "}
-              <Code>RESEND_API_KEY</Code> or <Code>R2_*</Code> — fill the Resend
-              and R2 values only when you need email or uploads. On Linux,{" "}
-              <Code>sed -i</Code> in place of <Code>perl -pi -e</Code>.
+              <Code>.env</Code> is read by Node — Drizzle Kit and the Vite
+              build. <Code>.dev.vars</Code> is read by the Worker, and{" "}
+              <Code>.env.local</Code> symlinks to it so both loaders see the
+              same values. <Code>src/lib/env.ts</Code> validates with Zod at
+              import time, so never empty <Code>RESEND_API_KEY</Code> or{" "}
+              <Code>R2_*</Code>. On Linux, <Code>sed -i</Code> in place of{" "}
+              <Code>perl -pi -e</Code>.
             </p>
           </div>
           <div>
             <p className="mb-1 text-[13px] font-semibold">
-              Migrate before you seed
+              No database to install
             </p>
             <p className="text-xs leading-relaxed text-muted-foreground text-pretty">
-              Tables do not exist on a fresh volume, so{" "}
-              <Code>pnpm db:migrate</Code> comes first. <Code>pnpm dev</Code>{" "}
-              starts Postgres for you; <Code>pnpm db:reset</Code> drops and
-              re-seeds.
+              D1 runs locally inside Miniflare, which <Code>pnpm dev</Code>{" "}
+              starts for you. Tables do not exist yet on a fresh clone, so{" "}
+              <Code>pnpm db:migrate:local</Code> comes first. To start clean,
+              delete <Code>.wrangler/state/v3/d1</Code> and migrate again.
             </p>
           </div>
           <div className="rounded-lg border bg-muted px-4 py-3">
             <p className="mb-2 font-mono text-2xs tracking-widest text-muted-foreground uppercase">
-              Seeded logins
+              Before you sign up
             </p>
-            <div className="flex flex-col gap-1 font-mono text-2xs">
-              {seededLogins.map((login) => (
-                <div
-                  key={login.email}
-                  className="flex justify-between gap-3 text-pretty"
-                >
-                  <span className="truncate">{login.email}</span>
-                  <span className="shrink-0 text-muted-foreground">
-                    {login.password}
-                  </span>
-                </div>
-              ))}
-            </div>
-            <p className="mt-2 text-xs leading-relaxed text-muted-foreground text-pretty">
-              Verified and past onboarding. Registering a new account needs a
-              real Resend key — sign-up sends a 6-digit OTP and never logs the
-              code.
+            <p className="text-xs leading-relaxed text-muted-foreground text-pretty">
+              Registering needs a real Resend key — sign-up sends a 6-digit OTP
+              and never logs the code. Put a real key in{" "}
+              <Code>RESEND_API_KEY</Code> and set{" "}
+              <Code>FROM_ADDRESS_EMAIL</Code> to{" "}
+              <Code>onboarding@resend.dev</Code>, Resend's test sender, which
+              only delivers to your own address.
             </p>
           </div>
         </div>

@@ -29,13 +29,18 @@ Demo: [CLICK HERE](https://tan.g-mai.dev/) to check it live!
 
 - **Better Auth** — Modern auth with organizations plugin
 - **Drizzle ORM** — Type-safe database toolkit
-- **PostgreSQL** — Production database (local via Docker Compose)
+- **Cloudflare D1** — SQLite database, bound to the Worker (local via Miniflare)
 
 ### UI & Components
 
 - **shadcn/ui** — Radix UI + Tailwind components
 - **Lucide React** — Icon library
 - **Sonner** — Toast notifications
+
+### Hosting
+
+- **Cloudflare Workers** — Runtime and deployment target, via Wrangler
+- **Cloudflare R2** — Object storage for avatars and logos
 
 ### Integrations
 
@@ -53,11 +58,11 @@ Demo: [CLICK HERE](https://tan.g-mai.dev/) to check it live!
 
 - **Biome** — Linter and formatter (replaces ESLint + Prettier)
 - **Vitest** — Unit testing
-- **Docker Compose** — Local PostgreSQL
+- **Wrangler** — Cloudflare CLI: local D1, migrations, deploys
 
 ## Manual installation
 
-From a fresh clone to a running app with demo data in about five minutes.
+From a fresh clone to a running app in about five minutes.
 If you would rather have your AI agent do it for you, scroll down to the
 "Installation Prompt".
 
@@ -65,8 +70,10 @@ If you would rather have your AI agent do it for you, scroll down to the
 
 - **Node.js 22.22.2+** (`node -v`)
 - **pnpm 11+** (`pnpm -v` — `corepack enable pnpm` if you don't have it)
-- **Docker** with the Compose v2 plugin (`docker compose version`), for local PostgreSQL
-- Ports **3000** (dev server) and **5432** (PostgreSQL) free
+- Port **3000** free (dev server)
+
+No database server to install: D1 runs locally inside Miniflare, which the Cloudflare Vite plugin
+starts as part of `pnpm dev`. A Cloudflare account is needed only to deploy.
 
 ### 1. Clone and install
 
@@ -78,29 +85,40 @@ pnpm install
 
 ### 2. Configure the environment
 
-```bash
-cp .env.example .env && perl -pi -e "s|^BETTER_AUTH_SECRET=.*|BETTER_AUTH_SECRET=$(openssl rand -base64 32)|" .env
-```
+There are two environment files, because two different runtimes read them:
 
-That copies the defaults and replaces the session-signing secret with a real random one in the same
-step. On Linux you can use `sed -i` in place of `perl -pi -e`.
-
-`.env.example` ships with working local defaults — matching PostgreSQL credentials, `localhost:3000`
-URLs, and placeholders for the third-party services — so the app boots as soon as it is copied.
-Placeholders rather than blanks because `src/lib/env.ts` validates the environment with Zod at
-import time and rejects empty `DATABASE_URL`, `RESEND_API_KEY` or `R2_*` values.
-
-The only values left to fill in are **`RESEND_API_KEY`** and the **`R2_*`** group, and they are
-needed only by the features that use them (sending email, uploading avatars and logos). Everything
-else runs fine on the placeholders.
-
-### 3. Start the database and set up the schema
+| File | Read by | Holds |
+| ---- | ------- | ----- |
+| `.env` | Node — Drizzle Kit and the Vite build | `CLOUDFLARE_*` for remote D1, `VITE_*` |
+| `.dev.vars` | The Worker, via Wrangler | Better Auth, Resend and R2 secrets |
 
 ```bash
-docker compose up -d   # start PostgreSQL (pnpm dev does this too)
-pnpm db:migrate        # apply the Drizzle migrations — required, tables don't exist yet
-pnpm db:seed           # demo users, organizations and teams
+cp .env.example .env
+cp .dev.vars.example .dev.vars && perl -pi -e "s|^BETTER_AUTH_SECRET=.*|BETTER_AUTH_SECRET=$(openssl rand -base64 32)|" .dev.vars
+ln -s .dev.vars .env.local
 ```
+
+That copies both templates and replaces the session-signing secret with a real random one in the
+same step. On Linux you can use `sed -i` in place of `perl -pi -e`.
+
+The `.env.local` symlink is a convenience: Vite's own loader reads `.env.local`, so pointing it at
+`.dev.vars` keeps Vite and Wrangler on one set of values instead of two copies that drift. It is
+gitignored, so a fresh clone has to recreate it.
+
+Both templates ship with working local defaults — `localhost:3000` URLs and placeholders for the
+third-party services — so the app boots as soon as they are copied. Placeholders rather than blanks
+because `src/lib/env.ts` validates the environment with Zod at import time and rejects empty
+`RESEND_API_KEY` or `R2_*` values. The `CLOUDFLARE_*` entries in `.env` are the exception: they may
+stay empty until you talk to the remote database.
+
+### 3. Create the local database
+
+```bash
+pnpm db:migrate:local   # apply the Drizzle migrations to local D1 — required, tables don't exist yet
+```
+
+Migrations are applied by Wrangler from `src/lib/db/drizzle`, the `migrations_dir` declared in
+`wrangler.jsonc`.
 
 ### 4. Run the app
 
@@ -108,49 +126,69 @@ pnpm db:seed           # demo users, organizations and teams
 pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) and sign in with a seeded account:
+Open [http://localhost:3000](http://localhost:3000) and register an account.
 
-| Email | Password |
-| ----- | -------- |
-| `gordon.freeman@blackmesa.com` | `Crowbar123` |
-| `lara.croft@tombraider.com` | `DualPistols123` |
-
-Seeded users are email-verified and past onboarding, so they land straight on the dashboard.
-Full credentials live in `src/lib/db/seed-data.ts`.
-
-> **Registering a new account needs a real Resend key.** Sign-up is email-first: it sends a 6-digit
-> OTP through Resend, and the code is never printed to the console. Without a working key, use the
-> seeded accounts above — or set `RESEND_API_KEY` to a real key and `FROM_ADDRESS_EMAIL` to
-> `onboarding@resend.dev` (Resend's test sender, which can only deliver to your own address).
+> **Registering needs a real Resend key.** Sign-up is email-first: it sends a 6-digit OTP through
+> Resend, and the code is never printed to the console. Set `RESEND_API_KEY` in `.dev.vars` to a
+> real key and `FROM_ADDRESS_EMAIL` to `onboarding@resend.dev` (Resend's test sender, which can
+> only deliver to your own address), then restart the dev server.
 
 ### Troubleshooting
 
 | Symptom | Cause and fix |
 | ------- | ------------- |
-| `ZodError` mentioning `R2_*` / `RESEND_API_KEY` on boot | A variable in `.env` was blanked out — `src/lib/env.ts` requires a non-empty value, placeholder or real |
-| `relation "user" does not exist` | Migrations never ran — `pnpm db:migrate` |
-| `ECONNREFUSED 127.0.0.1:5432` | PostgreSQL isn't up — `docker compose up -d`, then `docker compose ps` |
-| Port 5432 already allocated | Another PostgreSQL is running; stop it, or change the host port in `docker-compose.yml` and in `DATABASE_URL` |
-| Login says the credentials are wrong | The database was never seeded — `pnpm db:seed` |
+| `ZodError` mentioning `R2_*` / `RESEND_API_KEY` on boot | A variable in `.dev.vars` was blanked out — `src/lib/env.ts` requires a non-empty value, placeholder or real |
+| `no such table: user` | Migrations never ran — `pnpm db:migrate:local` |
+| Changes to `.dev.vars` seem ignored | Wrangler reads it at startup only; restart `pnpm dev` |
+| `drizzle-kit` errors about account or token | The `CLOUDFLARE_*` values in `.env` are empty; they are needed only for remote D1 |
+| Port 3000 already allocated | Another process holds it; stop it, or change the port in the `dev` script |
 
-Reset everything and start over with `pnpm db:reset` (drops the seeded rows and re-seeds), or
-`docker compose down -v` to throw away the volume entirely, then repeat step 3.
+To start over with an empty database, delete the local D1 state and re-migrate:
+
+```bash
+rm -rf .wrangler/state/v3/d1
+pnpm db:migrate:local
+```
 
 ### Environment Variables
 
+**`.env`** — Node-side, build and tooling:
+
 | Variable | Required | Notes |
 | -------- | -------- | ----- |
-| `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB` | Yes | Read by `docker-compose.yml` to provision the local database |
-| `DATABASE_URL` | Yes | Must match the three values above |
+| `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_DATABASE_ID`, `CLOUDFLARE_D1_TOKEN` | Only for remote D1 | Used by `drizzle.config.ts` for `pnpm db:studio` and any `drizzle-kit` command that hits the deployed database |
+| `VITE_APP_URL` | Yes | Exposed to the browser bundle; shown as the host affix on organization slugs |
+| `VITE_SENTRY_*`, `SENTRY_AUTH_TOKEN` | No | Leave empty to disable error reporting |
+
+**`.dev.vars`** — Worker runtime. In production these are Worker secrets
+(`wrangler secret put <NAME>`), not a file:
+
+| Variable | Required | Notes |
+| -------- | -------- | ----- |
 | `BETTER_AUTH_URL` | Yes | Base URL of the app; also used to build invitation links |
 | `BETTER_AUTH_SECRET` | Yes | Signs sessions — `openssl rand -base64 32` |
-| `VITE_APP_URL` | Yes | Exposed to the browser bundle; shown as the host affix on organization slugs |
-| `RESEND_API_KEY` | Yes (placeholder ok) | Validated as non-empty; must be real to deliver email |
+| `RESEND_API_KEY` | Yes (placeholder ok) | Validated as non-empty; must be real to deliver email, and therefore to register |
 | `FROM_ADDRESS_EMAIL` | Yes (placeholder ok) | Sender address for transactional email |
 | `ADMIN_EMAIL` | No | Recipient for admin notification emails |
 | `R2_*` | Yes (placeholders ok) | Cloudflare R2 credentials; only exercised by avatar and logo uploads |
-| `VITE_SENTRY_*`, `SENTRY_AUTH_TOKEN` | No | Leave empty to disable error reporting |
-| `SKIP_VERIFICATION_EMAIL` | No | `true` suppresses verification email sending (used by the seed script) |
+| `SKIP_VERIFICATION_EMAIL` | No | `true` suppresses verification and invitation email sending |
+
+The database is not an environment variable. D1 arrives as the `DB` binding declared in
+`wrangler.jsonc`, which `src/lib/db/index.ts` reads from `cloudflare:workers`.
+
+### Deploying
+
+```bash
+pnpm db:migrate:remote   # apply migrations to the deployed D1 database
+pnpm deploy              # vite build && wrangler deploy
+```
+
+Migrations are a deliberate, separate step — they are not part of the build. Set the `.dev.vars`
+values as Worker secrets before the first deploy:
+
+```bash
+wrangler secret put BETTER_AUTH_SECRET
+```
 
 ## Installation prompt
 
@@ -161,32 +199,33 @@ agent, from inside the directory where you want the project to live.
 Set up the mai-tan-app B2B SaaS starter kit for local development on this machine, end to end,
 and stop to ask me only if a step genuinely cannot be completed without a decision from me.
 
-1. Check the prerequisites and report their versions: Node.js 22.22.2 or newer, pnpm 11 or newer,
-   and Docker with the Compose v2 plugin. If pnpm is missing, run `corepack enable pnpm`. If Node
-   is too old or Docker is unavailable, stop and tell me what to install.
-2. Confirm ports 3000 and 5432 are free. If either is taken, tell me what is holding it and stop
-   rather than killing the process yourself.
+1. Check the prerequisites and report their versions: Node.js 22.22.2 or newer and pnpm 11 or
+   newer. If pnpm is missing, run `corepack enable pnpm`. If Node is too old, stop and tell me
+   what to install. There is no database server to set up: D1 runs locally inside Miniflare,
+   which `pnpm dev` starts for you.
+2. Confirm port 3000 is free. If it is taken, tell me what is holding it and stop rather than
+   killing the process yourself.
 3. If the repository is not already in the current directory, clone
    https://github.com/g-mai/mai-tan-app and cd into it. Then run `pnpm install`.
-4. Create `.env` from `.env.example`, which already carries working local defaults, and generate a
-   real session secret in the same step:
-   cp .env.example .env && perl -pi -e "s|^BETTER_AUTH_SECRET=.*|BETTER_AUTH_SECRET=$(openssl rand -base64 32)|" .env
+4. Create the two environment files from their templates, generating a real session secret in the
+   same step, and link `.env.local` at `.dev.vars` so Vite and Wrangler read the same values:
+   cp .env.example .env
+   cp .dev.vars.example .dev.vars && perl -pi -e "s|^BETTER_AUTH_SECRET=.*|BETTER_AUTH_SECRET=$(openssl rand -base64 32)|" .dev.vars
+   ln -s .dev.vars .env.local
    Leave every other value as it is: the Resend and R2 entries are deliberate placeholders, and
    `src/lib/env.ts` parses the environment with Zod at import time and rejects empty values, so do
-   not blank any of them out. Never invent credentials that look real, and never put secrets of
-   mine in the file unless I give them to you. Leave `.env` untracked; do not commit it or any
-   other file.
-5. Start PostgreSQL with `docker compose up -d` and wait until the container reports healthy.
-6. Run `pnpm db:migrate` to create the schema, then `pnpm db:seed` to load demo users,
-   organizations and teams.
-7. Start the dev server with `pnpm dev` in the background, wait for it to be ready, and verify that
+   not blank any of them out. The `CLOUDFLARE_*` entries in `.env` are meant to stay empty until
+   the remote database is used. Never invent credentials that look real, and never put secrets of
+   mine in the file unless I give them to you. Leave `.env` and `.dev.vars` untracked; do not
+   commit them or any other file.
+5. Run `pnpm db:migrate:local` to create the schema in the local D1 database.
+6. Start the dev server with `pnpm dev` in the background, wait for it to be ready, and verify that
    http://localhost:3000 responds and that the server log shows no environment or database errors.
-8. Verify the toolchain is healthy: `pnpm check` (Biome) and `pnpm test` (Vitest) should pass.
-9. Report back: the versions you found, the file you created, the URL to open, and the seeded login
-   credentials taken from `src/lib/db/seed-data.ts` (for example gordon.freeman@blackmesa.com with
-   password Crowbar123). Mention that registering a brand-new account requires a real Resend API
-   key, because sign-up sends a 6-digit OTP by email and the code is never logged, so I should sign
-   in with a seeded account until I add one.
+7. Verify the toolchain is healthy: `pnpm check` (Biome) and `pnpm test` (Vitest) should pass.
+8. Report back: the versions you found, the files you created, and the URL to open. Tell me that
+   registering an account requires a real Resend API key, because sign-up sends a 6-digit OTP by
+   email and the code is never logged, so I should put a real key in `RESEND_API_KEY` and set
+   `FROM_ADDRESS_EMAIL` to onboarding@resend.dev before trying to sign up.
 
 If a command fails, show me the actual error output and your diagnosis before trying a fix, and do
 not modify application source files to work around setup problems.
@@ -206,7 +245,9 @@ src/
 │   │   └── settings/          # User settings, billing
 │   ├── onboarding/            # Mandatory, resumable onboarding flow
 │   ├── invite/                # Invitation acceptance
-│   └── api/auth/$.ts          # Better Auth catch-all API handler
+│   └── api/
+│       ├── auth/$.ts          # Better Auth catch-all API handler
+│       └── health.ts          # Liveness probe
 │
 ├── features/                  # Feature-based modules
 │   ├── auth/                  # Authentication
@@ -223,7 +264,7 @@ src/
 │   └── shared/                # Shared components (form fields, page titles, etc.)
 │
 ├── lib/
-│   ├── db/                    # Drizzle config, schema, seed
+│   ├── db/                    # Drizzle schema and generated migrations
 │   ├── query/                 # TanStack Query configs
 │   ├── resend/                # Resend client and email helpers
 │   ├── storage/               # R2 storage config and functions
@@ -237,9 +278,10 @@ src/
 ### Development
 
 ```bash
-pnpm dev          # Start dev server (also starts Docker postgres via docker compose up -d)
+pnpm dev          # Start dev server (Vite + Miniflare, with local D1)
 pnpm build        # Production build
 pnpm preview      # Preview the production build locally
+pnpm deploy       # Build and deploy to Cloudflare Workers
 pnpm typecheck    # Type-check with tsc --noEmit
 ```
 
@@ -261,11 +303,10 @@ pnpm test         # Run all tests with Vitest
 
 ```bash
 pnpm db:generate       # Generate Drizzle migrations from schema
-pnpm db:migrate        # Run pending migrations
-pnpm db:push           # Push schema directly to DB (dev only)
-pnpm db:seed           # Seed the database
-pnpm db:reset          # Reset and re-seed the database
-pnpm db:studio         # Open Drizzle Studio
+pnpm db:migrate:local  # Apply migrations to the local D1 database
+pnpm db:migrate:remote # Apply migrations to the deployed D1 database
+pnpm db:studio         # Open Drizzle Studio against remote D1
+pnpm db:studio:local   # Open Drizzle Studio against the local D1 SQLite file
 pnpm db:auth-generate  # Regenerate Better Auth schema
 ```
 
@@ -281,6 +322,10 @@ npx shadcn@latest add <component>  # Add a shadcn/ui component
 - **Route tree**: Auto-generated into `src/routeTree.gen.ts` — never edit manually.
 - **Auth client**: Import `signIn`, `signOut`, `useSession`, `organization`, etc. from `src/features/auth/lib/auth-client.ts`.
 - **Forms**: Use `useAppForm` from `src/hooks/use-app-form.ts` instead of raw `useForm`.
+- **Database binding**: D1 is the `DB` binding in `wrangler.jsonc`; `src/lib/db/index.ts` reads it
+  from `cloudflare:workers`. There is no connection string.
+- **Migrations**: generated by Drizzle Kit into `src/lib/db/drizzle`, applied by Wrangler. Never
+  part of the build.
 
 ## Contributing
 

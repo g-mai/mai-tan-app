@@ -25,7 +25,8 @@ export const REST_OF_STACK = [
   "React 19",
   "TypeScript",
   "Tailwind CSS v4",
-  "PostgreSQL",
+  "Cloudflare Workers",
+  "Cloudflare D1",
   "shadcn/ui",
   "TanStack Query",
   "Resend",
@@ -40,8 +41,8 @@ export const STACK_DETAILS = {
     tagline: "Full-stack SSR framework, built on TanStack Router",
     icon: Rocket,
     overview:
-      "TanStack Start is a full-stack framework built on TanStack Router that adds server-side capabilities to router-first applications. Its core features include server-side rendering (SSR), streaming responses, and server functions with validated boundaries, with deployable output for runtimes like Vercel, Netlify, and Cloudflare.",
-    text: "This app uses TanStack Start end-to-end — file-based routing, server functions (createServerFn) for auth and data access, and SSR with a dehydrated/rehydrated TanStack Query cache across the server/client boundary.",
+      "TanStack Start is a full-stack framework built on TanStack Router that adds server-side capabilities to router-first applications. Its core features include server-side rendering (SSR), streaming responses, and server functions with validated boundaries, with deployable output for runtimes like Cloudflare, Vercel, and Netlify.",
+    text: "This app uses TanStack Start end-to-end — file-based routing, server functions (createServerFn) for auth and data access, and SSR with a dehydrated/rehydrated TanStack Query cache across the server/client boundary. It is deployed to Cloudflare Workers through the Cloudflare Vite plugin.",
     link: "https://tanstack.com/start/latest",
   },
   betterAuth: {
@@ -59,7 +60,7 @@ export const STACK_DETAILS = {
     icon: Database,
     overview:
       "Drizzle ORM describes itself as a headless TypeScript ORM with a head — it functions more like a type-safe SQL query builder than a traditional ORM, with strong performance and support for PostgreSQL, MySQL, SQLite, and more. It ships with an intuitive schema declaration system, relational queries, and migration tooling via Drizzle Kit.",
-    text: "Every schema, migration, and query in src/lib/db runs through Drizzle against PostgreSQL, including the auto-generated Better Auth schema in auth-schema.ts.",
+    text: "Every schema, migration, and query in src/lib/db runs through Drizzle against Cloudflare D1, including the auto-generated Better Auth schema in auth-schema.ts. The database arrives as a Worker binding rather than a connection string, and Drizzle Kit generates the migrations that Wrangler applies.",
     link: "https://orm.drizzle.team",
   },
 } as const;
