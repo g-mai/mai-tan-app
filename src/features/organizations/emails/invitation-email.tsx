@@ -1,3 +1,10 @@
+import {
+  EmailButton,
+  EmailHeading,
+  EmailLayout,
+  EmailMutedText,
+} from "#/lib/resend/email-layout";
+
 export function InvitationEmailTemplate({
   organizationName,
   inviterName,
@@ -8,22 +15,19 @@ export function InvitationEmailTemplate({
   url: string;
 }) {
   return (
-    <div style={{ fontFamily: "Arial, sans-serif", lineHeight: "1.6" }}>
-      <h1 style={{ color: "#333" }}>
-        You've been invited to {organizationName}
-      </h1>
-      <p>
+    <EmailLayout
+      previewText={`${inviterName} invited you to join ${organizationName} on Mai Tan`}
+    >
+      <EmailHeading>You've been invited to {organizationName}</EmailHeading>
+      <p style={{ margin: "0 0 16px" }}>
         {inviterName} invited you to join <strong>{organizationName}</strong> on
-        Mai Tan App.
+        Mai Tan.
       </p>
-      <p>
-        <a href={url}>Accept the invitation</a>
-      </p>
-      <p>This invitation expires in 48 hours.</p>
-      <p>
-        If you weren't expecting it, you can safely ignore this email — nothing
-        happens until you accept.
-      </p>
-    </div>
+      <EmailButton href={url}>Accept invitation</EmailButton>
+      <EmailMutedText>
+        This invitation expires in 48 hours. If you weren't expecting it, you
+        can safely ignore this email — nothing happens until you accept.
+      </EmailMutedText>
+    </EmailLayout>
   );
 }
