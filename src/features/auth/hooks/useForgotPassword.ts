@@ -6,7 +6,7 @@ import { useAppForm } from "#/hooks/use-app-form";
 
 export function useForgotPassword() {
   const forgotPasswordFormSchema = z.object({
-    email: z.email("Invalid email addresssss"),
+    email: z.email("Invalid email address"),
   });
 
   type ForgotPasswordFormData = z.infer<typeof forgotPasswordFormSchema>;
@@ -30,7 +30,7 @@ export function useForgotPassword() {
       });
     },
     onError: (error) => {
-      console.error("Login error:", error);
+      console.error("Reset password error:", error);
       const message = error.message || "An error occurred. Please try again.";
       toast.error(message, {
         duration: 5000,

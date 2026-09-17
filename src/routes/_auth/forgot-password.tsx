@@ -60,7 +60,7 @@ function RouteComponent() {
           </form.AppField>
 
           <form.AppForm>
-            <form.SubscribeButton label={isPending ? "Loading..." : "Login"} />
+            <form.SubscribeButton label={isPending ? "Sending..." : "Send"} />
           </form.AppForm>
         </form>
       </ScreenBody>
