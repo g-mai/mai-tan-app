@@ -1,11 +1,9 @@
 import { Link } from "@tanstack/react-router";
 import {
   ChevronsUpDown,
-  CreditCard,
   GitBranch,
   LayoutDashboard,
   Lock,
-  LogIn,
   Mail,
   Package,
   Plus,
@@ -21,172 +19,176 @@ import { Button } from "#/components/ui/button";
 
 export function HomeHero() {
   return (
-    <section className="relative overflow-hidden border-b">
-      <div
-        className="pointer-events-none absolute inset-0 opacity-28"
-        style={{
-          backgroundImage:
-            "linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px)",
-          backgroundSize: "56px 56px",
-          maskImage:
-            "radial-gradient(120% 100% at 70% 0%, #000 30%, transparent 75%)",
-        }}
-      />
-      <div className="relative mx-auto grid max-w-300 grid-cols-1 items-center gap-10 px-6 py-20 lg:grid-cols-[1.05fr_1fr] lg:gap-14 lg:py-22">
-        {/* left column */}
+    <section
+      id="overview"
+      aria-labelledby="home-title"
+      className="scroll-mt-15 border-b"
+    >
+      <div className="mx-auto grid max-w-300 grid-cols-1 items-center gap-12 px-4 py-16 sm:px-6 sm:py-20 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:gap-14 lg:py-24">
         <div>
-          <Badge
-            variant="secondary"
-            className="gap-1.5 rounded-full border border-secondary/40 bg-secondary/10 px-3 py-1 font-mono font-medium text-secondary text-xs"
-          >
-            <Package className="size-3.5" /> B2B SaaS starter kit
+          <Badge variant="secondary" className="font-mono">
+            <Package data-icon="inline-start" aria-hidden="true" />
+            B2B SaaS starter kit
           </Badge>
-          <h1 className="mt-5.5 font-bold text-4xl leading-[1.02] tracking-tight sm:text-5xl lg:text-[56px]">
+          <h1
+            id="home-title"
+            className="mt-5 max-w-145 font-bold text-4xl leading-[1.02] tracking-tight sm:text-5xl lg:text-[56px]"
+          >
             Ship the product,
             <br />
             <span className="text-primary">not the plumbing.</span>
           </h1>
-          <p className="mt-5.5 max-w-130 text-base text-muted-foreground leading-relaxed">
-            Mai Tan App is a production-ready starter kit for multi-tenant B2B
-            SaaS. Auth, organizations, teams, and billing already wired — so you
-            start on the part that's actually yours.
+          <p className="mt-6 max-w-[60ch] text-base text-muted-foreground leading-relaxed">
+            Mai Tan App is a working foundation for multi-tenant B2B SaaS.
+            Authentication, organizations, teams, onboarding, and email flows
+            are already in place, so you can start on the part that is yours.
           </p>
 
-          <div className="mt-6">
-            <Button
-              size="lg"
-              className="gap-2 transition-transform duration-150 hover:-translate-y-0.5"
-              asChild
-            >
+          <div className="mt-7 flex flex-wrap items-center gap-3">
+            <Button size="lg" asChild>
               <Link to="/register">
-                <UserPlus /> Create account
+                <UserPlus data-icon="inline-start" aria-hidden="true" />
+                Get started
               </Link>
             </Button>
-            <p className="mt-3.5 flex items-center gap-1.5 font-mono text-muted-foreground text-xs">
-              <Zap className="size-3.5 text-secondary" /> Your email and a
-              6-digit code — guided setup from there.
-            </p>
-            <div className="mt-5.5 flex flex-wrap items-center gap-3 border-t pt-5.5">
-              <span className="font-mono text-muted-foreground text-xs">
-                Already have an account?
-              </span>
-              <Button variant="ghost" size="lg" className="gap-2" asChild>
-                <Link to="/login">
-                  <LogIn /> Login
-                </Link>
-              </Button>
-            </div>
+            <a
+              href="https://github.com/g-mai/mai-tan-app"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex min-h-10 items-center gap-2 rounded-md px-3 text-sm font-medium text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+            >
+              <GitBranch aria-hidden="true" className="size-4" />
+              View the source
+            </a>
           </div>
+          <p className="mt-4 flex items-start gap-2 text-sm text-muted-foreground">
+            <Zap
+              aria-hidden="true"
+              className="mt-0.5 size-4 shrink-0 text-secondary"
+            />
+            Email verification and a guided setup get the first workspace
+            moving.
+          </p>
         </div>
 
-        {/* app preview mock */}
         <div>
-          <div className="overflow-hidden rounded-xl border bg-card shadow-[6px_6px_0_0_rgba(0,0,0,0.12),6px_4px_10px_-3px_rgba(0,0,0,0.12)]">
-            <div className="flex items-center gap-2 border-b bg-muted/60 px-3.5 py-2.75">
-              <span className="size-2.75 rounded-full bg-secondary/85" />
-              <span className="size-2.75 rounded-full bg-secondary/40" />
-              <span className="size-2.75 rounded-full bg-primary/85" />
-              <span className="ml-2 flex items-center gap-1.5 font-mono text-muted-foreground text-xs">
-                <Lock className="size-3" /> tan.g-mai.dev/acme-inc
+          <div className="overflow-hidden rounded-xl border bg-card shadow-2xl">
+            <div className="flex items-center gap-2 border-b bg-muted px-3.5 py-2.75">
+              <span
+                aria-hidden="true"
+                className="size-2.5 rounded-full bg-secondary"
+              />
+              <span
+                aria-hidden="true"
+                className="size-2.5 rounded-full bg-secondary/50"
+              />
+              <span
+                aria-hidden="true"
+                className="size-2.5 rounded-full bg-primary"
+              />
+              <span className="ml-2 hidden min-w-0 items-center gap-1.5 truncate font-mono text-xs text-muted-foreground sm:flex">
+                <Lock aria-hidden="true" className="size-3.5 shrink-0" />
+                tan.g-mai.dev/acme-inc
               </span>
             </div>
-            <div className="grid min-h-70 grid-cols-[150px_1fr]">
-              <div className="flex flex-col gap-1 border-r bg-muted/35 p-2.5">
-                <div className="mb-2 flex items-center gap-2 rounded-lg border bg-card p-1.5 shadow-[1px_1px_0_0_rgba(0,0,0,0.06)]">
-                  <span className="flex size-5.5 items-center justify-center rounded-md bg-primary font-mono font-bold text-[11px] text-primary-foreground">
+            <div className="grid min-h-70 grid-cols-1 sm:grid-cols-[132px_minmax(0,1fr)]">
+              <div className="hidden flex-col gap-1 border-r bg-muted/50 p-2.5 sm:flex">
+                <div className="mb-2 flex min-w-0 items-center gap-2 rounded-lg border bg-card p-1.5">
+                  <span className="flex size-5.5 shrink-0 items-center justify-center rounded-md bg-primary font-mono font-bold text-xs text-primary-foreground">
                     A
                   </span>
-                  <span className="font-mono font-semibold text-xs">
+                  <span className="truncate font-semibold text-xs">
                     Acme Inc
                   </span>
-                  <ChevronsUpDown className="ml-auto size-3.5 text-muted-foreground" />
+                  <ChevronsUpDown
+                    aria-hidden="true"
+                    className="ml-auto size-3.5 shrink-0 text-muted-foreground"
+                  />
                 </div>
-                <div className="flex items-center gap-2 rounded-md bg-primary/12 px-2 py-1.5 font-semibold text-[12.5px] text-primary">
-                  <LayoutDashboard className="size-3.75" /> Dashboard
+                <div className="flex items-center gap-2 rounded-md bg-primary/12 px-2 py-1.5 font-semibold text-xs text-primary">
+                  <LayoutDashboard aria-hidden="true" className="size-3.5" />
+                  Dashboard
                 </div>
-                <div className="flex items-center gap-2 rounded-md px-2 py-1.5 text-[12.5px] text-muted-foreground">
-                  <Users className="size-3.75" /> Members
+                <div className="flex items-center gap-2 rounded-md px-2 py-1.5 text-xs text-muted-foreground">
+                  <Users aria-hidden="true" className="size-3.5" />
+                  Members
                 </div>
-                <div className="flex items-center gap-2 rounded-md px-2 py-1.5 text-[12.5px] text-muted-foreground">
-                  <CreditCard className="size-3.75" /> Billing
-                </div>
-                <div className="flex items-center gap-2 rounded-md px-2 py-1.5 text-[12.5px] text-muted-foreground">
-                  <Settings2 className="size-3.75" /> Settings
+                <div className="flex items-center gap-2 rounded-md px-2 py-1.5 text-xs text-muted-foreground">
+                  <Settings2 aria-hidden="true" className="size-3.5" />
+                  Settings
                 </div>
               </div>
-              <div className="p-4">
+              <div className="min-w-0 p-4 sm:p-5">
                 <div className="flex items-center justify-between gap-2">
                   <span className="font-semibold text-sm">Members</span>
-                  <span className="flex items-center gap-1 rounded-full bg-primary px-2.25 py-0.75 font-mono text-[11px] text-primary-foreground shadow-[1px_1px_0_0_rgba(0,0,0,0.14)]">
-                    <Plus className="size-3" /> Invite
-                  </span>
+                  <Badge variant="default" className="font-mono">
+                    <Plus data-icon="inline-start" aria-hidden="true" />
+                    Invite
+                  </Badge>
                 </div>
                 <div className="mt-3 flex flex-col gap-2">
-                  <div className="flex items-center gap-2.5 rounded-lg border bg-card p-2.25 shadow-[1px_1px_0_0_rgba(0,0,0,0.06)]">
-                    <span className="flex size-6.5 items-center justify-center rounded-full bg-primary/22 font-mono font-bold text-[11px] text-primary">
+                  <div className="flex min-w-0 items-center gap-2.5 rounded-lg border bg-card p-2.5">
+                    <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-primary/20 font-mono font-bold text-xs text-primary">
                       JD
                     </span>
-                    <div className="leading-tight">
-                      <div className="font-semibold text-[12.5px]">
+                    <div className="min-w-0 leading-tight">
+                      <div className="truncate font-semibold text-sm">
                         Jamie Dover
                       </div>
-                      <div className="font-mono text-[10.5px] text-muted-foreground">
+                      <div className="truncate font-mono text-xs text-muted-foreground">
                         jamie@acme.co
                       </div>
                     </div>
-                    <span className="ml-auto rounded-full border border-secondary/35 bg-secondary/16 px-2 py-0.5 font-mono text-[10.5px] text-secondary">
+                    <Badge
+                      variant="secondary"
+                      className="ml-auto font-mono text-xs"
+                    >
                       owner
-                    </span>
+                    </Badge>
                   </div>
-                  <div className="flex items-center gap-2.5 rounded-lg border bg-card p-2.25 shadow-[1px_1px_0_0_rgba(0,0,0,0.06)]">
-                    <span className="flex size-6.5 items-center justify-center rounded-full bg-muted-foreground/24 font-mono font-bold text-[11px]">
+                  <div className="hidden min-w-0 items-center gap-2.5 rounded-lg border bg-card p-2.5 sm:flex">
+                    <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-muted font-mono font-bold text-xs text-muted-foreground">
                       RS
                     </span>
-                    <div className="leading-tight">
-                      <div className="font-semibold text-[12.5px]">
+                    <div className="min-w-0 leading-tight">
+                      <div className="truncate font-semibold text-sm">
                         Riley Sun
                       </div>
-                      <div className="font-mono text-[10.5px] text-muted-foreground">
+                      <div className="truncate font-mono text-xs text-muted-foreground">
                         riley@acme.co
                       </div>
                     </div>
-                    <span className="ml-auto rounded-full border bg-muted px-2 py-0.5 font-mono text-[10.5px] text-muted-foreground">
+                    <Badge
+                      variant="outline"
+                      className="ml-auto font-mono text-xs"
+                    >
                       admin
-                    </span>
+                    </Badge>
                   </div>
-                  <div className="flex items-center gap-2 rounded-lg border border-dashed p-2.25 font-mono text-[11px] text-muted-foreground">
-                    <Mail className="size-3.5" /> taylor@acme.co — invite
-                    pending
+                  <div className="flex min-w-0 items-center gap-2 rounded-lg border border-dashed p-2.5 font-mono text-xs text-muted-foreground">
+                    <Mail aria-hidden="true" className="size-3.5 shrink-0" />
+                    <span className="truncate">
+                      taylor@acme.co — invite pending
+                    </span>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          <div className="mt-3.5 flex flex-wrap gap-2.5 font-mono text-muted-foreground text-xs justify-between">
-            <div className="flex flex-wrap items-center gap-3">
+          <div className="mt-4 flex flex-wrap items-center justify-between gap-3 text-xs text-muted-foreground">
+            <div className="flex flex-wrap items-center gap-3 font-mono">
               <span className="flex items-center gap-1.5">
-                <ShieldCheck className="size-3.5 text-primary" /> row-level
-                tenancy
+                <ShieldCheck
+                  aria-hidden="true"
+                  className="size-3.5 text-primary"
+                />
+                scoped org context
               </span>
               <span className="flex items-center gap-1.5">
-                <Server className="size-3.5 text-primary" /> SSR + typed loaders
+                <Server aria-hidden="true" className="size-3.5 text-primary" />
+                typed server flows
               </span>
             </div>
-            <Button
-              variant="link"
-              size="lg"
-              // className="gap-2 transition-transform duration-150 hover:-translate-y-0.5"
-              asChild
-            >
-              <a
-                href="https://github.com/g-mai/mai-tan-app"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-1.5 transition-colors hover:text-foreground"
-              >
-                <GitBranch className="size-3.5" /> GitHub
-              </a>
-            </Button>
           </div>
         </div>
       </div>

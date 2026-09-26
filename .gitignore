@@ -16,5 +16,4 @@ dist-ssr
 __unconfig*
 todos.json
 .claude
-# Local Netlify folder
-.netlify
+.agents

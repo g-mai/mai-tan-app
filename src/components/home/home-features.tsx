@@ -1,92 +1,107 @@
+import { FileCheck, Layers3, LockKeyhole, Mail, Route } from "lucide-react";
+import { Badge } from "#/components/ui/badge";
 import {
-  Activity,
-  Building2,
-  FileCheck,
-  type LucideIcon,
-  Mail,
-  Palette,
-  Server,
-} from "lucide-react";
-import { IconCard } from "#/components/home/icon-card";
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "#/components/ui/card";
+import { Separator } from "#/components/ui/separator";
+import { cn } from "#/lib/utils";
 
-const features: { title: string; description: string; icon: LucideIcon }[] = [
+const capabilities = [
   {
-    title: "Type-safe forms",
+    title: "Authentication and sessions",
     description:
-      "@tanstack/react-form + Zod, validated end to end with Query mutations.",
-    icon: FileCheck,
+      "Email OTP registration, password setup, login, verification, and session-aware routing.",
+    icon: LockKeyhole,
   },
   {
-    title: "Full-stack SSR",
+    title: "Guided onboarding",
     description:
-      "Server rendering with TanStack Start and a dehydrated/rehydrated query cache.",
-    icon: Server,
+      "A mandatory, resumable flow for profile, organization, team, and invitation setup.",
+    icon: Route,
   },
   {
-    title: "Email flows",
+    title: "Transactional email flows",
     description:
-      "Transactional email via Resend — verification and password reset out of the box.",
+      "Verification and password-reset messages are ready to run through Resend.",
     icon: Mail,
   },
   {
-    title: "Observability-ready",
+    title: "Typed full-stack patterns",
     description:
-      "Sentry dependency and configuration scaffolding, ready for integration.",
-    icon: Activity,
-  },
-  {
-    title: "Theme toggle",
-    description:
-      "Light/dark mode with an init script — no flash of the wrong theme on load.",
-    icon: Palette,
+      "TanStack Forms, Zod, server functions, and query mutations fit together end to end.",
+    icon: FileCheck,
   },
 ];
 
 export function HomeFeatures() {
   return (
-    <section id="features" className="scroll-mt-15 border-b bg-muted">
-      <div className="mx-auto max-w-300 px-6 py-16 lg:py-22">
+    <section id="features" className="scroll-mt-15 border-b bg-muted/50">
+      <div className="mx-auto max-w-300 px-4 py-16 sm:px-6 lg:py-24">
         <div className="max-w-160">
-          <div className="font-medium font-mono text-secondary text-xs">
-            {"// everything you need on day one"}
+          <div className="font-mono text-xs text-muted-foreground">
+            {"// what is already here"}
           </div>
           <h2 className="mt-3.5 font-bold text-3xl leading-[1.1] tracking-tight sm:text-[34px]">
-            The building blocks, already wired together.
+            A multi-tenant core you can build on.
           </h2>
-          <p className="mt-3.5 text-[15px] text-muted-foreground leading-relaxed">
-            No half-finished screens, no dead links. Every block ships as a
-            working end-to-end flow you can learn from and build on.
+          <p className="mt-3.5 max-w-[60ch] text-[15px] text-muted-foreground leading-relaxed">
+            The important flows are visible in the app and organized around
+            patterns you can carry into your own product.
           </p>
         </div>
-        <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <div className="rounded-xl border bg-card p-6 shadow-[2px_2px_0_0_rgba(0,0,0,0.1)] transition-transform duration-150 hover:-translate-y-0.5 hover:shadow-[4px_4px_0_0_rgba(0,0,0,0.12),4px_3px_6px_-2px_rgba(0,0,0,0.1)] sm:col-span-2">
-            <div className="flex items-center gap-3">
-              <div className="flex size-10 items-center justify-center rounded-[10px] bg-primary text-primary-foreground shadow-[2px_2px_0_0_rgba(0,0,0,0.14)]">
-                <Building2 className="size-5" />
+
+        <div className="mt-10 grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-16">
+          <Card className="h-fit shadow-md">
+            <CardHeader>
+              <div className="flex size-10 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+                <Layers3 aria-hidden="true" className="size-5" />
               </div>
-              <div className="font-semibold text-[17px]">
-                Multi-tenant organizations
-              </div>
-            </div>
-            <p className="mt-3.5 max-w-110 text-[14px] text-muted-foreground leading-relaxed">
-              Better Auth organizations plugin with teams, members, roles, and
-              session-persisted context. Every query is scoped to the active
-              org, enforced at the row level.
-            </p>
-            <div className="mt-4.5 flex flex-wrap gap-2 font-mono text-xs">
-              {["teams", "roles", "invitations", "/{org.slug}"].map((tag) => (
-                <span
-                  key={tag}
-                  className="rounded-full border px-2.25 py-0.75 text-muted-foreground"
+              <CardTitle className="text-xl">Organizations and teams</CardTitle>
+              <CardDescription className="text-[15px] leading-relaxed">
+                A clear multi-tenant boundary for people, teams, invitations,
+                and the active organization context.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="flex flex-wrap gap-2">
+              {["organization context", "teams", "member invitations"].map(
+                (tag) => (
+                  <Badge key={tag} variant="outline" className="font-mono">
+                    {tag}
+                  </Badge>
+                ),
+              )}
+            </CardContent>
+          </Card>
+
+          <div className="flex flex-col">
+            {capabilities.map(({ title, description, icon: Icon }, index) => (
+              <div key={title}>
+                {index > 0 && <Separator />}
+                <div
+                  className={cn(
+                    "flex gap-4 py-4",
+                    index === 0 && "pt-0",
+                    index === capabilities.length - 1 && "pb-0",
+                  )}
                 >
-                  {tag}
-                </span>
-              ))}
-            </div>
+                  <Icon
+                    aria-hidden="true"
+                    className="mt-0.5 size-5 shrink-0 text-primary"
+                  />
+                  <div>
+                    <h3 className="font-semibold text-base">{title}</h3>
+                    <p className="mt-1.5 max-w-[56ch] text-sm text-muted-foreground leading-relaxed">
+                      {description}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
-          {features.map((feature) => (
-            <IconCard key={feature.title} {...feature} />
-          ))}
         </div>
       </div>
     </section>

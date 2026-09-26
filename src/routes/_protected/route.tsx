@@ -42,7 +42,7 @@ function ProtectedLayout() {
     >
       <AppSidebar session={session} defaultOpenNav={openNav} />
       <SidebarInset>
-        <header className="sticky top-0 z-10 flex h-14 shrink-0 items-center justify-between gap-4 border-b bg-header-bg px-6 backdrop-blur-md">
+        <header className="sticky top-0 z-10 flex h-14 shrink-0 items-center justify-between gap-4 border-b bg-background/85 px-6 backdrop-blur-md">
           <div className="flex min-w-0 items-center gap-3">
             <SidebarTrigger className="-ml-1.5 shrink-0 text-muted-foreground" />
             <HeaderBreadcrumb className="ml-8" />

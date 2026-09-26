@@ -20,6 +20,12 @@ importers:
       '@faker-js/faker':
         specifier: ~10.6.0
         version: 10.6.0
+      '@fontsource-variable/instrument-sans':
+        specifier: ~5.3.0
+        version: 5.3.0
+      '@fontsource-variable/jetbrains-mono':
+        specifier: ~5.3.0
+        version: 5.3.0
       '@sentry/tanstackstart-react':
         specifier: ^10.73.0
         version: 10.73.0(@opentelemetry/core@2.11.0(@opentelemetry/api@1.9.1))(react@19.2.8)
@@ -1352,6 +1358,12 @@ packages:
 
   '@floating-ui/utils@0.2.12':
     resolution: {integrity: sha512-HpCo8tmWzLVad5s2d19EhAz5zqrrQ6s69qd6moPMQvkOuSwDT1YgRfWSVuc4ennqrgv3OHppiOGMQ7oC13yIww==, tarball: https://registry.npmjs.org/@floating-ui/utils/-/utils-0.2.12.tgz}
+
+  '@fontsource-variable/instrument-sans@5.3.0':
+    resolution: {integrity: sha512-u4gKbDBTNFGkg997tfQn3eHOhHuquWUFTRT/rwzuKtrxX5P2ekfs2x+LgBPP4P32+cC+vUwF1Cr+IdRoPQbrGw==, tarball: https://registry.npmjs.org/@fontsource-variable/instrument-sans/-/instrument-sans-5.3.0.tgz}
+
+  '@fontsource-variable/jetbrains-mono@5.3.0':
+    resolution: {integrity: sha512-F32xpS2NsGYoQi2ADSkKTgpJj7ozajsGgDJ8woTnqjmIB+dxDIqImjl4pXZVEExu8UFZ2ndhmX18EBS/hdz3Lw==, tarball: https://registry.npmjs.org/@fontsource-variable/jetbrains-mono/-/jetbrains-mono-5.3.0.tgz}
 
   '@img/colour@1.1.0':
     resolution: {integrity: sha512-Td76q7j57o/tLVdgS746cYARfSyxk8iEfRxewL9h4OMzYhbW4TAcppl0mT4eyqXddh6L/jwoM75mo7ixa/pCeQ==, tarball: https://registry.npmjs.org/@img/colour/-/colour-1.1.0.tgz}
@@ -6413,6 +6425,10 @@ snapshots:
 
   '@floating-ui/utils@0.2.12': {}
 
+  '@fontsource-variable/instrument-sans@5.3.0': {}
+
+  '@fontsource-variable/jetbrains-mono@5.3.0': {}
+
   '@img/colour@1.1.0': {}
 
   '@img/sharp-darwin-arm64@0.35.4':
@@ -10273,6 +10289,8 @@ time:
   '@biomejs/biome@2.5.12': '2026-09-03T07:24:43.993Z'
   '@cloudflare/vite-plugin@1.54.8': '2026-09-11T14:09:24.450Z'
   '@faker-js/faker@10.6.0': '2026-08-14T16:57:41.640Z'
+  '@fontsource-variable/instrument-sans@5.3.0': '2026-07-19T03:50:25.023Z'
+  '@fontsource-variable/jetbrains-mono@5.3.0': '2026-07-19T03:50:26.648Z'
   '@sentry/tanstackstart-react@10.73.0': '2026-08-31T16:56:22.696Z'
   '@t3-oss/env-core@0.13.11': '2026-03-22T19:16:09.121Z'
   '@tailwindcss/typography@0.5.20': '2026-06-08T10:34:41.124Z'
