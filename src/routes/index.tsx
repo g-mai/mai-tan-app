@@ -3,7 +3,6 @@ import { HomeCta } from "#/components/home/home-cta";
 import { HomeFeatures } from "#/components/home/home-features";
 import { HomeHeader } from "#/components/home/home-header";
 import { HomeHero } from "#/components/home/home-hero";
-import { HomeRoadmap } from "#/components/home/home-roadmap";
 import { HomeTechStack } from "#/components/home/home-tech-stack";
 import { HomeWhy } from "#/components/home/home-why";
 import Footer from "#/features/layout/components/footer";
@@ -21,7 +20,6 @@ function HomePage() {
         <HomeTechStack />
         <HomeWhy />
         <HomeFeatures />
-        <HomeRoadmap />
         <HomeCta />
       </main>
       <Footer />

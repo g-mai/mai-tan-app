@@ -2,6 +2,9 @@
   "files.watcherExclude": {
     "**/routeTree.gen.ts": true
   },
+  "files.associations": {
+    "*.css": "tailwindcss"
+  },
   "search.exclude": {
     "**/routeTree.gen.ts": true
   },
@@ -24,7 +27,7 @@
     "editor.defaultFormatter": "biomejs.biome"
   },
   "[jsonc]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "biomejs.biome"
   },
   "[css]": {
     "editor.defaultFormatter": "biomejs.biome"
