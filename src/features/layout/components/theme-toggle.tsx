@@ -26,12 +26,14 @@ export default function ThemeToggle() {
       aria-label={label}
       title={label}
       variant="outline"
-      className="flex items-center gap-2 rounded-full px-3 py-1 text-sm font-medium hover:cursor-pointer"
+      size="icon"
+      className="rounded-full hover:cursor-pointer"
     >
-      {/* {mode === "auto" ? "Auto" : mode === "dark" ? "Dark" : "Light"} */}
-      {mode === "auto" && <Monitor className="h-4 w-4" />}
-      {mode === "light" && <Sun className="h-4 w-4" />}
-      {mode === "dark" && <Moon className="h-4 w-4" />}
+      {mode === "auto" && (
+        <Monitor data-icon="inline-start" aria-hidden="true" />
+      )}
+      {mode === "light" && <Sun data-icon="inline-start" aria-hidden="true" />}
+      {mode === "dark" && <Moon data-icon="inline-start" aria-hidden="true" />}
     </Button>
   );
 }

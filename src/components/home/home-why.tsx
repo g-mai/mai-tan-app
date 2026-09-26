@@ -1,63 +1,68 @@
-import {
-  Blocks,
-  Layers,
-  type LucideIcon,
-  Rocket,
-  ShieldCheck,
-} from "lucide-react";
-import { IconCard } from "#/components/home/icon-card";
+import { Blocks, Layers, type LucideIcon, ShieldCheck } from "lucide-react";
+import { cn } from "#/lib/utils";
 
-const whyPoints: { title: string; description: string; icon: LucideIcon }[] = [
+const whyPoints: {
+  title: string;
+  description: string;
+  icon: LucideIcon;
+}[] = [
   {
-    title: "Skip months of setup",
+    title: "Start with a working foundation",
     description:
-      "Sign-up, login, teams, billing — built once, properly. Start on your idea, not the plumbing.",
-    icon: Rocket,
+      "Authentication, organizations, teams, onboarding, and email flows are ready to explore and extend.",
+    icon: Layers,
   },
   {
-    title: "Secure from line one",
+    title: "Inherit secure organization patterns",
     description:
-      "Access control and tenant isolation built in at every layer, enforced by default.",
+      "Sessions, active organization context, and protected routes give every feature a clear place to start.",
     icon: ShieldCheck,
   },
   {
-    title: "Complete, not a template",
+    title: "Extend a consistent codebase",
     description:
-      "No dead links. Everything that ships is a working end-to-end flow.",
+      "Typed forms, server functions, and query patterns make the next feature feel like a continuation—not a rewrite.",
     icon: Blocks,
-  },
-  {
-    title: "Built to be extended",
-    description:
-      "Consistent patterns run through the codebase, so adding features feels like a cleared path.",
-    icon: Layers,
   },
 ];
 
 export function HomeWhy() {
   return (
-    <section className="border-b">
-      <div className="mx-auto grid max-w-300 grid-cols-1 gap-10 px-6 py-16 lg:grid-cols-[1fr_1.2fr] lg:gap-14 lg:py-22">
+    <section id="why" className="border-b">
+      <div className="mx-auto grid max-w-300 grid-cols-1 gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-16 lg:py-24">
         <div>
-          <div className="font-medium font-mono text-secondary text-xs">
-            {"// why we built this"}
+          <div className="font-mono text-xs text-muted-foreground">
+            {"// why start here"}
           </div>
-          <h2 className="mt-3.5 font-bold text-3xl leading-[1.1] tracking-tight sm:text-[34px]">
-            Every team rebuilds
-            <br />
-            the same foundation first.
+          <h2 className="mt-3.5 max-w-120 font-bold text-3xl leading-[1.1] tracking-tight sm:text-[34px]">
+            Skip the foundation work that every team repeats.
           </h2>
         </div>
         <div>
-          <p className="text-base text-muted-foreground leading-relaxed">
-            Accounts, organizations, permissions, billing, email — it takes
-            months, and none of it is the idea you set out to build. Mai Tan App
-            is that foundation, built once and built well, so you can start on
-            the part that makes your product yours.
+          <p className="max-w-[60ch] text-base text-muted-foreground leading-relaxed">
+            Start with the parts of a B2B product that need careful decisions,
+            then spend your time on the idea that makes your product different.
           </p>
-          <div className="mt-7 grid grid-cols-1 gap-3.5 sm:grid-cols-2">
-            {whyPoints.map((point) => (
-              <IconCard key={point.title} {...point} />
+          <div className="mt-8 flex flex-col">
+            {whyPoints.map(({ title, description, icon: Icon }, index) => (
+              <div
+                key={title}
+                className="flex gap-4 border-t py-6 first:border-t-0 first:pt-0 last:pb-0"
+              >
+                <Icon
+                  aria-hidden="true"
+                  className={cn(
+                    "mt-0.5 size-5 shrink-0 text-muted-foreground",
+                    index === 0 && "text-primary",
+                  )}
+                />
+                <div>
+                  <h3 className="font-semibold text-base">{title}</h3>
+                  <p className="mt-1.5 max-w-[52ch] text-sm text-muted-foreground leading-relaxed">
+                    {description}
+                  </p>
+                </div>
+              </div>
             ))}
           </div>
         </div>
