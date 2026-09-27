@@ -1,5 +1,3 @@
-import { DeleteObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { createServerFn } from "@tanstack/react-start";
 import { getRequestHeaders } from "@tanstack/react-start/server";
 import { eq } from "drizzle-orm";
@@ -10,66 +8,51 @@ import { authMiddleware } from "#/features/auth/middleware";
 import type { Session } from "#/features/auth/types";
 import { db } from "#/lib/db";
 import { team } from "#/lib/db/schema";
-import { getR2 } from "#/lib/storage/r2";
+import { getR2 } from "#/lib/storage/r2.server";
 
-const getPresignedUploadImgUrlSchema = z.object({
+const uploadImageSchema = z.object({
   prefix: z.enum(["avatars", "orgs", "teams"]),
-  entityId: z.string(),
-  fileType: z.string(),
-  fileSize: z.number(),
+  entityId: z.string().min(1),
+  file: z
+    .file()
+    .min(1, "File is empty")
+    .max(5 * 1024 * 1024, "File size exceeds limit of 5MB")
+    .mime(["image/jpeg", "image/png", "image/webp"], "Unsupported file type"),
 });
 
-export const getPresignedUploadImgUrl = createServerFn({
+export const uploadImage = createServerFn({
   method: "POST",
 })
-  .validator(getPresignedUploadImgUrlSchema)
+  .validator((data: FormData) => {
+    if (!(data instanceof FormData)) throw new Error("Expected form data");
+    return uploadImageSchema.parse({
+      prefix: data.get("prefix"),
+      entityId: data.get("entityId"),
+      file: data.get("file"),
+    });
+  })
   .middleware([authMiddleware])
   .handler(async ({ data, context }) => {
-    const { client, bucketName, publicUrl } = getR2();
+    const { prefix, entityId, file } = data;
+    await checkUploadAuthorization(prefix, entityId, context.session);
+    const { bucket, publicUrl } = getR2();
+    const fileExtension = file.type.split("/")[1];
+    const key = `${prefix}/${entityId}/${nanoid()}.${fileExtension}`;
 
     try {
-      const { prefix, entityId, fileType, fileSize } = data;
-
-      // validation: check file size limits and allowed file types
-      const fileSizeLimit = 5 * 1024 * 1024; // 5MB
-      const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
-      if (fileSize > fileSizeLimit) {
-        throw new Error("File size exceeds limit of 5MB");
-      }
-      if (!allowedTypes.includes(fileType)) {
-        throw new Error("Unsupported file type");
-      }
-
-      // authorization check: check user has permissions
-      const session = context.session;
-      await checkUploadAuthorization(prefix, entityId, session);
-
-      // generate unique key and presigned URL
-      const fileExtension = fileType.split("/")[1];
-      const key = `${prefix}/${entityId}/${nanoid()}.${fileExtension}`;
-      const signedUrl = await getSignedUrl(
-        client,
-        new PutObjectCommand({
-          Bucket: bucketName,
-          Key: key,
-          ContentType: fileType,
-          ContentLength: fileSize,
-        }),
-      );
-      return {
-        uploadUrl: signedUrl,
-        publicUrl: `${publicUrl}/${key}`,
-      };
+      await bucket.put(key, file, {
+        httpMetadata: { contentType: file.type },
+      });
     } catch (error) {
-      console.error("Error generating presigned URL:", error);
-      throw new Error("Failed to generate presigned URL");
+      console.error("Error uploading image:", error);
+      throw new Error("Failed to upload image");
     }
+
+    return { publicUrl: `${publicUrl}/${key}` };
   });
 
-const deleteImageSchema = z.object({
-  imageUrl: z.string(),
-  prefix: z.enum(["avatars", "orgs", "teams"]),
-  entityId: z.string(),
+const deleteImageSchema = uploadImageSchema.omit({ file: true }).extend({
+  imageUrl: z.url(),
 });
 
 export const deleteImage = createServerFn({
@@ -78,21 +61,30 @@ export const deleteImage = createServerFn({
   .validator(deleteImageSchema)
   .middleware([authMiddleware])
   .handler(async ({ data, context }) => {
-    const { client, bucketName } = getR2();
+    const { imageUrl, prefix, entityId } = data;
+    await checkUploadAuthorization(prefix, entityId, context.session);
+    const { bucket, publicUrl } = getR2();
+    const url = new URL(imageUrl);
+    const baseUrl = new URL(`${publicUrl}/`);
+
+    // External images (for example, OAuth avatars) are not managed by this bucket.
+    if (
+      url.origin !== baseUrl.origin ||
+      !url.pathname.startsWith(baseUrl.pathname)
+    ) {
+      return;
+    }
+
+    const key = decodeURIComponent(url.pathname.slice(baseUrl.pathname.length));
+    if (
+      !key.startsWith(`${prefix}/${entityId}/`) ||
+      key.split("/").length !== 3
+    ) {
+      throw new Error("Unauthorized to delete this image");
+    }
 
     try {
-      const { imageUrl, prefix, entityId } = data;
-      const session = context.session;
-
-      // extract prefix and entityId from URL for authorization check
-      const url = new URL(imageUrl);
-
-      await checkUploadAuthorization(prefix, entityId, session);
-
-      const key = url.pathname.substring(1); // remove leading '/'
-      await client.send(
-        new DeleteObjectCommand({ Bucket: bucketName, Key: key }),
-      );
+      await bucket.delete(key);
     } catch (error) {
       console.error("Error deleting image:", error);
       throw new Error("Failed to delete image");
@@ -100,7 +92,7 @@ export const deleteImage = createServerFn({
   });
 
 async function checkUploadAuthorization(
-  prefix: z.infer<typeof getPresignedUploadImgUrlSchema>["prefix"],
+  prefix: z.infer<typeof uploadImageSchema>["prefix"],
   entityId: string,
   session: Session,
 ) {

@@ -13,6 +13,7 @@ Demo: [CLICK HERE](https://tan.g-mai.dev/) to check it live!
 - **Type-safe forms** — `@tanstack/react-form` + Zod + TanStack Query mutations
 - **Full-stack SSR** — Server-side rendering with TanStack Start, dehydrated/rehydrated query cache
 - **Email flows** — Transactional email via Resend (verification, password reset)
+- **Image uploads** — Profile avatars and organization or team logos, with native Cloudflare R2 and local previews
 - **Observability-ready** — Sentry dependency and configuration scaffolding (integration pending)
 - **Theme toggle** — Light/dark mode with init script, no flash on load
 
@@ -40,7 +41,7 @@ Demo: [CLICK HERE](https://tan.g-mai.dev/) to check it live!
 ### Hosting
 
 - **Cloudflare Workers** — Runtime and deployment target, via Wrangler
-- **Cloudflare R2** — Object storage for avatars and logos
+- **Cloudflare R2** — Native Worker binding for avatars and logos, with isolated local storage
 
 ### Integrations
 
@@ -58,7 +59,7 @@ Demo: [CLICK HERE](https://tan.g-mai.dev/) to check it live!
 
 - **Biome** — Linter and formatter (replaces ESLint + Prettier)
 - **Vitest** — Unit testing
-- **Wrangler** — Cloudflare CLI: local D1, migrations, deploys
+- **Wrangler** — Cloudflare CLI: local D1 and R2, migrations, deploys
 
 ## Manual installation
 
@@ -72,7 +73,7 @@ If you would rather have your AI agent do it for you, scroll down to the
 - **pnpm 11+** (`pnpm -v` — `corepack enable pnpm` if you don't have it)
 - Port **3000** free (dev server)
 
-No database server to install: D1 runs locally inside Miniflare, which the Cloudflare Vite plugin
+No database or storage service to install: D1 and R2 run locally inside Miniflare, which the Cloudflare Vite plugin
 starts as part of `pnpm dev`. A Cloudflare account is needed only to deploy.
 
 ### 1. Clone and install
@@ -100,9 +101,10 @@ cp .dev.vars.example .dev.vars && perl -pi -e "s|^BETTER_AUTH_SECRET=.*|BETTER_A
 That copies both templates and replaces the session-signing secret with a real random one in the
 same step. On Linux you can use `sed -i` in place of `perl -pi -e`.
 
-Both templates ship with the core local defaults needed to boot. Resend and R2 are optional and may
-stay blank until email delivery or image uploads are used. The `CLOUDFLARE_*` entries in `.env` may
-also stay empty until you talk to the remote database.
+Both templates ship with the core local defaults needed to boot, including local image uploads
+and previews. Keep `R2_PUBLIC_URL=http://localhost:3000/api/images` in `.dev.vars` for these
+previews. Resend may stay blank until email delivery is used. The `CLOUDFLARE_*` entries in
+`.env` may also stay empty until you talk to the remote database.
 
 Validation lives in three [T3 Env](https://env.t3.gg) modules: `src/lib/env.tooling.ts` for Node tooling,
 `src/lib/env.server.ts` for the Worker, and `src/lib/env.public.ts` for browser-exposed `VITE_*`
@@ -140,7 +142,7 @@ Open [http://localhost:3000](http://localhost:3000) and register an account.
 | Symptom | Cause and fix |
 | ------- | ------------- |
 | `Email is not configured` | Set `RESEND_API_KEY` before using registration or another email flow |
-| `Image storage is not configured` | Set all five `R2_*` values before uploading an avatar or logo |
+| `Image storage is not configured` | Configure the `IMAGES` R2 binding and `R2_PUBLIC_URL` before uploading an avatar or logo |
 | `no such table: user` | Migrations never ran — `pnpm db:migrate:local` |
 | Changes to `.dev.vars` seem ignored | Wrangler reads it at startup only; restart `pnpm dev` |
 | `drizzle-kit` errors about account or token | The `CLOUDFLARE_*` values in `.env` are empty; they are needed only for remote D1 |
@@ -173,11 +175,25 @@ pnpm db:migrate:local
 | `RESEND_API_KEY` | Only for email flows | Must be real to deliver email, and therefore to register |
 | `FROM_ADDRESS_EMAIL` | Only for email flows | Sender address used with `RESEND_API_KEY` |
 | `ADMIN_EMAIL` | No | Recipient for admin notification emails |
-| `R2_*` | Only for image uploads | All five values are required together for avatar and logo uploads |
+| `R2_PUBLIC_URL` | Only for image uploads | Public image base URL; locally, use `http://localhost:3000/api/images` |
 | `SKIP_VERIFICATION_EMAIL` | No | `true` suppresses verification and invitation email sending |
 
 The database is not an environment variable. D1 arrives as the `DB` binding declared in
 `wrangler.jsonc`, which `src/lib/db/index.ts` reads from `cloudflare:workers`.
+
+Images use the native `IMAGES` R2 bucket binding in `wrangler.jsonc`.
+The browser resizes images to 300×300 WebP, then uploads through an authenticated Worker
+server function. The Worker validates the received file (up to 5 MB) and checks permission
+to update the user, organization, or team before writing to R2. Previous images are deleted
+only after the replacement URL has been saved.
+
+During `pnpm dev`, R2 is simulated locally and uploads persist under `.wrangler/state`.
+The development-only `/api/images/$` route serves these images; `.dev.vars.example` sets
+`R2_PUBLIC_URL=http://localhost:3000/api/images`. If you change the development port, update
+that URL too. Before deploying, configure `IMAGES` with your R2 bucket name and set
+`R2_PUBLIC_URL` to that bucket's public domain in `wrangler.jsonc`. Production serves images
+through this domain. Uploads do not require bucket CORS rules because they go through a
+same-origin server function.
 
 ### Deploying
 
@@ -204,7 +220,7 @@ and stop to ask me only if a step genuinely cannot be completed without a decisi
 
 1. Check the prerequisites and report their versions: Node.js 22.22.2 or newer and pnpm 11 or
    newer. If pnpm is missing, run `corepack enable pnpm`. If Node is too old, stop and tell me
-   what to install. There is no database server to set up: D1 runs locally inside Miniflare,
+   what to install. There is no database or storage service to set up: D1 and R2 run locally inside Miniflare,
    which `pnpm dev` starts for you.
 2. Confirm port 3000 is free. If it is taken, tell me what is holding it and stop rather than
    killing the process yourself.
@@ -214,8 +230,9 @@ and stop to ask me only if a step genuinely cannot be completed without a decisi
    same step:
    cp .env.example .env
    cp .dev.vars.example .dev.vars && perl -pi -e "s|^BETTER_AUTH_SECRET=.*|BETTER_AUTH_SECRET=$(openssl rand -base64 32)|" .dev.vars
-   Leave the optional Resend, R2, Cloudflare, and Sentry entries blank until those integrations are
-   used. Never invent credentials that look real, and never put secrets of
+   Keep R2_PUBLIC_URL=http://localhost:3000/api/images for local image previews. Local D1 and R2
+   need no Cloudflare credentials. Leave the optional Resend, Cloudflare, and Sentry entries blank
+   until those integrations are used. Never invent credentials that look real, and never put secrets of
    mine in the file unless I give them to you. Leave `.env` and `.dev.vars` untracked; do not
    commit them or any other file.
 5. Run `pnpm db:migrate:local` to create the schema in the local D1 database.
@@ -247,6 +264,7 @@ src/
 │   ├── invite/                # Invitation acceptance
 │   └── api/
 │       ├── auth/$.ts          # Better Auth catch-all API handler
+│       ├── images/$.ts        # Development-only local R2 image previews
 │       └── health.ts          # Liveness probe
 │
 ├── features/                  # Feature-based modules
@@ -267,7 +285,7 @@ src/
 │   ├── db/                    # Drizzle schema and generated migrations
 │   ├── query/                 # TanStack Query configs
 │   ├── resend/                # Resend client and email helpers
-│   ├── storage/               # R2 storage config and functions
+│   ├── storage/               # Native R2 image uploads and deletion
 │   └── utils.ts               # cn() utility
 │
 └── hooks/                     # Global custom hooks (useAppForm)
@@ -278,7 +296,7 @@ src/
 ### Development
 
 ```bash
-pnpm dev          # Start dev server (Vite + Miniflare, with local D1)
+pnpm dev          # Start dev server (Vite + Miniflare, with local D1 and R2)
 pnpm build        # Production build
 pnpm preview      # Preview the production build locally
 pnpm deploy       # Build and deploy to Cloudflare Workers

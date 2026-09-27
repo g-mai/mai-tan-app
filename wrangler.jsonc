@@ -9,8 +9,16 @@
   "preview_urls": false,
   "vars": {
     "BETTER_AUTH_URL": "https://tan.g-mai.dev",
-    "SKIP_VERIFICATION_EMAIL": "false"
+    "SKIP_VERIFICATION_EMAIL": "false",
+    "R2_PUBLIC_URL": "https://r2prod.g-mai.dev"
   },
+  "r2_buckets": [
+    {
+      "binding": "IMAGES",
+      // Local development uses an isolated simulation of this bucket.
+      "bucket_name": "tan-prod"
+    }
+  ],
   "d1_databases": [
     {
       "binding": "DB",

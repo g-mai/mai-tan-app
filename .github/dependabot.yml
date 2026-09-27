@@ -30,10 +30,6 @@ updates:
           - better-auth
           - "@better-auth/*"
         update-types: [patch, minor]
-      aws-sdk:
-        patterns:
-          - "@aws-sdk/*"
-        update-types: [patch, minor]
       dev-dependencies:
         dependency-type: development
         update-types: [patch, minor]

@@ -1,15 +1,15 @@
 import { useMutation } from "@tanstack/react-query";
 import { useRef } from "react";
 import { Button } from "#/components/ui/button";
-import {
-  deleteImage,
-  getPresignedUploadImgUrl,
-} from "#/lib/storage/upload-img.functions";
+import { deleteImage, uploadImage } from "#/lib/storage/upload-img.functions";
 import { resizeImgToSquare } from "#/lib/utils";
 
 interface imageUploadProps {
   currentImageUrl: string | null | undefined;
-  onUploadComplete: (data: string | undefined, error: null | Error) => void;
+  onUploadComplete: (
+    data: string | undefined,
+    error: null | Error,
+  ) => Promise<boolean>;
   prefix: "avatars" | "orgs" | "teams";
   entityId: string;
   disabled?: boolean; // lock for non-admins
@@ -26,40 +26,35 @@ export function ImageUpload({
 }: imageUploadProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const { mutate, isPending, isSuccess, isError } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: async (file: File) => {
       const resized = await resizeImgToSquare(file);
-      const { uploadUrl, publicUrl } = await getPresignedUploadImgUrl({
-        data: {
-          prefix,
-          entityId,
-          fileType: resized.type,
-          fileSize: resized.size,
-        },
-      });
-      await fetch(uploadUrl, {
-        method: "PUT",
-        body: resized,
-      });
+      const data = new FormData();
+      data.set("prefix", prefix);
+      data.set("entityId", entityId);
+      data.set("file", resized);
+      const { publicUrl } = await uploadImage({ data });
       return publicUrl;
     },
-    onSuccess: (publicUrl) => {
-      // TODO: if currentImageUrl exist, delete old picture
-      if (currentImageUrl) {
-        deleteImage({
-          data: {
-            imageUrl: currentImageUrl,
-            prefix,
-            entityId,
-          },
-        });
+    onSuccess: async (publicUrl) => {
+      const saved = await onUploadComplete(publicUrl, null);
+      if (saved && currentImageUrl && currentImageUrl !== publicUrl) {
+        try {
+          await deleteImage({
+            data: {
+              imageUrl: currentImageUrl,
+              prefix,
+              entityId,
+            },
+          });
+        } catch (error) {
+          console.error("Failed to delete previous image:", error);
+        }
       }
     },
-    onError: (error) => {
+    onError: async (error) => {
       console.error("Upload failed:", error);
-    },
-    onSettled: (data, error) => {
-      onUploadComplete(data, error as Error | null);
+      await onUploadComplete(undefined, error);
     },
   });
 
@@ -68,6 +63,7 @@ export function ImageUpload({
   ) => {
     const file = event.target.files?.[0];
     if (!file) return;
+    event.target.value = "";
     mutate(file);
   };
 
