@@ -1,11 +1,14 @@
 import { getRequestHeaders } from "@tanstack/react-start/server";
 import { APIError } from "better-auth/api";
+import { and, eq } from "drizzle-orm";
 import { auth } from "#/features/auth/lib/auth";
 import type {
   BatchResult,
   MemberRow,
 } from "#/features/organizations/lib/member-management";
+import { canManage } from "#/features/organizations/lib/org";
 import { db } from "#/lib/db";
+import { team, teamMember } from "#/lib/db/schema";
 
 export async function organizationRoster(organizationId: string) {
   const { members, total } = await auth.api.listMembers({
@@ -47,11 +50,25 @@ export async function resolveTeam(teamId: string) {
   return team;
 }
 
-export async function teamRoster(teamId: string, organizationId: string) {
-  const members = await auth.api.listTeamMembers({
-    headers: getRequestHeaders(),
-    query: { teamId },
-  });
+/** The caller's organization role must come from organizationContext. */
+export async function teamRoster(
+  teamId: string,
+  organizationId: string,
+  role: string,
+) {
+  let members: { userId: string }[];
+  if (canManage(role)) {
+    members = await db
+      .select({ userId: teamMember.userId })
+      .from(teamMember)
+      .innerJoin(team, eq(teamMember.teamId, team.id))
+      .where(and(eq(team.id, teamId), eq(team.organizationId, organizationId)));
+  } else {
+    members = await auth.api.listTeamMembers({
+      headers: getRequestHeaders(),
+      query: { teamId },
+    });
+  }
   const { rows } = await organizationRoster(organizationId);
   const teamUserIds = new Set(members.map((member) => member.userId));
   return {

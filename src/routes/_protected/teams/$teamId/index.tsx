@@ -133,7 +133,7 @@ function RouteComponent() {
                 </Link>
               </Button>
             )}
-            {isManager && team.members && (
+            {isManager && (
               <Button disabled={disabled} onClick={picker.open}>
                 <UserPlus data-icon="inline-start" />
                 Add members
@@ -142,81 +142,72 @@ function RouteComponent() {
           </div>
         </div>
       </div>
-      {team.members && (
-        <>
-          <Card className="gap-0 overflow-hidden py-0">
-            <CardHeader className="flex flex-col gap-4 p-5 lg:flex-row lg:items-center lg:justify-between">
-              <div className="flex flex-col gap-2">
-                <CardTitle>Team Members</CardTitle>
-                <CardDescription>
-                  Manage the members of this team.
-                </CardDescription>
-              </div>
-              <MemberSearch
-                value={query.input}
-                onChange={query.setInput}
-                disabled={pending}
-                total={members.total}
-              />
-            </CardHeader>
-            <Separator />
-            {isManager && selection.ids.length > 0 && (
-              <div className="flex flex-wrap items-center gap-3 bg-muted/50 px-5 py-3">
-                <p className="mr-auto text-sm font-medium tabular-nums">
-                  {selection.ids.length} selected
-                </p>
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  disabled={disabled}
-                  onClick={() => removal.open(selection.selected)}
-                >
-                  <UserMinus data-icon="inline-start" />
-                  Remove from team
-                </Button>
-              </div>
-            )}
-            {loading && (
-              <p
-                className="px-5 py-2 text-sm text-muted-foreground"
-                role="status"
-              >
-                Loading members…
-              </p>
-            )}
-            <CardContent className="px-0">
-              <MemberTable
-                rows={members.rows}
-                userId={team.userId}
-                disabled={disabled}
-                selection={isManager ? selection : undefined}
-                onRemove={isManager ? (row) => removal.open([row]) : undefined}
-                emptyMessage={
-                  search.q
-                    ? "No members match your search."
-                    : "This team has no members yet."
-                }
-              />
-            </CardContent>
-            <Separator />
-            <CardFooter className="px-5 py-4">
-              <MemberPagination
-                members={members}
-                disabled={disabled}
-                onPage={(page) => changeSearch({ q: search.q, page }, false)}
-              />
-            </CardFooter>
-          </Card>
-          <MemberResults
-            failures={removal.failures}
-            disabled={disabled}
-            canRetry={members.rows.some((row) =>
-              removal.failures.some((failure) => failure.userId === row.userId),
-            )}
-            onRetry={() => removal.retry(members.rows)}
+      <Card className="gap-0 overflow-hidden py-0">
+        <CardHeader className="flex flex-col gap-4 p-5 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex flex-col gap-2">
+            <CardTitle>Team Members</CardTitle>
+            <CardDescription>Manage the members of this team.</CardDescription>
+          </div>
+          <MemberSearch
+            value={query.input}
+            onChange={query.setInput}
+            disabled={pending}
+            total={members.total}
           />
-        </>
-      )}
+        </CardHeader>
+        <Separator />
+        {isManager && selection.ids.length > 0 && (
+          <div className="flex flex-wrap items-center gap-3 bg-muted/50 px-5 py-3">
+            <p className="mr-auto text-sm font-medium tabular-nums">
+              {selection.ids.length} selected
+            </p>
+            <Button
+              variant="destructive"
+              size="sm"
+              disabled={disabled}
+              onClick={() => removal.open(selection.selected)}
+            >
+              <UserMinus data-icon="inline-start" />
+              Remove from team
+            </Button>
+          </div>
+        )}
+        {loading && (
+          <p className="px-5 py-2 text-sm text-muted-foreground" role="status">
+            Loading members…
+          </p>
+        )}
+        <CardContent className="px-0">
+          <MemberTable
+            rows={members.rows}
+            userId={team.userId}
+            disabled={disabled}
+            selection={isManager ? selection : undefined}
+            onRemove={isManager ? (row) => removal.open([row]) : undefined}
+            emptyMessage={
+              search.q
+                ? "No members match your search."
+                : "This team has no members yet."
+            }
+          />
+        </CardContent>
+        <Separator />
+        <CardFooter className="px-5 py-4">
+          <MemberPagination
+            members={members}
+            disabled={disabled}
+            onPage={(page) => changeSearch({ q: search.q, page }, false)}
+          />
+        </CardFooter>
+      </Card>
+      <MemberResults
+        failures={removal.failures}
+        disabled={disabled}
+        canRetry={members.rows.some((row) =>
+          removal.failures.some((failure) => failure.userId === row.userId),
+        )}
+        onRetry={() => removal.retry(members.rows)}
+      />
       <RemoveMembersDialog
         targets={removal.targets}
         scopeName={team.name}

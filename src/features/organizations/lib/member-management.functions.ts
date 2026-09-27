@@ -162,21 +162,15 @@ export const getTeamOverview = createServerFn({ method: "GET" })
       team.organizationId,
       context.session.user.id,
     );
-    const ownTeams = await auth.api.listUserTeams({
-      headers: getRequestHeaders(),
-      query: { organizationId: org.id },
-    });
-    const roster = ownTeams.some((ownTeam) => ownTeam.id === team.id)
-      ? await teamRoster(team.id, org.id)
-      : undefined;
+    const roster = await teamRoster(team.id, org.id, org.role);
     return {
       ...team,
       role: org.role,
       userId: org.userId,
       organization: { name: org.name },
-      memberCount: roster?.rows.length,
-      members: roster ? memberPage(roster.rows, data.q, data.page) : undefined,
-      candidates: roster && canManage(org.role) ? roster.candidates : [],
+      memberCount: roster.rows.length,
+      members: memberPage(roster.rows, data.q, data.page),
+      candidates: canManage(org.role) ? roster.candidates : [],
     };
   });
 
