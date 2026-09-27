@@ -4,28 +4,35 @@ import z from "zod";
 import { auth } from "#/features/auth/lib/auth";
 import { authMiddleware } from "#/features/auth/middleware";
 import type { SessionData, User } from "#/features/auth/types";
-import { db } from "#/lib/db";
+import {
+  organizationContext,
+  resolveTeam,
+} from "#/features/organizations/lib/member-management.server";
 
 export const listTeams = createServerFn({ method: "GET" })
   .middleware([authMiddleware])
-  .handler(async ({ context }) => {
-    const memberships = await db.query.member.findMany({
-      where: (member, { eq }) => eq(member.userId, context.session.user.id),
-      columns: { organizationId: true },
+  .handler(async () => {
+    const organizations = await auth.api.listOrganizations({
+      headers: getRequestHeaders(),
     });
-    if (memberships.length === 0) return [];
-
-    return db.query.team.findMany({
-      where: (team, { inArray }) =>
-        inArray(
-          team.organizationId,
-          memberships.map((m) => m.organizationId),
-        ),
-      with: {
-        organization: { columns: { name: true } },
-      },
-      orderBy: (team, { asc }) => asc(team.name),
-    });
+    const teams = await Promise.all(
+      organizations.map(async (org) => {
+        const rows = await auth.api.listOrganizationTeams({
+          headers: getRequestHeaders(),
+          query: { organizationId: org.id },
+        });
+        return rows.map((team) => ({
+          id: team.id,
+          name: team.name,
+          organizationId: team.organizationId,
+          description: team.description,
+          logo: team.logo,
+          color: team.color ?? null,
+          organization: { name: org.name },
+        }));
+      }),
+    );
+    return teams.flat().sort((a, b) => a.name.localeCompare(b.name));
   });
 
 const getTeamSchema = z.object({
@@ -45,68 +52,53 @@ export const getTeam = createServerFn({ method: "GET" })
     return team;
   });
 
-const getFullTeamSchema = z.object({
+const getTeamMetadataSchema = z.object({
   id: z.string(),
 });
 
-export const getFullTeam = createServerFn({ method: "GET" })
-  .validator(getFullTeamSchema)
+export const getTeamMetadata = createServerFn({ method: "GET" })
+  .validator(getTeamMetadataSchema)
   .middleware([authMiddleware])
   .handler(async ({ data, context }) => {
-    const teamData = await db.query.team.findFirst({
-      where: (team, { eq }) => eq(team.id, data.id),
-      with: {
-        organization: true,
-        teamMembers: {
-          with: { user: true },
-        },
-      },
-    });
-    if (!teamData) throw new Error("Team not found");
-    const orgMember = await db.query.member.findFirst({
-      where: (member, { eq, and }) =>
-        and(
-          eq(member.organizationId, teamData.organizationId),
-          eq(member.userId, context.session.user.id),
-        ),
-    });
-    if (!orgMember)
-      throw new Error("User is not a member of this organization");
-
-    return {
-      ...teamData,
-      role: orgMember.role,
-    };
+    const { memberCount: _, ...teamData } = await resolveTeam(data.id);
+    const org = await organizationContext(
+      teamData.organizationId,
+      context.session.user.id,
+    );
+    return { ...teamData, organization: { name: org.name }, role: org.role };
   });
 
 const listOrgTeamsSchema = z.object({ organizationId: z.string() });
 
 /**
- * Teams in an organization with their member counts — `getFullOrganization`
- * returns bare team rows, and the dashboard shows "3 members" per team.
+ * Organization team summaries; counts are included only for the caller's teams.
  */
 export const listOrgTeamsWithCounts = createServerFn({ method: "GET" })
   .validator(listOrgTeamsSchema)
   .middleware([authMiddleware])
-  .handler(async ({ data, context }) => {
-    const orgMember = await db.query.member.findFirst({
-      where: (member, { eq, and }) =>
-        and(
-          eq(member.organizationId, data.organizationId),
-          eq(member.userId, context.session.user.id),
-        ),
+  .handler(async ({ data }) => {
+    const teams = await auth.api.listOrganizationTeams({
+      headers: getRequestHeaders(),
+      query: data,
     });
-    if (!orgMember)
-      throw new Error("User is not a member of this organization");
-
-    const teams = await db.query.team.findMany({
-      where: (team, { eq }) => eq(team.organizationId, data.organizationId),
-      with: { teamMembers: { columns: { id: true } } },
-      orderBy: (team, { asc }) => asc(team.name),
+    const ownTeams = await auth.api.listUserTeams({
+      headers: getRequestHeaders(),
+      query: data,
     });
-
-    return teams.map(({ teamMembers, ...team }) => ({
-      ...team,
-      memberCount: teamMembers.length,
-    }));
+    const ownIds = new Set(ownTeams.map((team) => team.id));
+    return Promise.all(
+      teams
+        .sort((a, b) => a.name.localeCompare(b.name))
+        .map(async (team) => ({
+          ...team,
+          memberCount: ownIds.has(team.id)
+            ? (
+                await auth.api.listTeamMembers({
+                  headers: getRequestHeaders(),
+                  query: { teamId: team.id },
+                })
+              ).length
+            : undefined,
+        })),
+    );
   });

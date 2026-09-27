@@ -1,4 +1,11 @@
-import { FileCheck, Layers3, LockKeyhole, Mail, Route } from "lucide-react";
+import {
+  FileCheck,
+  Image,
+  Layers3,
+  LockKeyhole,
+  Mail,
+  Route,
+} from "lucide-react";
 import { Badge } from "#/components/ui/badge";
 import {
   Card,
@@ -28,6 +35,12 @@ const capabilities = [
     description:
       "Verification and password-reset messages are ready to run through Resend.",
     icon: Mail,
+  },
+  {
+    title: "Avatars and logos",
+    description:
+      "Upload profile avatars and organization or team logos, with image storage on Cloudflare R2.",
+    icon: Image,
   },
   {
     title: "Typed full-stack patterns",

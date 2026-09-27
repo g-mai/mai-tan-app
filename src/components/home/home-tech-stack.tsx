@@ -4,6 +4,8 @@ const techStack = [
   "Better Auth",
   "Drizzle",
   "Cloudflare Workers",
+  "Cloudflare R2",
+  "Cloudflare D1",
   "shadcn/ui",
 ];
 
