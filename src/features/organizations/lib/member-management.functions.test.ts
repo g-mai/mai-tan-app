@@ -1,29 +1,36 @@
 import { APIError } from "better-auth/api";
+import { SQLiteSyncDialect } from "drizzle-orm/sqlite-core";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-const { api, teamRead, orgRead, requestHeaders } = vi.hoisted(() => ({
-  api: {
-    listMembers: vi.fn(),
-    listTeamMembers: vi.fn(),
-    getActiveMemberRole: vi.fn(),
-    listOrganizationTeams: vi.fn(),
-    listUserTeams: vi.fn(),
-    listInvitations: vi.fn(),
-    updateMemberRole: vi.fn(),
-    removeMember: vi.fn(),
-    addTeamMember: vi.fn(),
-    removeTeamMember: vi.fn(),
-  },
-  teamRead: vi.fn(),
-  orgRead: vi.fn(),
-  requestHeaders: new Headers({ cookie: "session" }),
-}));
+const { api, teamRead, orgRead, teamMembersRead, requestHeaders } = vi.hoisted(
+  () => ({
+    api: {
+      listMembers: vi.fn(),
+      listTeamMembers: vi.fn(),
+      getActiveMemberRole: vi.fn(),
+      listOrganizationTeams: vi.fn(),
+      listUserTeams: vi.fn(),
+      listInvitations: vi.fn(),
+      updateMemberRole: vi.fn(),
+      removeMember: vi.fn(),
+      addTeamMember: vi.fn(),
+      removeTeamMember: vi.fn(),
+    },
+    teamRead: vi.fn(),
+    orgRead: vi.fn(),
+    teamMembersRead: vi.fn(),
+    requestHeaders: new Headers({ cookie: "session" }),
+  }),
+);
 vi.mock("#/features/auth/lib/auth", () => ({ auth: { api } }));
 vi.mock("#/features/auth/middleware", () => ({
   authMiddleware: "authenticated",
 }));
 vi.mock("#/lib/db", () => ({
   db: {
+    select: () => ({
+      from: () => ({ innerJoin: () => ({ where: teamMembersRead }) }),
+    }),
     query: {
       team: { findFirst: teamRead },
       organization: { findFirst: orgRead },
@@ -99,6 +106,7 @@ beforeEach(() => {
   api.listMembers.mockResolvedValue({ members: roster, total: 3 });
   api.getActiveMemberRole.mockResolvedValue({ role: "admin" });
   api.listTeamMembers.mockResolvedValue([{ userId: "caller" }]);
+  teamMembersRead.mockResolvedValue([{ userId: "caller" }]);
   api.listUserTeams.mockResolvedValue([]);
   api.listOrganizationTeams.mockResolvedValue([
     { id: "z", name: "Zulu" },
@@ -140,7 +148,8 @@ describe("scoped reads", () => {
       "scoped-org",
     );
   });
-  it("preserves roster denial even for an administrator", async () => {
+  it("preserves roster denial for an ordinary member", async () => {
+    api.getActiveMemberRole.mockResolvedValue({ role: "member" });
     api.listUserTeams.mockResolvedValue([{ id: "team" }]);
     api.listTeamMembers.mockRejectedValue(
       denied("USER_IS_NOT_A_MEMBER_OF_THE_TEAM", "BAD_REQUEST"),
@@ -151,6 +160,70 @@ describe("scoped reads", () => {
       body: { code: "USER_IS_NOT_A_MEMBER_OF_THE_TEAM" },
     });
     expect(api.listMembers).not.toHaveBeenCalled();
+    expect(teamMembersRead).not.toHaveBeenCalled();
+  });
+  it.each(["admin", "owner", "admin,sales"])(
+    "lets an %s load an empty team and add its first member without joining",
+    async (role) => {
+      api.getActiveMemberRole.mockResolvedValue({ role });
+      teamMembersRead.mockResolvedValue([]);
+      const empty = await getTeamOverview({ data: { teamId: "team" } });
+      expect(empty.memberCount).toBe(0);
+      expect(empty.members).toMatchObject({ rows: [], total: 0 });
+      expect(empty.candidates.map((row) => row.userId)).toEqual([
+        "caller",
+        "other",
+        "owner",
+      ]);
+      expect(api.getActiveMemberRole).toHaveBeenCalledWith({
+        headers: requestHeaders,
+        query: { organizationId: "scoped-org" },
+      });
+      const query = new SQLiteSyncDialect().sqlToQuery(
+        teamMembersRead.mock.calls[0][0],
+      );
+      expect(query.params).toEqual(["team", "scoped-org"]);
+
+      const added = await addTeamMembers({
+        data: { teamId: "team", userIds: ["other"] },
+      });
+      expect(added.succeeded).toEqual(["other"]);
+      expect(api.addTeamMember).toHaveBeenCalledWith({
+        headers: requestHeaders,
+        body: { teamId: "team", organizationId: "scoped-org", userId: "other" },
+      });
+
+      teamMembersRead.mockResolvedValue([{ userId: "other" }]);
+      const populated = await getTeamOverview({ data: { teamId: "team" } });
+      expect(populated.memberCount).toBe(1);
+      expect(populated.members?.rows.map((row) => row.userId)).toEqual([
+        "other",
+      ]);
+      expect(populated.candidates.map((row) => row.userId)).toEqual([
+        "caller",
+        "owner",
+      ]);
+      expect(api.listTeamMembers).not.toHaveBeenCalled();
+    },
+  );
+  it("propagates database errors for administrators", async () => {
+    teamMembersRead.mockRejectedValue(new Error("Database unavailable"));
+    await expect(getTeamOverview({ data: { teamId: "team" } })).rejects.toThrow(
+      "Database unavailable",
+    );
+    expect(api.listTeamMembers).not.toHaveBeenCalled();
+  });
+  it("requires membership of the team's organization before reading its roster", async () => {
+    api.getActiveMemberRole.mockRejectedValue(
+      denied("YOU_ARE_NOT_A_MEMBER_OF_THIS_ORGANIZATION"),
+    );
+    await expect(
+      getTeamOverview({ data: { teamId: "team" } }),
+    ).rejects.toMatchObject({
+      body: { code: "YOU_ARE_NOT_A_MEMBER_OF_THIS_ORGANIZATION" },
+    });
+    expect(api.listTeamMembers).not.toHaveBeenCalled();
+    expect(teamMembersRead).not.toHaveBeenCalled();
   });
   it("omits manager-only workflow data and preserves all-team summaries for ordinary members", async () => {
     api.listUserTeams.mockResolvedValue([{ id: "team" }]);
@@ -159,6 +232,11 @@ describe("scoped reads", () => {
       (await getTeamOverview({ data: { teamId: "team", q: "", page: 1 } }))
         .candidates,
     ).toEqual([]);
+    expect(api.listTeamMembers).toHaveBeenCalledWith({
+      headers: requestHeaders,
+      query: { teamId: "team" },
+    });
+    expect(teamMembersRead).not.toHaveBeenCalled();
     expect(
       (
         await getDashboardOrganization({
@@ -177,14 +255,6 @@ describe("scoped reads", () => {
     const result = await getTeamMetadata({ data: { id: "team" } });
     expect(result).not.toHaveProperty("memberCount");
     expect(api.listTeamMembers).not.toHaveBeenCalled();
-  });
-  it("returns team overview metadata without roster/count for callers outside the team", async () => {
-    const result = await getTeamOverview({ data: { teamId: "team" } });
-    expect(result.members).toBeUndefined();
-    expect(result.memberCount).toBeUndefined();
-    expect(result.candidates).toEqual([]);
-    expect(api.listTeamMembers).not.toHaveBeenCalled();
-    expect(api.listMembers).not.toHaveBeenCalled();
   });
   it("returns team logos and colors in organization summaries", async () => {
     api.listOrganizationTeams.mockResolvedValue([
@@ -208,7 +278,7 @@ describe("scoped reads", () => {
       },
     }));
     api.listUserTeams.mockResolvedValue([{ id: "team" }]);
-    api.listTeamMembers.mockResolvedValue(
+    teamMembersRead.mockResolvedValue(
       members.map(({ userId }) => ({ userId })),
     );
     api.listMembers.mockResolvedValue({ members, total: members.length });
