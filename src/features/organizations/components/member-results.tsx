@@ -27,6 +27,7 @@ export function MemberResults({
         </ul>
         {onRetry && (
           <Button
+            type="button"
             variant="outline"
             size="sm"
             disabled={disabled || !canRetry}

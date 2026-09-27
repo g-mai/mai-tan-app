@@ -1,5 +1,6 @@
 import {
   AlertDialog,
+  AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
@@ -67,9 +68,7 @@ export function RemoveMembersDialog({
         )}
         <Separator />
         <AlertDialogFooter>
-          <Button variant="outline" disabled={isPending} onClick={onClose}>
-            Cancel
-          </Button>
+          <AlertDialogCancel disabled={isPending}>Cancel</AlertDialogCancel>
           <Button variant="destructive" disabled={isPending} onClick={onSubmit}>
             {isPending ? "Removing…" : "Remove members"}
           </Button>

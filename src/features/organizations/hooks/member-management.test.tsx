@@ -41,6 +41,7 @@ vi.mock("@tanstack/react-router", () => ({
 }));
 vi.mock("sonner", () => ({ toast: { success, error, info: vi.fn() } }));
 
+import { MemberResults } from "#/features/organizations/components/member-results";
 import { MemberTable } from "#/features/organizations/components/member-table";
 import { RemoveMembersDialog } from "#/features/organizations/components/remove-members-dialog";
 import { useDialogFocus } from "#/hooks/use-dialog-focus";
@@ -102,7 +103,7 @@ describe("member table and confirmations", () => {
     );
     expect(toggleAll).toHaveBeenCalledOnce();
   });
-  it("cancel performs no mutation and pending disables confirmation and dismissal", () => {
+  it("focuses cancel on open and pending disables confirmation and dismissal", () => {
     const onClose = vi.fn(),
       onSubmit = vi.fn();
     const props = {
@@ -120,12 +121,43 @@ describe("member table and confirmations", () => {
       screen.getByText(/also removes them from this organization’s teams/),
     ).toBeInTheDocument();
     expect(screen.getByText(/selected owner/)).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Cancel" })).toHaveFocus();
     fireEvent.click(screen.getByRole("button", { name: "Cancel" }));
     expect(onClose).toHaveBeenCalledOnce();
     expect(onSubmit).not.toHaveBeenCalled();
     view.rerender(<RemoveMembersDialog {...props} isPending />);
     expect(screen.getByRole("button", { name: "Cancel" })).toBeDisabled();
     expect(screen.getByRole("button", { name: "Removing…" })).toBeDisabled();
+  });
+  it("retries once without submitting an enclosing form", () => {
+    const retry = vi.fn(),
+      submit = vi.fn();
+    render(
+      <form
+        onSubmit={(event) => {
+          event.preventDefault();
+          submit();
+        }}
+      >
+        <MemberResults
+          failures={[
+            {
+              userId: "other",
+              label: "other@test.com",
+              code: "LIMIT",
+              message: "Full",
+            },
+          ]}
+          onRetry={retry}
+          canRetry
+        />
+      </form>,
+    );
+    fireEvent.click(
+      screen.getByRole("button", { name: "Retry failed members" }),
+    );
+    expect(retry).toHaveBeenCalledOnce();
+    expect(submit).not.toHaveBeenCalled();
   });
 });
 
