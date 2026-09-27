@@ -78,8 +78,8 @@ importers:
         specifier: ~1.5.0
         version: 1.5.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       lucide-react:
-        specifier: ^1.47.0
-        version: 1.47.0(react@19.3.0)
+        specifier: ^1.48.0
+        version: 1.48.0(react@19.3.0)
       nanoid:
         specifier: ~6.0.1
         version: 6.0.1
@@ -96,8 +96,8 @@ importers:
         specifier: ^19.3.0
         version: 19.3.0(react@19.3.0)
       react-email:
-        specifier: 6.9.5
-        version: 6.9.5(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+        specifier: 6.11.0
+        version: 6.11.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       resend:
         specifier: ^6.28.1
         version: 6.28.1(@react-email/render@2.1.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0))
@@ -3771,10 +3771,6 @@ packages:
     resolution: {integrity: sha512-csJvb+6kEiQaqo1woTdSAuOWdN0WTLIydkKrBnS+V5gZz0oqBrp4kQ35519QgK6TpBThiG3V1vNSHlIkv4AglQ==, tarball: https://registry.npmjs.org/chevrotain/-/chevrotain-12.0.0.tgz}
     engines: {node: '>=22.0.0'}
 
-  chokidar@4.0.3:
-    resolution: {integrity: sha512-Qgzu8kfBvo+cA4962jnP1KkS6Dop5NS6g7R5LFYJr4b8Ub94PPQXUksCw9PvXoeXPRRddRNC5C1JQUR2SMGtnA==, tarball: https://registry.npmjs.org/chokidar/-/chokidar-4.0.3.tgz}
-    engines: {node: '>= 14.16.0'}
-
   chokidar@5.0.0:
     resolution: {integrity: sha512-TQMmc3w+5AxjpL8iIiwebF73dRDF4fBIieAqGn9RGCWaEVwQ6Fb2cGe31Yns0RRIzii5goJ1Y7xbMwo1TxMplw==, tarball: https://registry.npmjs.org/chokidar/-/chokidar-5.0.0.tgz}
     engines: {node: '>= 20.19.0'}
@@ -4487,8 +4483,8 @@ packages:
   lru-cache@5.1.1:
     resolution: {integrity: sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w==, tarball: https://registry.npmjs.org/lru-cache/-/lru-cache-5.1.1.tgz}
 
-  lucide-react@1.47.0:
-    resolution: {integrity: sha512-o8C23aXpNQypRY73W7fW02EyvWJinEMXgKeGjFoKym0zj3Q73hD97A1IQps1g8C14HTGsOpZL0Am+xjfgFZAbg==, tarball: https://registry.npmjs.org/lucide-react/-/lucide-react-1.47.0.tgz}
+  lucide-react@1.48.0:
+    resolution: {integrity: sha512-R0CIKY/fXiC6y9xRBADgsK+VW2p/pcTJOMhLZf1T+uG+vJUvyUR02nGOgmIIC7MPkiNK4Ox8QDnbqF8rJYWPZQ==, tarball: https://registry.npmjs.org/lucide-react/-/lucide-react-1.48.0.tgz}
     peerDependencies:
       react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
@@ -4744,9 +4740,9 @@ packages:
     peerDependencies:
       react: ^19.3.0
 
-  react-email@6.9.5:
-    resolution: {integrity: sha512-XkUFa4S3XGbVQegdGSvkShsEOn/j9t3yL5MXRf5A2l4K+RzXNPK2TZLOgI/bXfWu2WRyKWb9aVDtfLLuyBMi2A==, tarball: https://registry.npmjs.org/react-email/-/react-email-6.9.5.tgz}
-    engines: {node: '>=20.0.0'}
+  react-email@6.11.0:
+    resolution: {integrity: sha512-u0NBK+ypniH+snmYa1BQTCvqPTounU9OczXH+j2BLUoMrNkk5/d5qq5Droral87f2B7eClsDp0pF0Y4taWERbg==, tarball: https://registry.npmjs.org/react-email/-/react-email-6.11.0.tgz}
+    engines: {node: '>=20.19.0'}
     hasBin: true
     peerDependencies:
       react: ^18.0 || ^19.0 || ^19.0.0-rc
@@ -4788,10 +4784,6 @@ packages:
   react@19.3.0:
     resolution: {integrity: sha512-E8LUcbtBWt20bbl2YoHfx4ZDBdxVTfOKtCZn9cDSJ4l6/nuoApcpIBcj47t2wZoVX8g2ZHuMHbiShgCR1T5Sog==, tarball: https://registry.npmjs.org/react/-/react-19.3.0.tgz}
     engines: {node: '>=0.10.0'}
-
-  readdirp@4.1.2:
-    resolution: {integrity: sha512-GDhwkLfywWL2s6vEjyhri+eXmfH6j1L7JE27WhqLeYzoh/A3DBaYGEj2H/HFZCn/kMfim73FXxEJTw06WtxQwg==, tarball: https://registry.npmjs.org/readdirp/-/readdirp-4.1.2.tgz}
-    engines: {node: '>= 14.18.0'}
 
   readdirp@5.1.1:
     resolution: {integrity: sha512-Kko+Y5XQ6fM+Ce3dq3m9YGxnacYZYl9cA1wZjaF3Vbry2L3i1qVg8+CAgNPsXRArPMUMCaOR7oa9Nqntc43JKA==, tarball: https://registry.npmjs.org/readdirp/-/readdirp-5.1.1.tgz}
@@ -5641,7 +5633,7 @@ snapshots:
       '@babel/code-frame': 7.29.7
       '@babel/generator': 7.29.8
       '@babel/helper-globals': 7.29.7
-      '@babel/parser': 7.29.2
+      '@babel/parser': 7.29.9
       '@babel/template': 7.29.7
       '@babel/types': 7.29.8
       debug: 4.4.3
@@ -8563,10 +8555,6 @@ snapshots:
       '@chevrotain/types': 12.0.0
       '@chevrotain/utils': 12.0.0
 
-  chokidar@4.0.3:
-    dependencies:
-      readdirp: 4.1.2
-
   chokidar@5.0.0:
     dependencies:
       readdirp: 5.1.1
@@ -9189,7 +9177,7 @@ snapshots:
     dependencies:
       yallist: 3.1.1
 
-  lucide-react@1.47.0(react@19.3.0):
+  lucide-react@1.48.0(react@19.3.0):
     dependencies:
       react: 19.3.0
 
@@ -9519,12 +9507,12 @@ snapshots:
       react: 19.3.0
       scheduler: 0.28.0
 
-  react-email@6.9.5(react-dom@19.3.0(react@19.3.0))(react@19.3.0):
+  react-email@6.11.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0):
     dependencies:
       '@babel/parser': 7.29.2
       '@babel/traverse': 7.29.0
       '@react-email/render': 2.1.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
-      chokidar: 4.0.3
+      chokidar: 5.0.0
       commander: 13.1.0
       conf: 15.1.0
       css-tree: 3.2.1
@@ -9580,8 +9568,6 @@ snapshots:
       '@types/react': 19.3.0
 
   react@19.3.0: {}
-
-  readdirp@4.1.2: {}
 
   readdirp@5.1.1: {}
 
@@ -10149,12 +10135,12 @@ time:
   input-otp@1.5.0: '2026-08-18T10:20:09.267Z'
   jsdom@30.1.1: '2026-09-22T02:07:00.270Z'
   knip@6.38.0: '2026-09-23T10:41:04.033Z'
-  lucide-react@1.47.0: '2026-09-17T07:29:00.182Z'
+  lucide-react@1.48.0: '2026-09-24T05:53:14.788Z'
   nanoid@6.0.1: '2026-08-03T10:59:07.795Z'
   next-themes@0.4.6: '2025-03-11T21:02:05.882Z'
   radix-ui@1.6.7: '2026-07-24T23:51:30.916Z'
   react-dom@19.3.0: '2026-09-09T17:17:39.744Z'
-  react-email@6.9.5: '2026-09-08T18:15:43.038Z'
+  react-email@6.11.0: '2026-09-23T19:51:15.732Z'
   react@19.3.0: '2026-09-09T17:21:30.071Z'
   resend@6.28.1: '2026-09-15T16:21:57.732Z'
   sonner@2.0.8: '2026-08-09T08:46:10.174Z'
