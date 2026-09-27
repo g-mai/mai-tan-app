@@ -21,7 +21,7 @@ type Team = {
   organizationId: string;
   organization: { name: string };
   createdAt: Date | string;
-  teamMembers: unknown[];
+  memberCount?: number;
 };
 
 export function TeamOverviewCard({ team }: { team: Team }) {
@@ -66,10 +66,11 @@ export function TeamOverviewCard({ team }: { team: Team }) {
           {team.description || "No description"}
         </p>
         <div className="flex gap-6 text-sm text-muted-foreground">
-          <span>
-            {team.teamMembers.length} member
-            {team.teamMembers.length !== 1 ? "s" : ""}
-          </span>
+          {team.memberCount !== undefined && (
+            <span>
+              {team.memberCount} member{team.memberCount !== 1 ? "s" : ""}
+            </span>
+          )}
           <span>Created {formatDate(team.createdAt)}</span>
         </div>
       </CardContent>

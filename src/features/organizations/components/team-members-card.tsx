@@ -1,3 +1,5 @@
+import { Link } from "@tanstack/react-router";
+import { Button } from "#/components/ui/button";
 import {
   Card,
   CardContent,
@@ -12,12 +14,20 @@ type TeamMember = {
   user: { name?: string | null; email: string };
 };
 
-export function TeamMembersCard({ members }: { members: TeamMember[] }) {
+export function TeamMembersCard({
+  members,
+  total,
+  teamId,
+}: {
+  members: TeamMember[];
+  total: number;
+  teamId: string;
+}) {
   return (
     <Card>
       <CardHeader>
         <CardTitle>Members</CardTitle>
-        <CardDescription>{members.length} total</CardDescription>
+        <CardDescription>{total} total</CardDescription>
       </CardHeader>
       <CardContent className="p-0">
         {members.length === 0 ? (
@@ -43,6 +53,17 @@ export function TeamMembersCard({ members }: { members: TeamMember[] }) {
             ))}
           </ul>
         )}
+        <div className="px-6 py-4">
+          <Button asChild variant="outline" size="sm">
+            <Link
+              to="/teams/$teamId/members"
+              params={{ teamId }}
+              search={{ q: "", page: 1 }}
+            >
+              View members
+            </Link>
+          </Button>
+        </div>
       </CardContent>
     </Card>
   );

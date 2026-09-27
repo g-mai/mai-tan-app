@@ -19,7 +19,7 @@ type Org = {
   slug: string;
   logo?: string | null;
   createdAt: Date | string;
-  members: unknown[];
+  memberCount: number;
   teams: unknown[];
 };
 
@@ -96,7 +96,7 @@ export function OrgOverviewCard({ org }: { org: Org }) {
       <CardContent>
         <div className="flex gap-6 text-sm text-muted-foreground">
           <span>
-            {org.members.length} member{org.members.length !== 1 ? "s" : ""}
+            {org.memberCount} member{org.memberCount !== 1 ? "s" : ""}
           </span>
           <span>
             {org.teams.length} team{org.teams.length !== 1 ? "s" : ""}

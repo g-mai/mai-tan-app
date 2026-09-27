@@ -1,11 +1,11 @@
 import { Globe, Inbox, Send } from "lucide-react";
+import { Button } from "#/components/ui/button";
 import { RoleBadge } from "#/features/organizations/components/role-badge";
 import { useAcceptInvitation } from "#/features/organizations/hooks/useAcceptInvitation";
 import { useCancelInvitation } from "#/features/organizations/hooks/useCancelInvitation";
 import { useDeclineInvitation } from "#/features/organizations/hooks/useDeclineInvitation";
 import { useResendInvitation } from "#/features/organizations/hooks/useResendInvitation";
 import { filterPending } from "#/features/organizations/lib/invitation";
-import { Button } from "@/components/ui/button";
 
 type IncomingInvitation = {
   id: string;
@@ -38,10 +38,12 @@ export function InvitationsCard({
   orgId,
   myInvitations,
   orgInvitations,
+  isManager,
 }: {
   orgId: string;
   myInvitations: IncomingInvitation[];
   orgInvitations: SentInvitation[];
+  isManager: boolean;
 }) {
   const { accept, isPending: isAccepting } = useAcceptInvitation();
   const { decline, isPending: isDeclining } = useDeclineInvitation();
@@ -50,7 +52,7 @@ export function InvitationsCard({
 
   // Better Auth returns every status, expired rows included.
   const incoming = filterPending(myInvitations);
-  const sent = filterPending(orgInvitations);
+  const sent = isManager ? filterPending(orgInvitations) : [];
 
   if (incoming.length === 0 && sent.length === 0) {
     return (
@@ -61,7 +63,9 @@ export function InvitationsCard({
         <div className="min-w-0">
           <p className="text-sm font-semibold">No invitations</p>
           <p className="mt-0.5 text-xs text-muted-foreground">
-            Invites you send and invites waiting for you both appear here.
+            {isManager
+              ? "Invites from your organization and invites waiting for you appear here."
+              : "Invites waiting for you appear here."}
           </p>
         </div>
       </div>
@@ -69,8 +73,12 @@ export function InvitationsCard({
   }
 
   return (
-    <div className="grid rounded-xl border bg-card shadow-sm md:grid-cols-2">
-      <div className="border-b px-6 py-5 md:border-r md:border-b-0">
+    <div
+      className={`grid rounded-xl border bg-card shadow-sm ${isManager ? "md:grid-cols-2" : ""}`}
+    >
+      <div
+        className={`px-6 py-5 ${isManager ? "border-b md:border-r md:border-b-0" : ""}`}
+      >
         <div className="mb-4 flex items-center gap-2">
           <Inbox className="size-4 text-primary" />
           <p className="text-base font-semibold">Waiting for you</p>
@@ -123,60 +131,64 @@ export function InvitationsCard({
         )}
       </div>
 
-      <div className="px-6 py-5">
-        <div className="mb-4 flex items-center justify-between gap-3">
-          <div className="flex items-center gap-2">
-            <Send className="size-4 text-muted-foreground" />
-            <p className="text-base font-semibold">Sent by you</p>
+      {isManager && (
+        <div className="px-6 py-5">
+          <div className="mb-4 flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <Send className="size-4 text-muted-foreground" />
+              <p className="text-base font-semibold">
+                Organization invitations
+              </p>
+            </div>
+            <span className="font-mono text-2xs text-muted-foreground">
+              {sent.length} pending
+            </span>
           </div>
-          <span className="font-mono text-2xs text-muted-foreground">
-            {sent.length} pending
-          </span>
+          {sent.length === 0 ? (
+            <p className="text-xs text-muted-foreground">
+              No invitations waiting to be accepted.
+            </p>
+          ) : (
+            <ul className="flex flex-col gap-2">
+              {sent.map((invitation) => (
+                <li key={invitation.id} className="flex items-center gap-3">
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate font-mono text-xs">
+                      {invitation.email}
+                    </p>
+                    <p className="truncate font-mono text-2xs text-muted-foreground">
+                      {expiresIn(invitation.expiresAt)}
+                    </p>
+                  </div>
+                  <RoleBadge role={invitation.role ?? "member"} />
+                  <button
+                    type="button"
+                    disabled={isResending}
+                    onClick={() =>
+                      resend({
+                        email: invitation.email,
+                        role: invitation.role ?? "member",
+                        organizationId: orgId,
+                      })
+                    }
+                    className="shrink-0 text-xs text-primary hover:underline disabled:opacity-50"
+                  >
+                    Resend
+                  </button>
+                  <button
+                    type="button"
+                    disabled={isCancelling}
+                    onClick={() => cancel(invitation.id)}
+                    className="shrink-0 text-xs text-muted-foreground hover:underline disabled:opacity-50"
+                  >
+                    Cancel
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
-        {sent.length === 0 ? (
-          <p className="text-xs text-muted-foreground">
-            No invitations waiting to be accepted.
-          </p>
-        ) : (
-          <ul className="flex flex-col gap-2">
-            {sent.map((invitation) => (
-              <li key={invitation.id} className="flex items-center gap-3">
-                <div className="min-w-0 flex-1">
-                  <p className="truncate font-mono text-xs">
-                    {invitation.email}
-                  </p>
-                  <p className="truncate font-mono text-2xs text-muted-foreground">
-                    {expiresIn(invitation.expiresAt)}
-                  </p>
-                </div>
-                <RoleBadge role={invitation.role ?? "member"} />
-                <button
-                  type="button"
-                  disabled={isResending}
-                  onClick={() =>
-                    resend({
-                      email: invitation.email,
-                      role: invitation.role ?? "member",
-                      organizationId: orgId,
-                    })
-                  }
-                  className="shrink-0 text-xs text-primary hover:underline disabled:opacity-50"
-                >
-                  Resend
-                </button>
-                <button
-                  type="button"
-                  disabled={isCancelling}
-                  onClick={() => cancel(invitation.id)}
-                  className="shrink-0 text-xs text-muted-foreground hover:underline disabled:opacity-50"
-                >
-                  Cancel
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+      )}
     </div>
   );
 }

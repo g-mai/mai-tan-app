@@ -22,10 +22,12 @@ export function OrgPlanRow({
   org,
   teams,
   currentUserId,
+  isManager,
 }: {
   org: Org;
   teams: Team[];
   currentUserId: string;
+  isManager: boolean;
 }) {
   const role = findMemberRole(org.members, currentUserId);
   const created = formatDate(org.createdAt, "short");
@@ -33,7 +35,14 @@ export function OrgPlanRow({
   const stats = [
     { label: "Members", value: org.members.length },
     { label: "Teams", value: teams.length },
-    { label: "Pending invites", value: filterPending(org.invitations).length },
+    ...(isManager
+      ? [
+          {
+            label: "Pending invites",
+            value: filterPending(org.invitations).length,
+          },
+        ]
+      : []),
   ];
 
   return (
@@ -56,7 +65,9 @@ export function OrgPlanRow({
           </div>
           {role && <RoleBadge role={role} />}
         </div>
-        <div className="grid grid-cols-3 border-t">
+        <div
+          className={`grid border-t ${isManager ? "grid-cols-3" : "grid-cols-2"}`}
+        >
           {stats.map((stat) => (
             <div key={stat.label} className="px-6 py-4 not-last:border-r">
               <p className="font-mono text-2xs tracking-widest text-muted-foreground uppercase">
@@ -77,8 +88,9 @@ export function OrgPlanRow({
             Organization settings
           </Link>
           <Link
-            to="/organizations/$orgId"
+            to="/organizations/$orgId/members"
             params={{ orgId: org.id }}
+            search={{ q: "", page: 1, tab: "members" }}
             className="text-primary hover:underline"
           >
             Members

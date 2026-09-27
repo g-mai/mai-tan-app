@@ -15,11 +15,15 @@ export type SoleOwnedOrg = {
 
 /** Better Auth stores roles comma-joined, e.g. "admin,sales". */
 function rolesArray(role: string | null | undefined) {
-  return (role ?? "").split(",");
+  return (role ?? "").split(",").map((value) => value.trim());
+}
+
+export function hasRole(role: string | null | undefined, expected: string) {
+  return rolesArray(role).includes(expected);
 }
 
 function isOwner(membership: OrgMembership) {
-  return rolesArray(membership.role).includes("owner");
+  return hasRole(membership.role, "owner");
 }
 
 /**

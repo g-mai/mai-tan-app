@@ -4,12 +4,12 @@ import { RouteError } from "#/components/shared/route-error";
 import { Wip } from "#/components/shared/wip";
 import { TeamMembersCard } from "#/features/organizations/components/team-members-card";
 import { TeamOverviewCard } from "#/features/organizations/components/team-overview-card";
-import { getFullTeam } from "#/features/organizations/lib/team.functions";
+import { getTeamOverview } from "#/features/organizations/lib/member-management.functions";
 
 export const Route = createFileRoute("/_protected/teams/$teamId/")({
   component: RouteComponent,
   loader: async ({ params }) => {
-    const team = await getFullTeam({ data: { id: params.teamId } });
+    const team = await getTeamOverview({ data: { teamId: params.teamId } });
     return team;
   },
   errorComponent: ({ error }) => (
@@ -30,7 +30,13 @@ function RouteComponent() {
       <Wip />
 
       <TeamOverviewCard team={team} />
-      <TeamMembersCard members={team.teamMembers} />
+      {team.members && team.memberCount !== undefined && (
+        <TeamMembersCard
+          members={team.members.map((row) => ({ id: row.userId, user: row }))}
+          total={team.memberCount}
+          teamId={team.id}
+        />
+      )}
     </div>
   );
 }

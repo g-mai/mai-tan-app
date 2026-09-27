@@ -2,10 +2,12 @@ import { createServerFn } from "@tanstack/react-start";
 import { getRequestHeaders } from "@tanstack/react-start/server";
 import z from "zod";
 import { auth } from "#/features/auth/lib/auth";
+import { authMiddleware } from "#/features/auth/middleware";
 import {
   type InvitationPreview,
   toInvitationPreview,
 } from "#/features/organizations/lib/invitation";
+import { canManage } from "#/features/organizations/lib/org";
 import { db } from "#/lib/db";
 
 const getInvitationPreviewSchema = z.object({ id: z.string() });
@@ -39,12 +41,19 @@ const listOrgInvitationsSchema = z.object({
 });
 
 /**
- * Every invitation for an organization — the caller must be a member. Returns
+ * Every invitation for an organization — restricted to owners and admins. Returns
  * all statuses, so filter before displaying.
  */
 export const listOrgInvitations = createServerFn({ method: "GET" })
+  .middleware([authMiddleware])
   .validator(listOrgInvitationsSchema)
   .handler(async ({ data }) => {
+    const { role } = await auth.api.getActiveMemberRole({
+      headers: getRequestHeaders(),
+      query: { organizationId: data.organizationId },
+    });
+    if (!canManage(role))
+      throw new Error("Only owners and admins can manage invitations");
     return auth.api.listInvitations({
       headers: getRequestHeaders(),
       query: { organizationId: data.organizationId },

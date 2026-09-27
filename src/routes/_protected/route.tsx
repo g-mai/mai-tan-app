@@ -1,4 +1,9 @@
-import { createFileRoute, Link, Outlet } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  Link,
+  Outlet,
+  useLocation,
+} from "@tanstack/react-router";
 import { BookOpen, GitBranch } from "lucide-react";
 import {
   SidebarInset,
@@ -14,6 +19,7 @@ import {
   getSidebarState,
 } from "#/features/layout/lib/nav-state";
 import { ensureOnboardingComplete } from "#/features/onboarding/lib/onboarding";
+import { MemberResults } from "#/features/organizations/components/member-results";
 
 export const Route = createFileRoute("/_protected")({
   beforeLoad: async ({ location }) => {
@@ -32,6 +38,9 @@ const headerLinkClassName =
   "flex h-8 items-center gap-2 rounded-lg px-3 text-xs text-muted-foreground transition-colors hover:bg-accent hover:text-foreground";
 
 function ProtectedLayout() {
+  const failures = useLocation({
+    select: (location) => location.state.memberManagementFailures,
+  });
   const session = Route.useRouteContext();
   const { openNav, sidebarOpen } = Route.useLoaderData();
 
@@ -63,7 +72,12 @@ function ProtectedLayout() {
             </a>
           </nav>
         </header>
-        <main className="flex-1 p-8 max-w-5xl m-auto w-full">
+        <main className="min-w-0 flex-1 p-8 max-w-5xl m-auto w-full">
+          {failures && (
+            <div className="mb-4">
+              <MemberResults failures={failures} />
+            </div>
+          )}
           <Outlet />
         </main>
         <Footer />

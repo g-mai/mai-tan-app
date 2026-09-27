@@ -44,8 +44,10 @@ import { Route as ProtectedTeamsNewRouteImport } from './routes/_protected/teams
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as ProtectedOrganizationsOrgIdIndexRouteImport } from './routes/_protected/organizations/$orgId/index'
 import { Route as ProtectedOrganizationsOrgIdEditRouteImport } from './routes/_protected/organizations/$orgId/edit'
+import { Route as ProtectedOrganizationsOrgIdMembersRouteImport } from './routes/_protected/organizations/$orgId/members'
 import { Route as ProtectedTeamsTeamIdIndexRouteImport } from './routes/_protected/teams/$teamId/index'
 import { Route as ProtectedTeamsTeamIdEditRouteImport } from './routes/_protected/teams/$teamId/edit'
+import { Route as ProtectedTeamsTeamIdMembersRouteImport } from './routes/_protected/teams/$teamId/members'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -228,6 +230,12 @@ const ProtectedOrganizationsOrgIdEditRoute =
     path: '/organizations/$orgId/edit',
     getParentRoute: () => ProtectedRouteRoute,
   } as any)
+const ProtectedOrganizationsOrgIdMembersRoute =
+  ProtectedOrganizationsOrgIdMembersRouteImport.update({
+    id: '/organizations/$orgId/members',
+    path: '/organizations/$orgId/members',
+    getParentRoute: () => ProtectedRouteRoute,
+  } as any)
 const ProtectedTeamsTeamIdIndexRoute =
   ProtectedTeamsTeamIdIndexRouteImport.update({
     id: '/teams/$teamId/',
@@ -238,6 +246,12 @@ const ProtectedTeamsTeamIdEditRoute =
   ProtectedTeamsTeamIdEditRouteImport.update({
     id: '/teams/$teamId/edit',
     path: '/teams/$teamId/edit',
+    getParentRoute: () => ProtectedRouteRoute,
+  } as any)
+const ProtectedTeamsTeamIdMembersRoute =
+  ProtectedTeamsTeamIdMembersRouteImport.update({
+    id: '/teams/$teamId/members',
+    path: '/teams/$teamId/members',
     getParentRoute: () => ProtectedRouteRoute,
   } as any)
 
@@ -274,7 +288,9 @@ export interface FileRoutesByFullPath {
   '/stack/': typeof ProtectedStackIndexRoute
   '/teams/': typeof ProtectedTeamsIndexRoute
   '/organizations/$orgId/edit': typeof ProtectedOrganizationsOrgIdEditRoute
+  '/organizations/$orgId/members': typeof ProtectedOrganizationsOrgIdMembersRoute
   '/teams/$teamId/edit': typeof ProtectedTeamsTeamIdEditRoute
+  '/teams/$teamId/members': typeof ProtectedTeamsTeamIdMembersRoute
   '/organizations/$orgId/': typeof ProtectedOrganizationsOrgIdIndexRoute
   '/teams/$teamId/': typeof ProtectedTeamsTeamIdIndexRoute
 }
@@ -311,7 +327,9 @@ export interface FileRoutesByTo {
   '/stack': typeof ProtectedStackIndexRoute
   '/teams': typeof ProtectedTeamsIndexRoute
   '/organizations/$orgId/edit': typeof ProtectedOrganizationsOrgIdEditRoute
+  '/organizations/$orgId/members': typeof ProtectedOrganizationsOrgIdMembersRoute
   '/teams/$teamId/edit': typeof ProtectedTeamsTeamIdEditRoute
+  '/teams/$teamId/members': typeof ProtectedTeamsTeamIdMembersRoute
   '/organizations/$orgId': typeof ProtectedOrganizationsOrgIdIndexRoute
   '/teams/$teamId': typeof ProtectedTeamsTeamIdIndexRoute
 }
@@ -351,7 +369,9 @@ export interface FileRoutesById {
   '/_protected/stack/': typeof ProtectedStackIndexRoute
   '/_protected/teams/': typeof ProtectedTeamsIndexRoute
   '/_protected/organizations/$orgId/edit': typeof ProtectedOrganizationsOrgIdEditRoute
+  '/_protected/organizations/$orgId/members': typeof ProtectedOrganizationsOrgIdMembersRoute
   '/_protected/teams/$teamId/edit': typeof ProtectedTeamsTeamIdEditRoute
+  '/_protected/teams/$teamId/members': typeof ProtectedTeamsTeamIdMembersRoute
   '/_protected/organizations/$orgId/': typeof ProtectedOrganizationsOrgIdIndexRoute
   '/_protected/teams/$teamId/': typeof ProtectedTeamsTeamIdIndexRoute
 }
@@ -390,7 +410,9 @@ export interface FileRouteTypes {
     | '/stack/'
     | '/teams/'
     | '/organizations/$orgId/edit'
+    | '/organizations/$orgId/members'
     | '/teams/$teamId/edit'
+    | '/teams/$teamId/members'
     | '/organizations/$orgId/'
     | '/teams/$teamId/'
   fileRoutesByTo: FileRoutesByTo
@@ -427,7 +449,9 @@ export interface FileRouteTypes {
     | '/stack'
     | '/teams'
     | '/organizations/$orgId/edit'
+    | '/organizations/$orgId/members'
     | '/teams/$teamId/edit'
+    | '/teams/$teamId/members'
     | '/organizations/$orgId'
     | '/teams/$teamId'
   id:
@@ -466,7 +490,9 @@ export interface FileRouteTypes {
     | '/_protected/stack/'
     | '/_protected/teams/'
     | '/_protected/organizations/$orgId/edit'
+    | '/_protected/organizations/$orgId/members'
     | '/_protected/teams/$teamId/edit'
+    | '/_protected/teams/$teamId/members'
     | '/_protected/organizations/$orgId/'
     | '/_protected/teams/$teamId/'
   fileRoutesById: FileRoutesById
@@ -728,6 +754,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedOrganizationsOrgIdEditRouteImport
       parentRoute: typeof ProtectedRouteRoute
     }
+    '/_protected/organizations/$orgId/members': {
+      id: '/_protected/organizations/$orgId/members'
+      path: '/organizations/$orgId/members'
+      fullPath: '/organizations/$orgId/members'
+      preLoaderRoute: typeof ProtectedOrganizationsOrgIdMembersRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
     '/_protected/teams/$teamId/': {
       id: '/_protected/teams/$teamId/'
       path: '/teams/$teamId'
@@ -740,6 +773,13 @@ declare module '@tanstack/react-router' {
       path: '/teams/$teamId/edit'
       fullPath: '/teams/$teamId/edit'
       preLoaderRoute: typeof ProtectedTeamsTeamIdEditRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
+    '/_protected/teams/$teamId/members': {
+      id: '/_protected/teams/$teamId/members'
+      path: '/teams/$teamId/members'
+      fullPath: '/teams/$teamId/members'
+      preLoaderRoute: typeof ProtectedTeamsTeamIdMembersRouteImport
       parentRoute: typeof ProtectedRouteRoute
     }
   }
@@ -783,7 +823,9 @@ interface ProtectedRouteRouteChildren {
   ProtectedStackIndexRoute: typeof ProtectedStackIndexRoute
   ProtectedTeamsIndexRoute: typeof ProtectedTeamsIndexRoute
   ProtectedOrganizationsOrgIdEditRoute: typeof ProtectedOrganizationsOrgIdEditRoute
+  ProtectedOrganizationsOrgIdMembersRoute: typeof ProtectedOrganizationsOrgIdMembersRoute
   ProtectedTeamsTeamIdEditRoute: typeof ProtectedTeamsTeamIdEditRoute
+  ProtectedTeamsTeamIdMembersRoute: typeof ProtectedTeamsTeamIdMembersRoute
   ProtectedOrganizationsOrgIdIndexRoute: typeof ProtectedOrganizationsOrgIdIndexRoute
   ProtectedTeamsTeamIdIndexRoute: typeof ProtectedTeamsTeamIdIndexRoute
 }
@@ -804,7 +846,10 @@ const ProtectedRouteRouteChildren: ProtectedRouteRouteChildren = {
   ProtectedStackIndexRoute: ProtectedStackIndexRoute,
   ProtectedTeamsIndexRoute: ProtectedTeamsIndexRoute,
   ProtectedOrganizationsOrgIdEditRoute: ProtectedOrganizationsOrgIdEditRoute,
+  ProtectedOrganizationsOrgIdMembersRoute:
+    ProtectedOrganizationsOrgIdMembersRoute,
   ProtectedTeamsTeamIdEditRoute: ProtectedTeamsTeamIdEditRoute,
+  ProtectedTeamsTeamIdMembersRoute: ProtectedTeamsTeamIdMembersRoute,
   ProtectedOrganizationsOrgIdIndexRoute: ProtectedOrganizationsOrgIdIndexRoute,
   ProtectedTeamsTeamIdIndexRoute: ProtectedTeamsTeamIdIndexRoute,
 }

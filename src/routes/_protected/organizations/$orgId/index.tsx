@@ -3,15 +3,16 @@ import { PageTitle } from "#/components/shared/page-title";
 import { RouteError } from "#/components/shared/route-error";
 import { Wip } from "#/components/shared/wip";
 import { MemberList } from "#/features/organizations/components/member-list";
-import { OrgManageSection } from "#/features/organizations/components/org-manage-section";
 import { OrgOverviewCard } from "#/features/organizations/components/org-overview-card";
 import { OrgTeamsCard } from "#/features/organizations/components/org-teams-card";
-import { getOrganization } from "#/features/organizations/lib/org.functions";
+import { getOrganizationOverview } from "#/features/organizations/lib/member-management.functions";
 
 export const Route = createFileRoute("/_protected/organizations/$orgId/")({
   component: RouteComponent,
   loader: async ({ params }) => {
-    const org = await getOrganization({ data: { id: params.orgId } });
+    const org = await getOrganizationOverview({
+      data: { organizationId: params.orgId },
+    });
     return org;
   },
   errorComponent: ({ error }) => (
@@ -25,7 +26,6 @@ export const Route = createFileRoute("/_protected/organizations/$orgId/")({
 
 function RouteComponent() {
   const org = Route.useLoaderData();
-  const session = Route.useRouteContext();
 
   // TODO: add subscription section
   return (
@@ -36,11 +36,17 @@ function RouteComponent() {
       <OrgOverviewCard org={org} />
 
       <div className="grid gap-6 md:grid-cols-2">
-        <MemberList members={org.members} />
+        <MemberList
+          members={org.members.map((row) => ({
+            id: row.memberId,
+            role: row.role,
+            user: row,
+          }))}
+          total={org.memberCount}
+          organizationId={org.id}
+        />
         <OrgTeamsCard teams={org.teams} />
       </div>
-
-      <OrgManageSection org={org} currentUserId={session.user.id} />
     </div>
   );
 }

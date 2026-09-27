@@ -1,5 +1,7 @@
+import { Link } from "@tanstack/react-router";
 import { SectionPanel } from "#/components/shared/screen-shell";
 import { Avatar, AvatarFallback, AvatarImage } from "#/components/ui/avatar";
+import { Button } from "#/components/ui/button";
 import {
   Card,
   CardContent,
@@ -22,11 +24,15 @@ export function MemberList({
   title = "Members",
   variant = "card",
   className,
+  total = members.length,
+  organizationId,
 }: {
   members: Member[];
   title?: string;
   variant?: "card" | "panel";
   className?: string;
+  total?: number;
+  organizationId?: string;
 }) {
   if (variant === "panel") {
     return (
@@ -67,7 +73,7 @@ export function MemberList({
     <Card className={className}>
       <CardHeader>
         <CardTitle>{title}</CardTitle>
-        <CardDescription>{members.length} total</CardDescription>
+        <CardDescription>{total} total</CardDescription>
       </CardHeader>
       <CardContent className="p-0">
         <ul>
@@ -86,6 +92,19 @@ export function MemberList({
             </li>
           ))}
         </ul>
+        {organizationId && (
+          <div className="px-6 pb-4">
+            <Button asChild variant="outline" size="sm">
+              <Link
+                to="/organizations/$orgId/members"
+                params={{ orgId: organizationId }}
+                search={{ q: "", page: 1, tab: "members" }}
+              >
+                View members
+              </Link>
+            </Button>
+          </div>
+        )}
       </CardContent>
     </Card>
   );

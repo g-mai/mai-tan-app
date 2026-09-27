@@ -1,9 +1,9 @@
 import { Link } from "@tanstack/react-router";
 import { ChevronRight, Users } from "lucide-react";
+import { Button } from "#/components/ui/button";
 import { UserAvatar } from "#/features/auth/components/user-avatar";
 import type { User } from "#/features/auth/types";
 import { RoleBadge } from "#/features/organizations/components/role-badge";
-import { Button } from "@/components/ui/button";
 
 type Member = {
   id: string;
@@ -12,7 +12,7 @@ type Member = {
   user: { name?: string | null; email: string; image?: string | null };
 };
 
-type Team = { id: string; name: string; memberCount: number };
+type Team = { id: string; name: string; memberCount?: number };
 
 export function MembersTeamsRow({
   orgId,
@@ -20,12 +20,14 @@ export function MembersTeamsRow({
   members,
   teams,
   currentUserId,
+  isManager,
 }: {
   orgId: string;
   orgSlug: string;
   members: Member[];
   teams: Team[];
   currentUserId: string;
+  isManager: boolean;
 }) {
   return (
     <div className="grid items-start gap-4 lg:grid-cols-3">
@@ -38,8 +40,16 @@ export function MembersTeamsRow({
             </p>
           </div>
           <Button asChild variant="outline" size="sm">
-            <Link to="/organizations/$orgId" params={{ orgId }}>
-              Invite member
+            <Link
+              to="/organizations/$orgId/members"
+              params={{ orgId }}
+              search={{
+                q: "",
+                page: 1,
+                tab: isManager ? "invitations" : "members",
+              }}
+            >
+              {isManager ? "Invite member" : "View members"}
             </Link>
           </Button>
         </div>
@@ -118,10 +128,12 @@ export function MembersTeamsRow({
                       <span className="block truncate text-sm">
                         {team.name}
                       </span>
-                      <span className="block font-mono text-2xs text-muted-foreground">
-                        {team.memberCount} member
-                        {team.memberCount === 1 ? "" : "s"}
-                      </span>
+                      {team.memberCount !== undefined && (
+                        <span className="block font-mono text-2xs text-muted-foreground">
+                          {team.memberCount} member
+                          {team.memberCount === 1 ? "" : "s"}
+                        </span>
+                      )}
                     </span>
                     <ChevronRight className="size-4 shrink-0 text-muted-foreground" />
                   </Link>
