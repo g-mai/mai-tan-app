@@ -9,10 +9,6 @@ export const env = createEnv({
   server: {
     BETTER_AUTH_URL: z.url(),
     BETTER_AUTH_SECRET: z.string().min(32),
-    R2_ACCOUNT_ID: z.string().min(1).optional(),
-    R2_ACCESS_KEY_ID: z.string().min(1).optional(),
-    R2_SECRET_ACCESS_KEY: z.string().min(1).optional(),
-    R2_BUCKET_NAME: z.string().min(1).optional(),
     R2_PUBLIC_URL: z.url().optional(),
     RESEND_API_KEY: z.string().min(1).optional(),
     FROM_ADDRESS_EMAIL: z.string().min(1).optional(),

@@ -34,12 +34,14 @@ export function ProfileSection({ user }: { user: User }) {
         duration: 5000,
         position: "top-center",
       });
+      return true;
     } catch (error) {
       console.error("Failed to update user image:", error);
       toast.error("Failed to update profile image. Please try again.", {
         duration: 5000,
         position: "top-center",
       });
+      return false;
     }
   }
 

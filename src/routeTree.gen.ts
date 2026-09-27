@@ -42,6 +42,7 @@ import { Route as ProtectedStackTanstackStartRouteImport } from './routes/_prote
 import { Route as ProtectedTeamsIndexRouteImport } from './routes/_protected/teams/index'
 import { Route as ProtectedTeamsNewRouteImport } from './routes/_protected/teams/new'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
+import { Route as ApiImagesSplatRouteImport } from './routes/api/images/$'
 import { Route as ProtectedOrganizationsOrgIdIndexRouteImport } from './routes/_protected/organizations/$orgId/index'
 import { Route as ProtectedOrganizationsOrgIdEditRouteImport } from './routes/_protected/organizations/$orgId/edit'
 import { Route as ProtectedOrganizationsOrgIdMembersRouteImport } from './routes/_protected/organizations/$orgId/members'
@@ -218,6 +219,11 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiImagesSplatRoute = ApiImagesSplatRouteImport.update({
+  id: '/api/images/$',
+  path: '/api/images/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProtectedOrganizationsOrgIdIndexRoute =
   ProtectedOrganizationsOrgIdIndexRouteImport.update({
     id: '/organizations/$orgId/',
@@ -281,6 +287,7 @@ export interface FileRoutesByFullPath {
   '/stack/tanstack-start': typeof ProtectedStackTanstackStartRoute
   '/teams/new': typeof ProtectedTeamsNewRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/images/$': typeof ApiImagesSplatRoute
   '/register/': typeof AuthRegisterIndexRoute
   '/docs/': typeof ProtectedDocsIndexRoute
   '/organizations/': typeof ProtectedOrganizationsIndexRoute
@@ -320,6 +327,7 @@ export interface FileRoutesByTo {
   '/stack/tanstack-start': typeof ProtectedStackTanstackStartRoute
   '/teams/new': typeof ProtectedTeamsNewRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/images/$': typeof ApiImagesSplatRoute
   '/register': typeof AuthRegisterIndexRoute
   '/docs': typeof ProtectedDocsIndexRoute
   '/organizations': typeof ProtectedOrganizationsIndexRoute
@@ -362,6 +370,7 @@ export interface FileRoutesById {
   '/_protected/stack/tanstack-start': typeof ProtectedStackTanstackStartRoute
   '/_protected/teams/new': typeof ProtectedTeamsNewRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/images/$': typeof ApiImagesSplatRoute
   '/_auth/register/': typeof AuthRegisterIndexRoute
   '/_protected/docs/': typeof ProtectedDocsIndexRoute
   '/_protected/organizations/': typeof ProtectedOrganizationsIndexRoute
@@ -403,6 +412,7 @@ export interface FileRouteTypes {
     | '/stack/tanstack-start'
     | '/teams/new'
     | '/api/auth/$'
+    | '/api/images/$'
     | '/register/'
     | '/docs/'
     | '/organizations/'
@@ -442,6 +452,7 @@ export interface FileRouteTypes {
     | '/stack/tanstack-start'
     | '/teams/new'
     | '/api/auth/$'
+    | '/api/images/$'
     | '/register'
     | '/docs'
     | '/organizations'
@@ -483,6 +494,7 @@ export interface FileRouteTypes {
     | '/_protected/stack/tanstack-start'
     | '/_protected/teams/new'
     | '/api/auth/$'
+    | '/api/images/$'
     | '/_auth/register/'
     | '/_protected/docs/'
     | '/_protected/organizations/'
@@ -505,6 +517,7 @@ export interface RootRouteChildren {
   ApiHealthRoute: typeof ApiHealthRoute
   InviteInvitationIdRoute: typeof InviteInvitationIdRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
+  ApiImagesSplatRoute: typeof ApiImagesSplatRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -740,6 +753,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/images/$': {
+      id: '/api/images/$'
+      path: '/api/images/$'
+      fullPath: '/api/images/$'
+      preLoaderRoute: typeof ApiImagesSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_protected/organizations/$orgId/': {
       id: '/_protected/organizations/$orgId/'
       path: '/organizations/$orgId'
@@ -888,6 +908,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiHealthRoute: ApiHealthRoute,
   InviteInvitationIdRoute: InviteInvitationIdRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
+  ApiImagesSplatRoute: ApiImagesSplatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

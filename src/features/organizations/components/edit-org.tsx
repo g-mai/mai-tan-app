@@ -46,12 +46,14 @@ export function EditOrg({
         duration: 5000,
         position: "top-center",
       });
+      return true;
     } catch (error) {
       console.error("Failed to update organization logo:", error);
       toast.error("Failed to update organization logo. Please try again.", {
         duration: 5000,
         position: "top-center",
       });
+      return false;
     }
   }
 

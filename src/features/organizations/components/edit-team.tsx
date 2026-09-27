@@ -41,12 +41,14 @@ export function EditTeam({ team }: { team: EditableTeam }) {
         duration: 5000,
         position: "top-center",
       });
+      return true;
     } catch (error) {
       console.error("Failed to update team logo:", error);
       toast.error("Failed to update team logo. Please try again.", {
         duration: 5000,
         position: "top-center",
       });
+      return false;
     }
   }
 

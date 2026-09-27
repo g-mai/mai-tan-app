@@ -19,6 +19,11 @@ export const FEATURES = [
       "Transactional email via Resend (verification, password reset).",
   },
   {
+    title: "Image uploads",
+    description:
+      "Profile avatars and organization or team logos stored through native Cloudflare R2, with isolated local storage and image previews.",
+  },
+  {
     title: "Observability-ready",
     description:
       "Sentry dependency and configuration scaffolding; integration is pending.",

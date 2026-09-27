@@ -128,9 +128,11 @@ export function RunLocallyCard() {
             <p className="mb-1 text-[13px] font-semibold">Two env files</p>
             <p className="text-xs leading-relaxed text-muted-foreground text-pretty">
               <Code>.env</Code> is read by Node — Drizzle Kit and the Vite
-              build. <Code>.dev.vars</Code> is read by the Worker. Resend and R2
-              may stay blank until you use email or image uploads. On Linux,{" "}
-              <Code>sed -i</Code> can replace <Code>perl -pi -e</Code>.
+              build. <Code>.dev.vars</Code> is read by the Worker. Resend may
+              stay blank until you use email. Local image uploads and previews
+              work with the template defaults and need no Cloudflare
+              credentials. On Linux, <Code>sed -i</Code> can replace{" "}
+              <Code>perl -pi -e</Code>.
             </p>
           </div>
           <div>

@@ -13,9 +13,10 @@ export function EnvVarsCard() {
           Cloudflare credentials for Drizzle Kit, public{" "}
           <code className="text-xs">VITE_*</code> values, and Sentry build
           settings. <code className="text-xs">.dev.vars.example</code> covers
-          what the Worker reads — the Better Auth secret, Resend API key, and R2
-          credentials. Resend and R2 are optional until their features are used.
-          The database is not among them: D1 arrives as a Worker binding.
+          what the Worker reads — the Better Auth secret, Resend API key, and
+          public image URL. Resend is optional until email is used. D1 and R2
+          arrive as Worker bindings; local image uploads and previews work with
+          the template defaults and need no Cloudflare credentials.
         </p>
       </CardContent>
     </Card>

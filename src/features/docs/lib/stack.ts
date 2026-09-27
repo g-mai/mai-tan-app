@@ -27,6 +27,7 @@ export const REST_OF_STACK = [
   "Tailwind CSS v4",
   "Cloudflare Workers",
   "Cloudflare D1",
+  "Cloudflare R2",
   "shadcn/ui",
   "TanStack Query",
   "Resend",
