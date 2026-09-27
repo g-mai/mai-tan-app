@@ -1,9 +1,10 @@
 import { Link } from "@tanstack/react-router";
 import { ChevronRight, Users } from "lucide-react";
+import { Badge } from "#/components/ui/badge";
+import { Button } from "#/components/ui/button";
 import { UserAvatar } from "#/features/auth/components/user-avatar";
 import type { User } from "#/features/auth/types";
 import { RoleBadge } from "#/features/organizations/components/role-badge";
-import { Button } from "@/components/ui/button";
 
 type Member = {
   id: string;
@@ -12,7 +13,7 @@ type Member = {
   user: { name?: string | null; email: string; image?: string | null };
 };
 
-type Team = { id: string; name: string; memberCount: number };
+type Team = { id: string; name: string; memberCount?: number };
 
 export function MembersTeamsRow({
   orgId,
@@ -20,12 +21,14 @@ export function MembersTeamsRow({
   members,
   teams,
   currentUserId,
+  isManager,
 }: {
   orgId: string;
   orgSlug: string;
   members: Member[];
   teams: Team[];
   currentUserId: string;
+  isManager: boolean;
 }) {
   return (
     <div className="grid items-start gap-4 lg:grid-cols-3">
@@ -33,13 +36,19 @@ export function MembersTeamsRow({
         <div className="flex items-center justify-between gap-3 px-6 pt-5 pb-4">
           <div>
             <p className="text-base font-semibold">Members</p>
-            <p className="mt-0.5 font-mono text-2xs text-muted-foreground">
-              of /{orgSlug}
-            </p>
+            <p className="mt-1 text-xs text-muted-foreground">/{orgSlug}</p>
           </div>
           <Button asChild variant="outline" size="sm">
-            <Link to="/organizations/$orgId" params={{ orgId }}>
-              Invite member
+            <Link
+              to="/organizations/$orgId/members"
+              params={{ orgId }}
+              search={{
+                q: "",
+                page: 1,
+                tab: isManager ? "invitations" : "members",
+              }}
+            >
+              {isManager ? "Invite member" : "View members"}
             </Link>
           </Button>
         </div>
@@ -47,7 +56,7 @@ export function MembersTeamsRow({
           {members.map((member) => (
             <li
               key={member.id}
-              className="flex items-center gap-3 border-b px-6 py-3"
+              className="flex items-center gap-3 border-b px-6 py-4 last:border-b-0"
             >
               <UserAvatar
                 user={
@@ -61,32 +70,28 @@ export function MembersTeamsRow({
                 className="size-8 shrink-0 rounded-lg"
               />
               <div className="min-w-0 flex-1">
-                <p className="truncate text-sm">
+                <p className="truncate text-sm font-medium">
                   {member.user.name || member.user.email}
                 </p>
-                <p className="truncate font-mono text-2xs text-muted-foreground">
+                <p className="mt-1 truncate text-xs text-muted-foreground">
                   {member.user.email}
                 </p>
               </div>
               {member.userId === currentUserId && (
-                <span className="shrink-0 rounded-full border px-2 py-0.5 font-mono text-2xs text-muted-foreground">
-                  you
-                </span>
+                <Badge variant="outline">You</Badge>
               )}
               <RoleBadge role={member.role} />
             </li>
           ))}
         </ul>
         {members.length <= 1 ? (
-          <p className="px-6 py-4 text-xs leading-relaxed text-muted-foreground text-pretty">
-            Nobody else yet. Invite by email and they land here as{" "}
-            <code className="rounded-sm border bg-muted px-1.5 py-0.5 font-mono text-xs">
-              member
-            </code>{" "}
-            — invitations you send show their status until accepted.
+          <p className="border-t px-6 py-4 text-xs leading-relaxed text-muted-foreground text-pretty">
+            {isManager
+              ? "Invite colleagues to start collaborating in your organization."
+              : "Your colleagues will appear here when they join the organization."}
           </p>
         ) : (
-          <p className="px-6 py-3 text-xs text-muted-foreground">
+          <p className="border-t px-6 py-3 text-xs text-muted-foreground">
             Roles decide what a member can change.
           </p>
         )}
@@ -115,13 +120,15 @@ export function MembersTeamsRow({
                       <Users className="size-4" />
                     </span>
                     <span className="min-w-0 flex-1">
-                      <span className="block truncate text-sm">
+                      <span className="block truncate text-sm font-medium">
                         {team.name}
                       </span>
-                      <span className="block font-mono text-2xs text-muted-foreground">
-                        {team.memberCount} member
-                        {team.memberCount === 1 ? "" : "s"}
-                      </span>
+                      {team.memberCount !== undefined && (
+                        <span className="mt-1 block text-xs text-muted-foreground">
+                          {team.memberCount} member
+                          {team.memberCount === 1 ? "" : "s"}
+                        </span>
+                      )}
                     </span>
                     <ChevronRight className="size-4 shrink-0 text-muted-foreground" />
                   </Link>

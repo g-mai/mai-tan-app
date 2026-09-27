@@ -6,7 +6,7 @@ import { MembersTeamsRow } from "#/features/dashboard/components/members-teams-r
 import { OrgPlanRow } from "#/features/dashboard/components/org-plan-row";
 import { RunLocallyCard } from "#/features/dashboard/components/run-locally-card";
 import { listMyInvitations } from "#/features/organizations/lib/invitation.functions";
-import { getOrganization } from "#/features/organizations/lib/org.functions";
+import { getDashboardOrganization } from "#/features/organizations/lib/member-management.functions";
 import { listOrgTeamsWithCounts } from "#/features/organizations/lib/team.functions";
 
 export const Route = createFileRoute("/_protected/dashboard")({
@@ -20,7 +20,7 @@ export const Route = createFileRoute("/_protected/dashboard")({
     if (!orgId) return { org: null, teams: [], myInvitations };
 
     const [org, teams] = await Promise.all([
-      getOrganization({ data: { id: orgId } }),
+      getDashboardOrganization({ data: { organizationId: orgId } }),
       listOrgTeamsWithCounts({ data: { organizationId: orgId } }),
     ]);
 
@@ -45,18 +45,25 @@ function RouteComponent() {
 
       {org && (
         <>
-          <OrgPlanRow org={org} teams={teams} currentUserId={user.id} />
+          <OrgPlanRow
+            org={org}
+            teams={teams}
+            currentUserId={user.id}
+            isManager={org.isManager}
+          />
           <MembersTeamsRow
             orgId={org.id}
             orgSlug={org.slug}
             members={org.members}
             teams={teams}
             currentUserId={user.id}
+            isManager={org.isManager}
           />
           <InvitationsCard
             orgId={org.id}
             myInvitations={myInvitations}
             orgInvitations={org.invitations}
+            isManager={org.isManager}
           />
         </>
       )}

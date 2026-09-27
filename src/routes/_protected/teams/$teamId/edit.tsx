@@ -4,12 +4,12 @@ import { RouteError } from "#/components/shared/route-error";
 import { Wip } from "#/components/shared/wip";
 import { EditTeam } from "#/features/organizations/components/edit-team";
 import { canManage } from "#/features/organizations/lib/org";
-import { getFullTeam } from "#/features/organizations/lib/team.functions";
+import { getTeamMetadata } from "#/features/organizations/lib/team.functions";
 
 export const Route = createFileRoute("/_protected/teams/$teamId/edit")({
   component: RouteComponent,
   loader: async ({ params }) => {
-    const team = await getFullTeam({ data: { id: params.teamId } });
+    const team = await getTeamMetadata({ data: { id: params.teamId } });
     return team;
   },
   errorComponent: ({ error }) => (
