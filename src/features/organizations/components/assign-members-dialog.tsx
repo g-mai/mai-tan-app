@@ -8,7 +8,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from "#/components/ui/dialog";
+import { FieldGroup } from "#/components/ui/field";
+import { Separator } from "#/components/ui/separator";
 import { MemberResults } from "#/features/organizations/components/member-results";
+import { MemberTargetList } from "#/features/organizations/components/member-target-list";
 import type { useAddTeamMembers } from "#/features/organizations/hooks/useAddTeamMembers";
 
 export function AssignMembersDialog({
@@ -27,6 +30,7 @@ export function AssignMembersDialog({
       }}
     >
       <DialogContent
+        className="max-h-[90dvh] gap-6 overflow-y-auto"
         onCloseAutoFocus={action.restoreFocus}
         showCloseButton={!isPending}
         onEscapeKeyDown={(event) => {
@@ -39,38 +43,37 @@ export function AssignMembersDialog({
         <DialogHeader>
           <DialogTitle>Add to team</DialogTitle>
           <DialogDescription>
-            {targets.length} selected member(s). Existing memberships in other
-            teams are preserved.
+            Add{" "}
+            {targets.length === 1
+              ? "this member"
+              : `these ${targets.length} members`}{" "}
+            to a team. Their existing team memberships will stay the same.
           </DialogDescription>
         </DialogHeader>
-        <ul className="max-h-32 overflow-y-auto text-sm">
-          {targets.map((row) => (
-            <li key={row.userId} className="break-all">
-              {row.name} ({row.email})
-            </li>
-          ))}
-        </ul>
+        <MemberTargetList members={targets} />
         {teams.length ? (
           <form
             onSubmit={(event) => {
               event.preventDefault();
               form.handleSubmit();
             }}
-            className="grid gap-4"
+            className="flex flex-col gap-6"
           >
             <fieldset disabled={isPending}>
-              <form.AppField name="teamId">
-                {(field) => (
-                  <field.SelectField
-                    label="Target team"
-                    placeholder="Choose a team"
-                    options={teams.map((team) => ({
-                      value: team.id,
-                      label: team.name,
-                    }))}
-                  />
-                )}
-              </form.AppField>
+              <FieldGroup>
+                <form.AppField name="teamId">
+                  {(field) => (
+                    <field.SelectField
+                      label="Team"
+                      placeholder="Choose a team"
+                      options={teams.map((team) => ({
+                        value: team.id,
+                        label: team.name,
+                      }))}
+                    />
+                  )}
+                </form.AppField>
+              </FieldGroup>
             </fieldset>
             <MemberResults
               failures={action.failures}
@@ -78,6 +81,7 @@ export function AssignMembersDialog({
               canRetry={action.canSubmit}
               onRetry={() => form.handleSubmit()}
             />
+            <Separator />
             <DialogFooter>
               <Button
                 type="button"

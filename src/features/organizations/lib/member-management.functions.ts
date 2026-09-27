@@ -51,30 +51,6 @@ export const listAssignableTeams = createServerFn({ method: "GET" })
       .sort((a, b) => a.name.localeCompare(b.name) || a.id.localeCompare(b.id));
   });
 
-/** One authorized roster read supplies the main page and manager-only candidates. */
-export const getTeamMembersPage = createServerFn({ method: "GET" })
-  .middleware([authMiddleware])
-  .validator(teamIdSchema.extend(memberPageInputSchema.shape))
-  .handler(async ({ data, context }) => {
-    const team = await resolveTeam(data.teamId);
-    const roster = await teamRoster(team.id, team.organizationId);
-    const org = await organizationContext(
-      team.organizationId,
-      context.session.user.id,
-    );
-    return {
-      teamId: team.id,
-      name: team.name,
-      slug: org.slug,
-      organizationId: org.id,
-      organizationName: org.name,
-      userId: org.userId,
-      role: org.role,
-      members: memberPage(roster.rows, data.q, data.page),
-      candidates: canManage(org.role) ? roster.candidates : [],
-    };
-  });
-
 export const updateOrganizationMemberRole = createServerFn({ method: "POST" })
   .middleware([authMiddleware])
   .validator(
@@ -168,13 +144,18 @@ export const getOrganizationOverview = createServerFn({ method: "GET" })
       ...org,
       memberCount: roster.total,
       members: memberPage(roster.rows).rows.slice(0, 5),
-      teams: teams.map(({ id, name }) => ({ id, name })),
+      teams: teams.map(({ id, name, logo, color }) => ({
+        id,
+        name,
+        logo,
+        color,
+      })),
     };
   });
 
 export const getTeamOverview = createServerFn({ method: "GET" })
   .middleware([authMiddleware])
-  .validator(teamIdSchema)
+  .validator(teamIdSchema.extend(memberPageInputSchema.shape))
   .handler(async ({ data, context }) => {
     const team = await resolveTeam(data.teamId);
     const org = await organizationContext(
@@ -191,9 +172,11 @@ export const getTeamOverview = createServerFn({ method: "GET" })
     return {
       ...team,
       role: org.role,
+      userId: org.userId,
       organization: { name: org.name },
       memberCount: roster?.rows.length,
-      members: roster ? memberPage(roster.rows).rows.slice(0, 5) : undefined,
+      members: roster ? memberPage(roster.rows, data.q, data.page) : undefined,
+      candidates: roster && canManage(org.role) ? roster.candidates : [],
     };
   });
 

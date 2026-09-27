@@ -58,7 +58,7 @@ vi.mock("@tanstack/react-start", () => ({
 import {
   addTeamMembers,
   getDashboardOrganization,
-  getTeamMembersPage,
+  getOrganizationOverview,
   getTeamOverview,
   listAssignableTeams,
   listOrganizationMembersPage,
@@ -126,34 +126,37 @@ describe("scoped reads", () => {
     });
   });
   it("combines team IDs with organization roles and excludes existing members from candidates", async () => {
-    const result = await getTeamMembersPage({
+    api.listUserTeams.mockResolvedValue([{ id: "team" }]);
+    const result = await getTeamOverview({
       data: { teamId: "team", q: "", page: 1 },
     });
-    expect(result.members.rows.map((row) => row.userId)).toEqual(["caller"]);
+    expect(result.members?.rows.map((row) => row.userId)).toEqual(["caller"]);
     expect(result.candidates.map((row) => row.userId)).toEqual([
       "other",
       "owner",
     ]);
-    expect(result.members.rows[0].role).toBe("admin");
+    expect(result.members?.rows[0].role).toBe("admin");
     expect(api.listMembers.mock.calls[0][0].query.organizationId).toBe(
       "scoped-org",
     );
   });
   it("preserves roster denial even for an administrator", async () => {
+    api.listUserTeams.mockResolvedValue([{ id: "team" }]);
     api.listTeamMembers.mockRejectedValue(
       denied("USER_IS_NOT_A_MEMBER_OF_THE_TEAM", "BAD_REQUEST"),
     );
     await expect(
-      getTeamMembersPage({ data: { teamId: "team", q: "", page: 1 } }),
+      getTeamOverview({ data: { teamId: "team", q: "", page: 1 } }),
     ).rejects.toMatchObject({
       body: { code: "USER_IS_NOT_A_MEMBER_OF_THE_TEAM" },
     });
     expect(api.listMembers).not.toHaveBeenCalled();
   });
   it("omits manager-only workflow data and preserves all-team summaries for ordinary members", async () => {
+    api.listUserTeams.mockResolvedValue([{ id: "team" }]);
     api.getActiveMemberRole.mockResolvedValue({ role: "member" });
     expect(
-      (await getTeamMembersPage({ data: { teamId: "team", q: "", page: 1 } }))
+      (await getTeamOverview({ data: { teamId: "team", q: "", page: 1 } }))
         .candidates,
     ).toEqual([]);
     expect(
@@ -179,7 +182,51 @@ describe("scoped reads", () => {
     const result = await getTeamOverview({ data: { teamId: "team" } });
     expect(result.members).toBeUndefined();
     expect(result.memberCount).toBeUndefined();
+    expect(result.candidates).toEqual([]);
     expect(api.listTeamMembers).not.toHaveBeenCalled();
+    expect(api.listMembers).not.toHaveBeenCalled();
+  });
+  it("returns team logos and colors in organization summaries", async () => {
+    api.listOrganizationTeams.mockResolvedValue([
+      { id: "team", name: "Design", logo: "/team-logo.svg", color: "#123456" },
+    ]);
+    const result = await getOrganizationOverview({
+      data: { organizationId: "scoped-org" },
+    });
+    expect(result.teams).toEqual([
+      { id: "team", name: "Design", logo: "/team-logo.svg", color: "#123456" },
+    ]);
+  });
+  it("paginates and filters the overview roster without changing its total team count", async () => {
+    const members = Array.from({ length: 30 }, (_, index) => ({
+      id: `m-${index}`,
+      userId: `user-${index}`,
+      role: "member",
+      user: {
+        name: `Person ${String(index).padStart(2, "0")}`,
+        email: `${index}@test.com`,
+      },
+    }));
+    api.listUserTeams.mockResolvedValue([{ id: "team" }]);
+    api.listTeamMembers.mockResolvedValue(
+      members.map(({ userId }) => ({ userId })),
+    );
+    api.listMembers.mockResolvedValue({ members, total: members.length });
+
+    const page = await getTeamOverview({
+      data: { teamId: "team", q: "", page: 2 },
+    });
+    expect(page.memberCount).toBe(30);
+    expect(page.members).toMatchObject({ total: 30, page: 2 });
+    expect(page.members?.rows).toHaveLength(5);
+    expect(page.members?.rows[0].name).toBe("Person 25");
+
+    const filtered = await getTeamOverview({
+      data: { teamId: "team", q: "person 29", page: 2 },
+    });
+    expect(filtered.memberCount).toBe(30);
+    expect(filtered.members).toMatchObject({ total: 1, page: 1 });
+    expect(filtered.members?.rows[0].userId).toBe("user-29");
   });
 });
 

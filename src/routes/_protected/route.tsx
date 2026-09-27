@@ -72,7 +72,7 @@ function ProtectedLayout() {
             </a>
           </nav>
         </header>
-        <main className="min-w-0 flex-1 p-8 max-w-5xl m-auto w-full">
+        <main className="min-w-0 flex-1 p-4 sm:p-6 lg:p-8 max-w-5xl m-auto w-full">
           {failures && (
             <div className="mb-4">
               <MemberResults failures={failures} />

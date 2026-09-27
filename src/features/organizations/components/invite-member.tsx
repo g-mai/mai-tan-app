@@ -1,8 +1,17 @@
 import { SectionPanel } from "#/components/shared/screen-shell";
 import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "#/components/ui/card";
+import { FieldGroup } from "#/components/ui/field";
+import {
   type SentInvitation,
   useInviteMember,
 } from "#/features/organizations/hooks/useInviteMember";
+import { cn } from "#/lib/utils";
 
 export function InviteMember({
   organizationId,
@@ -24,12 +33,10 @@ export function InviteMember({
         e.stopPropagation();
         form.handleSubmit();
       }}
-      className="grid gap-4"
+      className="flex flex-col gap-5"
     >
       {/* In a panel the two fields share a row; stacked everywhere else. */}
-      <div
-        className={isPanel ? "flex flex-col gap-3 sm:flex-row" : "grid gap-4"}
-      >
+      <FieldGroup className={cn("gap-4", isPanel && "sm:flex-row")}>
         <div className={isPanel ? "sm:flex-2" : undefined}>
           <form.AppField name="email">
             {(field) => (
@@ -51,7 +58,7 @@ export function InviteMember({
             )}
           </form.AppField>
         </div>
-      </div>
+      </FieldGroup>
       <form.AppForm>
         <form.SubscribeButton
           label={isPending ? "Sending..." : "Send invitation"}
@@ -59,6 +66,21 @@ export function InviteMember({
       </form.AppForm>
     </form>
   );
+
+  if (!isPanel) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Invite a member</CardTitle>
+          <CardDescription>
+            Send an email invitation to join your organization. Invitations
+            expire after 48 hours.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>{body}</CardContent>
+      </Card>
+    );
+  }
 
   return (
     <SectionPanel

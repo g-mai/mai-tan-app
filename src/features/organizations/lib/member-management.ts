@@ -21,8 +21,8 @@ export type BatchResult = {
 export type MemberFailure = BatchResult["failed"][number] & { label: string };
 
 export const memberSearchSchema = z.object({
-  q: z.string().trim().max(200).catch(""),
-  page: z.coerce.number().int().positive().catch(1),
+  q: z.string().trim().max(200).catch("").default(""),
+  page: z.coerce.number().int().positive().catch(1).default(1),
 });
 export const organizationMemberSearchSchema = memberSearchSchema.extend({
   tab: z.enum(["members", "invitations"]).catch("members"),

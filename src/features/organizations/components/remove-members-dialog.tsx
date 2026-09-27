@@ -7,6 +7,8 @@ import {
   AlertDialogTitle,
 } from "#/components/ui/alert-dialog";
 import { Button } from "#/components/ui/button";
+import { Separator } from "#/components/ui/separator";
+import { MemberTargetList } from "#/features/organizations/components/member-target-list";
 import type { MemberRow } from "#/features/organizations/lib/member-management";
 
 export function RemoveMembersDialog({
@@ -36,6 +38,7 @@ export function RemoveMembersDialog({
       }}
     >
       <AlertDialogContent
+        className="max-h-[90dvh] gap-6 overflow-y-auto"
         onCloseAutoFocus={restoreFocus}
         onEscapeKeyDown={(event) => {
           if (isPending) event.preventDefault();
@@ -45,7 +48,7 @@ export function RemoveMembersDialog({
           <AlertDialogTitle>
             Remove{" "}
             {targets.length === 1
-              ? targets[0].name
+              ? targets[0].name || targets[0].email
               : `${targets.length} members`}{" "}
             from {scopeName}?
           </AlertDialogTitle>
@@ -55,19 +58,14 @@ export function RemoveMembersDialog({
               : "These people will remain members of the organization."}
           </AlertDialogDescription>
         </AlertDialogHeader>
-        <ul className="max-h-40 overflow-y-auto text-sm">
-          {targets.map((row) => (
-            <li key={row.userId} className="break-all">
-              {row.name} ({row.email})
-            </li>
-          ))}
-        </ul>
+        <MemberTargetList members={targets} />
         {excluded > 0 && (
           <p className="text-sm text-muted-foreground">
-            {excluded} selected owner(s) are excluded because only owners can
-            remove owners.
+            {excluded} selected owner{excluded === 1 ? " is" : "s are"} excluded
+            because only owners can remove owners.
           </p>
         )}
+        <Separator />
         <AlertDialogFooter>
           <Button variant="outline" disabled={isPending} onClick={onClose}>
             Cancel

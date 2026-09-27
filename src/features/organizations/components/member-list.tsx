@@ -1,9 +1,11 @@
 import { Link } from "@tanstack/react-router";
+import { ArrowRight } from "lucide-react";
 import { SectionPanel } from "#/components/shared/screen-shell";
 import { Avatar, AvatarFallback, AvatarImage } from "#/components/ui/avatar";
 import { Button } from "#/components/ui/button";
 import {
   Card,
+  CardAction,
   CardContent,
   CardDescription,
   CardHeader,
@@ -11,6 +13,7 @@ import {
 } from "#/components/ui/card";
 import { Separator } from "#/components/ui/separator";
 import { RoleBadge } from "#/features/organizations/components/role-badge";
+import { cn } from "#/lib/utils";
 
 type Member = {
   id: string;
@@ -70,20 +73,47 @@ export function MemberList({
   }
 
   return (
-    <Card className={className}>
-      <CardHeader>
+    <Card className={cn("gap-0 overflow-hidden py-0", className)}>
+      <CardHeader className="p-5">
         <CardTitle>{title}</CardTitle>
-        <CardDescription>{total} total</CardDescription>
+        <CardDescription>
+          {total} member{total === 1 ? "" : "s"}
+        </CardDescription>
+        {organizationId && (
+          <CardAction>
+            <Button asChild variant="ghost" size="sm">
+              <Link
+                to="/organizations/$orgId/members"
+                params={{ orgId: organizationId }}
+                search={{ q: "", page: 1, tab: "members" }}
+              >
+                View all members
+                <ArrowRight data-icon="inline-end" />
+              </Link>
+            </Button>
+          </CardAction>
+        )}
       </CardHeader>
+      <Separator />
       <CardContent className="p-0">
         <ul>
           {members.map((member, i) => (
             <li key={member.id}>
               {i > 0 && <Separator />}
-              <div className="flex items-center justify-between px-6 py-3">
-                <div>
-                  <p className="text-sm font-medium">{member.user.name}</p>
-                  <p className="text-xs text-muted-foreground">
+              <div className="flex items-center gap-3 px-5 py-4">
+                <Avatar className="size-9 shrink-0">
+                  <AvatarImage src={member.user.image ?? undefined} alt="" />
+                  <AvatarFallback>
+                    {(member.user.name || member.user.email)
+                      .charAt(0)
+                      .toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex min-w-0 flex-1 flex-col gap-1">
+                  <p className="truncate text-sm font-medium">
+                    {member.user.name || member.user.email}
+                  </p>
+                  <p className="truncate text-xs text-muted-foreground">
                     {member.user.email}
                   </p>
                 </div>
@@ -92,19 +122,6 @@ export function MemberList({
             </li>
           ))}
         </ul>
-        {organizationId && (
-          <div className="px-6 pb-4">
-            <Button asChild variant="outline" size="sm">
-              <Link
-                to="/organizations/$orgId/members"
-                params={{ orgId: organizationId }}
-                search={{ q: "", page: 1, tab: "members" }}
-              >
-                View members
-              </Link>
-            </Button>
-          </div>
-        )}
       </CardContent>
     </Card>
   );

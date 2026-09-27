@@ -4,10 +4,19 @@ import {
   redirect,
   useRouterState,
 } from "@tanstack/react-router";
+import { ArrowLeft, Mail, UserMinus, UserPlus, Users } from "lucide-react";
 import { useCallback } from "react";
-import { PageTitle } from "#/components/shared/page-title";
 import { RouteError } from "#/components/shared/route-error";
 import { Button } from "#/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "#/components/ui/card";
+import { Separator } from "#/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "#/components/ui/tabs";
 import { AssignMembersDialog } from "#/features/organizations/components/assign-members-dialog";
 import { ChangeMemberRoleDialog } from "#/features/organizations/components/change-member-role-dialog";
@@ -130,13 +139,45 @@ function RouteComponent() {
     canManageMember(org.role, row.role),
   );
   return (
-    <div className="min-w-0 space-y-6">
-      <PageTitle title="Members" subtitle={org.name} />
-      <Button asChild variant="outline" size="sm">
-        <Link to="/organizations/$orgId" params={{ orgId: org.id }}>
-          Back to organization
-        </Link>
-      </Button>
+    <div className="flex min-w-0 flex-col gap-6">
+      <div className="flex flex-col gap-4">
+        <Button
+          asChild
+          variant="ghost"
+          size="sm"
+          className="-ml-2.5 self-start"
+        >
+          <Link to="/organizations/$orgId" params={{ orgId: org.id }}>
+            <ArrowLeft data-icon="inline-start" />
+            Back to organization
+          </Link>
+        </Button>
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="min-w-0">
+            <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">
+              Organization members
+            </h1>
+            <p className="mt-2 text-sm text-muted-foreground">
+              {org.name} ·{" "}
+              {org.isManager
+                ? "Manage members, roles, and team assignments."
+                : "View the people in your organization."}
+            </p>
+          </div>
+          {org.isManager && search.tab === "members" && (
+            <Button
+              className="self-start sm:self-auto"
+              disabled={disabled}
+              onClick={() =>
+                navigate({ search: { ...search, tab: "invitations", page: 1 } })
+              }
+            >
+              <UserPlus data-icon="inline-start" />
+              Invite member
+            </Button>
+          )}
+        </div>
+      </div>
       <Tabs
         value={search.tab}
         onValueChange={(tab) =>
@@ -149,102 +190,126 @@ function RouteComponent() {
           })
         }
       >
-        <TabsList>
-          <TabsTrigger value="members" disabled={pending || loading}>
-            Members
-          </TabsTrigger>
-          {org.isManager && (
-            <TabsTrigger value="invitations" disabled={pending || loading}>
-              Invitations
+        <div className="flex flex-col gap-1">
+          <TabsList variant="line">
+            <TabsTrigger value="members" disabled={pending || loading}>
+              <Users />
+              Members
             </TabsTrigger>
-          )}
-        </TabsList>
-        <TabsContent value="members" className="space-y-4">
-          <div className="flex flex-wrap items-end justify-between gap-4">
-            <MemberSearch
-              value={query.input}
-              onChange={query.setInput}
-              disabled={pending}
-              total={org.members.total}
-            />
             {org.isManager && (
-              <Button
-                disabled={disabled}
-                onClick={() =>
-                  navigate({
-                    search: { ...search, tab: "invitations", page: 1 },
-                  })
-                }
-              >
-                Invite member
-              </Button>
+              <TabsTrigger value="invitations" disabled={pending || loading}>
+                <Mail />
+                Invitations
+              </TabsTrigger>
             )}
-          </div>
-          {selection.ids.length > 0 && org.isManager && (
-            <div className="flex flex-wrap items-center gap-3">
-              <p className="text-sm">
-                {selection.ids.length} selected · {removable.length} removable
+          </TabsList>
+          <Separator />
+        </div>
+        <TabsContent value="members" className="pt-4">
+          <Card className="gap-0 overflow-hidden py-0">
+            <CardHeader className="flex flex-col gap-4 p-5 lg:flex-row lg:items-center lg:justify-between">
+              <div className="flex flex-col gap-2">
+                <CardTitle>Organization members</CardTitle>
+                <CardDescription>
+                  Roles control permissions across this organization and its
+                  teams.
+                </CardDescription>
+              </div>
+              <MemberSearch
+                value={query.input}
+                onChange={query.setInput}
+                disabled={pending}
+                total={org.members.total}
+              />
+            </CardHeader>
+            <Separator />
+            {selection.ids.length > 0 && org.isManager && (
+              <div className="flex flex-wrap items-center gap-3 bg-muted/50 px-5 py-3">
+                <p className="mr-auto text-sm font-medium tabular-nums">
+                  {selection.ids.length} selected
+                  <span className="ml-2 text-xs font-normal text-muted-foreground">
+                    {removable.length} removable
+                  </span>
+                </p>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={disabled}
+                  onClick={() => assignment.open(selection.selected)}
+                >
+                  <Users data-icon="inline-start" />
+                  Add to team
+                </Button>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  disabled={disabled || !removable.length}
+                  onClick={() =>
+                    removal.open(
+                      removable,
+                      selection.selected.length - removable.length,
+                    )
+                  }
+                >
+                  <UserMinus data-icon="inline-start" />
+                  Remove members ({removable.length})
+                </Button>
+              </div>
+            )}
+            {loading && (
+              <p
+                className="px-5 py-2 text-sm text-muted-foreground"
+                role="status"
+              >
+                Loading members…
               </p>
-              <Button
-                variant="outline"
-                disabled={disabled}
-                onClick={() => assignment.open(selection.selected)}
-              >
-                Add to team
-              </Button>
-              <Button
-                variant="destructive"
-                disabled={disabled || !removable.length}
-                onClick={() =>
-                  removal.open(
-                    removable,
-                    selection.selected.length - removable.length,
-                  )
-                }
-              >
-                Remove from organization ({removable.length})
-              </Button>
-            </div>
-          )}
-          {loading && (
-            <p className="text-sm text-muted-foreground" role="status">
-              Loading members…
-            </p>
-          )}
-          <MemberTable
-            rows={org.members.rows}
-            userId={org.userId}
-            disabled={disabled}
-            selection={org.isManager ? selection : undefined}
-            callerRole={org.role}
-            onRole={org.isManager ? role.open : undefined}
-            onRemove={org.isManager ? (row) => removal.open([row]) : undefined}
-            onAssign={
-              org.isManager ? (row) => assignment.open([row]) : undefined
-            }
-            emptyMessage={
-              search.q
-                ? "No members match your search."
-                : "This organization has no members."
-            }
-          />
-          <MemberPagination
-            members={org.members}
-            disabled={disabled}
-            onPage={(page) => changeSearch({ q: search.q, page }, false)}
-          />
-          <MemberResults
-            failures={removal.failures}
-            disabled={disabled}
-            canRetry={retryable.some((row) =>
-              removal.failures.some((failure) => failure.userId === row.userId),
             )}
-            onRetry={() => removal.retry(retryable)}
-          />
+            <CardContent className="px-0">
+              <MemberTable
+                rows={org.members.rows}
+                userId={org.userId}
+                disabled={disabled}
+                selection={org.isManager ? selection : undefined}
+                callerRole={org.role}
+                onRole={org.isManager ? role.open : undefined}
+                onRemove={
+                  org.isManager ? (row) => removal.open([row]) : undefined
+                }
+                onAssign={
+                  org.isManager ? (row) => assignment.open([row]) : undefined
+                }
+                emptyMessage={
+                  search.q
+                    ? "No members match your search."
+                    : "This organization has no members."
+                }
+              />
+            </CardContent>
+            <Separator />
+            <CardFooter className="px-5 py-4">
+              <MemberPagination
+                members={org.members}
+                disabled={disabled}
+                onPage={(page) => changeSearch({ q: search.q, page }, false)}
+              />
+            </CardFooter>
+          </Card>
+          <div className="mt-4">
+            <MemberResults
+              failures={removal.failures}
+              disabled={disabled}
+              canRetry={retryable.some((row) =>
+                removal.failures.some(
+                  (failure) => failure.userId === row.userId,
+                ),
+              )}
+              onRetry={() => removal.retry(retryable)}
+            />
+          </div>
         </TabsContent>
         {org.isManager && (
-          <TabsContent value="invitations">
-            <div className="grid gap-6 md:grid-cols-2">
+          <TabsContent value="invitations" className="pt-4">
+            <div className="grid items-start gap-6 xl:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
               <InviteMember organizationId={org.id} />
               <PendingInvitations
                 invitations={org.invitations}

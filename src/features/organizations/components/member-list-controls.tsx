@@ -1,3 +1,4 @@
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useId } from "react";
 import { Button } from "#/components/ui/button";
 import { Field, FieldLabel } from "#/components/ui/field";
@@ -26,21 +27,21 @@ export function MemberSearch({
 }) {
   const id = useId();
   return (
-    <div className="flex flex-col gap-2 sm:max-w-sm">
-      <Field>
-        <FieldLabel htmlFor={id}>Search members</FieldLabel>
+    <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center sm:gap-4">
+      <Field className="sm:w-64" data-disabled={disabled}>
+        <FieldLabel htmlFor={id} className="sr-only">
+          Search members
+        </FieldLabel>
         <Input
           id={id}
+          type="search"
           value={value}
           maxLength={200}
           onChange={(event) => onChange(event.target.value)}
           disabled={disabled}
-          placeholder="Name or email"
+          placeholder="Search by name or email…"
         />
       </Field>
-      <p className="text-sm text-muted-foreground" aria-live="polite">
-        {total} matching member{total === 1 ? "" : "s"}
-      </p>
     </div>
   );
 }
@@ -56,26 +57,28 @@ export function MemberPagination({
 }) {
   const pages = Math.max(1, Math.ceil(members.total / MEMBER_PAGE_SIZE));
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3 text-sm">
-      <p>
+    <div className="flex w-full flex-col gap-3 text-xs text-muted-foreground sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+      <p className="tabular-nums">
         Showing {members.total ? (members.page - 1) * MEMBER_PAGE_SIZE + 1 : 0}–
         {Math.min(members.page * MEMBER_PAGE_SIZE, members.total)} of{" "}
-        {members.total} members.
+        {members.total} members
       </p>
       <Pagination className="m-0 w-auto">
-        <PaginationContent>
+        <PaginationContent className="w-full justify-between sm:w-auto">
           <PaginationItem>
             <Button
               variant="outline"
               size="sm"
+              aria-label="Previous page"
               disabled={disabled || members.page <= 1}
               onClick={() => onPage(members.page - 1)}
             >
-              Previous
+              <ChevronLeft data-icon="inline-start" />
+              <span className="hidden sm:inline">Previous</span>
             </Button>
           </PaginationItem>
           <PaginationItem>
-            <span className="px-2">
+            <span className="px-3 tabular-nums">
               Page {members.page} of {pages}
             </span>
           </PaginationItem>
@@ -83,10 +86,12 @@ export function MemberPagination({
             <Button
               variant="outline"
               size="sm"
+              aria-label="Next page"
               disabled={disabled || members.page >= pages}
               onClick={() => onPage(members.page + 1)}
             >
-              Next
+              <span className="hidden sm:inline">Next</span>
+              <ChevronRight data-icon="inline-end" />
             </Button>
           </PaginationItem>
         </PaginationContent>
@@ -97,9 +102,17 @@ export function MemberPagination({
 
 export function MembersPending() {
   return (
-    <div className="space-y-4" role="status" aria-label="Loading members">
-      <Skeleton className="h-10 w-48" />
-      <Skeleton className="h-72 w-full" />
+    <div
+      className="flex flex-col gap-6"
+      role="status"
+      aria-label="Loading members"
+    >
+      <Skeleton className="h-8 w-40" />
+      <div className="flex flex-col gap-3">
+        <Skeleton className="h-10 w-48" />
+        <Skeleton className="h-4 w-72 max-w-full" />
+      </div>
+      <Skeleton className="h-80 w-full rounded-xl" />
     </div>
   );
 }

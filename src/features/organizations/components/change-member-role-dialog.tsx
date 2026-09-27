@@ -7,6 +7,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "#/components/ui/dialog";
+import { FieldGroup } from "#/components/ui/field";
+import { Separator } from "#/components/ui/separator";
+import { MemberTargetList } from "#/features/organizations/components/member-target-list";
 import type { useUpdateMemberRole } from "#/features/organizations/hooks/useUpdateMemberRole";
 import { hasRole } from "#/features/organizations/lib/org";
 
@@ -26,6 +29,7 @@ export function ChangeMemberRoleDialog({
       }}
     >
       <DialogContent
+        className="max-h-[90dvh] gap-6 overflow-y-auto"
         onCloseAutoFocus={action.restoreFocus}
         showCloseButton={!isPending}
         onEscapeKeyDown={(event) => {
@@ -44,34 +48,38 @@ export function ChangeMemberRoleDialog({
         </DialogHeader>
         {target && (
           <>
-            <p className="break-all text-sm">
-              {target.name} ({target.email}) · Current role: {target.role}
-            </p>
+            <MemberTargetList members={[target]} />
             <form
               onSubmit={(event) => {
                 event.preventDefault();
                 form.handleSubmit();
               }}
-              className="grid gap-4"
+              className="flex flex-col gap-6"
             >
               <fieldset disabled={isPending}>
-                <form.AppField name="role">
-                  {(field) => (
-                    <field.SelectField
-                      label="Organization role"
-                      options={(hasRole(callerRole, "owner")
-                        ? ["member", "admin", "owner"]
-                        : ["member", "admin"]
-                      ).map((value) => ({ value, label: value }))}
-                    />
-                  )}
-                </form.AppField>
+                <FieldGroup>
+                  <form.AppField name="role">
+                    {(field) => (
+                      <field.SelectField
+                        label="Organization role"
+                        options={(hasRole(callerRole, "owner")
+                          ? ["member", "admin", "owner"]
+                          : ["member", "admin"]
+                        ).map((value) => ({
+                          value,
+                          label: value.charAt(0).toUpperCase() + value.slice(1),
+                        }))}
+                      />
+                    )}
+                  </form.AppField>
+                </FieldGroup>
               </fieldset>
               {action.error && (
                 <p role="alert" className="text-sm text-destructive">
                   {action.error}
                 </p>
               )}
+              <Separator />
               <DialogFooter>
                 <Button
                   type="button"

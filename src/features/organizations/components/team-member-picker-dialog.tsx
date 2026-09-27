@@ -7,6 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "#/components/ui/dialog";
+import { Separator } from "#/components/ui/separator";
 import {
   MemberPagination,
   MemberSearch,
@@ -34,7 +35,7 @@ export function TeamMemberPickerDialog({
     >
       <DialogContent
         onCloseAutoFocus={picker.restoreFocus}
-        className="max-h-[90dvh] overflow-y-auto sm:max-w-3xl"
+        className="flex max-h-[90dvh] flex-col gap-0 overflow-hidden p-0 sm:max-w-3xl"
         showCloseButton={!action.isPending}
         onEscapeKeyDown={(event) => {
           if (action.isPending) event.preventDefault();
@@ -43,64 +44,79 @@ export function TeamMemberPickerDialog({
           if (action.isPending) event.preventDefault();
         }}
       >
-        <DialogHeader>
+        <DialogHeader className="shrink-0 p-6 pr-10">
           <DialogTitle>Add members to {name}</DialogTitle>
           <DialogDescription>
             Choose existing organization members to add to this team.
           </DialogDescription>
         </DialogHeader>
-        <MemberSearch
-          value={picker.input}
-          onChange={picker.setInput}
-          disabled={action.isPending}
-          total={picker.members.total}
-        />
-        <MemberTable
-          rows={picker.members.rows}
-          userId={userId}
-          selection={picker.selection}
-          disabled={action.isPending || picker.changing}
-          emptyMessage={
-            picker.input.trim()
-              ? "No members match your search."
-              : "Every organization member is already in this team."
-          }
-        />
-        <MemberPagination
-          members={picker.members}
-          onPage={picker.setPage}
-          disabled={action.isPending || picker.changing}
-        />
-        <MemberResults
-          failures={action.failures}
-          onRetry={picker.retry}
-          disabled={action.isPending || picker.changing}
-          canRetry={picker.members.rows.some((row) =>
-            action.failures.some((failure) => failure.userId === row.userId),
-          )}
-        />
-        <DialogFooter>
-          <p className="mr-auto text-sm">
-            {picker.selection.ids.length} selected
-          </p>
-          <Button
-            variant="outline"
-            disabled={action.isPending}
-            onClick={picker.close}
-          >
-            Cancel
-          </Button>
-          <Button
-            disabled={
-              action.isPending ||
-              picker.changing ||
-              !picker.selection.ids.length
+        <Separator />
+        <div className="min-h-0 overflow-y-auto">
+          <div className="p-5">
+            <MemberSearch
+              value={picker.input}
+              onChange={picker.setInput}
+              disabled={action.isPending}
+              total={picker.members.total}
+            />
+          </div>
+          <MemberTable
+            rows={picker.members.rows}
+            userId={userId}
+            selection={picker.selection}
+            disabled={action.isPending || picker.changing}
+            emptyMessage={
+              picker.input.trim()
+                ? "No members match your search."
+                : "Every organization member is already in this team."
             }
-            onClick={picker.submit}
-          >
-            {action.isPending ? "Adding…" : "Add members"}
-          </Button>
-        </DialogFooter>
+          />
+          <div className="flex flex-col gap-4 p-5">
+            <MemberPagination
+              members={picker.members}
+              onPage={picker.setPage}
+              disabled={action.isPending || picker.changing}
+            />
+            <MemberResults
+              failures={action.failures}
+              onRetry={picker.retry}
+              disabled={action.isPending || picker.changing}
+              canRetry={picker.members.rows.some((row) =>
+                action.failures.some(
+                  (failure) => failure.userId === row.userId,
+                ),
+              )}
+            />
+          </div>
+        </div>
+        <Separator />
+        <div className="flex shrink-0 flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-sm text-muted-foreground tabular-nums">
+            <span className="font-medium text-foreground">
+              {picker.selection.ids.length}
+            </span>{" "}
+            selected
+          </p>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              disabled={action.isPending}
+              onClick={picker.close}
+            >
+              Cancel
+            </Button>
+            <Button
+              disabled={
+                action.isPending ||
+                picker.changing ||
+                !picker.selection.ids.length
+              }
+              onClick={picker.submit}
+            >
+              {action.isPending ? "Adding…" : "Add members"}
+            </Button>
+          </DialogFooter>
+        </div>
       </DialogContent>
     </Dialog>
   );
