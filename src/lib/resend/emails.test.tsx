@@ -17,10 +17,7 @@ vi.mock("#/lib/env.server", () => ({
   },
 }));
 
-import {
-  sendChangeEmailConfirmationEmail,
-  sendVerifyEmail,
-} from "./emails";
+import { sendChangeEmailConfirmationEmail, sendVerifyEmail } from "./emails";
 
 const user = { name: "Ada", email: "old@example.com" };
 const url = "https://example.com/approve-change";
