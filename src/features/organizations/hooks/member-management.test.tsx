@@ -13,6 +13,7 @@ import type { MemberRow } from "#/features/organizations/lib/member-management";
 
 const {
   add,
+  deleteTeam,
   removeOrg,
   removeTeam,
   updateRole,
@@ -22,6 +23,7 @@ const {
   error,
 } = vi.hoisted(() => ({
   add: vi.fn(),
+  deleteTeam: vi.fn(),
   removeOrg: vi.fn(),
   removeTeam: vi.fn(),
   updateRole: vi.fn(),
@@ -36,16 +38,21 @@ vi.mock("#/features/organizations/lib/member-management.functions", () => ({
   removeTeamMembers: removeTeam,
   updateOrganizationMemberRole: updateRole,
 }));
+vi.mock("#/features/organizations/lib/team.functions", () => ({
+  deleteTeam,
+}));
 vi.mock("@tanstack/react-router", () => ({
   useRouter: () => ({ invalidate, navigate }),
 }));
 vi.mock("sonner", () => ({ toast: { success, error, info: vi.fn() } }));
 
+import { DeleteTeamDialog } from "#/features/organizations/components/delete-team-dialog";
 import { MemberResults } from "#/features/organizations/components/member-results";
 import { MemberTable } from "#/features/organizations/components/member-table";
 import { RemoveMembersDialog } from "#/features/organizations/components/remove-members-dialog";
 import { useDialogFocus } from "#/hooks/use-dialog-focus";
 import { useAddTeamMembers } from "./useAddTeamMembers";
+import { useDeleteTeam } from "./useDeleteTeam";
 import { useMemberSearch, useMemberSelection } from "./useMemberSelection";
 import { useRemoveOrganizationMembers } from "./useRemoveOrganizationMembers";
 import { useRemoveTeamMembers } from "./useRemoveTeamMembers";
@@ -71,6 +78,19 @@ function Wrapper({ children }: { children: ReactNode }) {
     </QueryClientProvider>
   );
 }
+
+function DeleteTeamHarness() {
+  const action = useDeleteTeam("team");
+  return (
+    <>
+      <button type="button" onClick={action.open}>
+        Open delete team
+      </button>
+      <DeleteTeamDialog action={action} teamName="Design" />
+    </>
+  );
+}
+
 beforeEach(() => {
   vi.resetAllMocks();
   invalidate.mockResolvedValue(undefined);
@@ -158,6 +178,86 @@ describe("member table and confirmations", () => {
     );
     expect(retry).toHaveBeenCalledOnce();
     expect(submit).not.toHaveBeenCalled();
+  });
+});
+
+describe("team deletion", () => {
+  it("cancels without sending a delete request", () => {
+    render(<DeleteTeamHarness />, { wrapper: Wrapper });
+
+    fireEvent.click(screen.getByRole("button", { name: "Open delete team" }));
+    fireEvent.click(screen.getByRole("button", { name: "Cancel" }));
+
+    expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument();
+    expect(deleteTeam).not.toHaveBeenCalled();
+  });
+
+  it("confirms deletion and displays the last-team error without navigating", async () => {
+    const lastTeamError =
+      "Every organization needs at least one team. Create another team before deleting this one.";
+    deleteTeam.mockRejectedValue(new Error(lastTeamError));
+    render(<DeleteTeamHarness />, { wrapper: Wrapper });
+
+    fireEvent.click(screen.getByRole("button", { name: "Open delete team" }));
+    expect(screen.getByRole("alertdialog")).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "Delete Design?" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/Members will remain in the organization/),
+    ).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Delete team" }));
+
+    expect(await screen.findByRole("alert")).toHaveTextContent(lastTeamError);
+    expect(deleteTeam).toHaveBeenCalledWith({ data: { teamId: "team" } });
+    expect(navigate).not.toHaveBeenCalled();
+  });
+
+  it("keeps the confirmation open and disables actions while deleting", async () => {
+    let resolveDelete!: (result: { organizationId: string }) => void;
+    deleteTeam.mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          resolveDelete = resolve;
+        }),
+    );
+    render(<DeleteTeamHarness />, { wrapper: Wrapper });
+
+    fireEvent.click(screen.getByRole("button", { name: "Open delete team" }));
+    fireEvent.click(screen.getByRole("button", { name: "Delete team" }));
+
+    const cancel = screen.getByRole("button", { name: "Cancel" });
+    const confirm = await screen.findByRole("button", { name: "Deleting…" });
+    expect(cancel).toBeDisabled();
+    expect(confirm).toBeDisabled();
+    fireEvent.click(cancel);
+    expect(screen.getByRole("alertdialog")).toBeInTheDocument();
+
+    await act(async () => resolveDelete({ organizationId: "org" }));
+    await waitFor(() =>
+      expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument(),
+    );
+  });
+
+  it("redirects to the organization before refreshing after deletion", async () => {
+    deleteTeam.mockResolvedValue({ organizationId: "org" });
+    const { result } = renderHook(() => useDeleteTeam("team"), {
+      wrapper: Wrapper,
+    });
+
+    act(() => result.current.open());
+    act(() => result.current.submit());
+    await waitFor(() => expect(result.current.isPending).toBe(false));
+
+    expect(deleteTeam).toHaveBeenCalledWith({ data: { teamId: "team" } });
+    expect(navigate).toHaveBeenCalledWith({
+      to: "/organizations/$orgId",
+      params: { orgId: "org" },
+    });
+    expect(navigate.mock.invocationCallOrder[0]).toBeLessThan(
+      invalidate.mock.invocationCallOrder[0],
+    );
+    expect(success).toHaveBeenCalledWith("Team deleted.");
   });
 });
 

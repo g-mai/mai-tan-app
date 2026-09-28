@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useRouterState } from "@tanstack/react-router";
-import { ArrowLeft, Edit, UserMinus, UserPlus } from "lucide-react";
+import { ArrowLeft, Edit, Trash2, UserMinus, UserPlus } from "lucide-react";
 import { useCallback } from "react";
 import { RouteError } from "#/components/shared/route-error";
 import { Button } from "#/components/ui/button";
@@ -12,6 +12,7 @@ import {
   CardTitle,
 } from "#/components/ui/card";
 import { Separator } from "#/components/ui/separator";
+import { DeleteTeamDialog } from "#/features/organizations/components/delete-team-dialog";
 import {
   MemberPagination,
   MemberSearch,
@@ -22,6 +23,7 @@ import { MemberTable } from "#/features/organizations/components/member-table";
 import { RemoveMembersDialog } from "#/features/organizations/components/remove-members-dialog";
 import { TeamLogo } from "#/features/organizations/components/team-logo";
 import { TeamMemberPickerDialog } from "#/features/organizations/components/team-member-picker-dialog";
+import { useDeleteTeam } from "#/features/organizations/hooks/useDeleteTeam";
 import {
   useMemberSearch,
   useMemberSelection,
@@ -64,6 +66,7 @@ function RouteComponent() {
     onComplete: selection.complete,
   });
   const picker = useTeamMemberPicker(team.id, team.candidates, scope);
+  const deletion = useDeleteTeam(team.id);
   const isManager = canManage(team.role);
   const changeSearch = useCallback(
     (values: { q: string; page: number }, replace: boolean) => {
@@ -131,6 +134,17 @@ function RouteComponent() {
                   <Edit data-icon="inline-start" />
                   Edit team
                 </Link>
+              </Button>
+            )}
+            {isManager && (
+              <Button
+                variant="destructive"
+                size="sm"
+                disabled={disabled || deletion.isPending}
+                onClick={deletion.open}
+              >
+                <Trash2 data-icon="inline-start" />
+                Delete team
               </Button>
             )}
             {isManager && (
@@ -221,6 +235,7 @@ function RouteComponent() {
         name={team.name}
         userId={team.userId}
       />
+      <DeleteTeamDialog action={deletion} teamName={team.name} />
     </div>
   );
 }

@@ -1,9 +1,11 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getRequestHeaders } from "@tanstack/react-start/server";
+import { APIError } from "better-auth/api";
 import z from "zod";
 import { auth } from "#/features/auth/lib/auth";
 import { authMiddleware } from "#/features/auth/middleware";
 import type { SessionData, User } from "#/features/auth/types";
+import { teamIdSchema } from "#/features/organizations/lib/member-management";
 import {
   organizationContext,
   resolveTeam,
@@ -66,6 +68,32 @@ export const getTeamMetadata = createServerFn({ method: "GET" })
       context.session.user.id,
     );
     return { ...teamData, organization: { name: org.name }, role: org.role };
+  });
+
+export const deleteTeam = createServerFn({ method: "POST" })
+  .validator(teamIdSchema)
+  .middleware([authMiddleware])
+  .handler(async ({ data }) => {
+    const team = await resolveTeam(data.teamId);
+
+    try {
+      await auth.api.removeTeam({
+        headers: getRequestHeaders(),
+        body: { teamId: team.id, organizationId: team.organizationId },
+      });
+    } catch (error) {
+      if (
+        error instanceof APIError &&
+        error.body?.code === "UNABLE_TO_REMOVE_LAST_TEAM"
+      ) {
+        throw new Error(
+          "Every organization needs at least one team. Create another team before deleting this one.",
+        );
+      }
+      throw error;
+    }
+
+    return { organizationId: team.organizationId };
   });
 
 const listOrgTeamsSchema = z.object({ organizationId: z.string() });

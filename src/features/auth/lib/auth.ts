@@ -214,6 +214,7 @@ const options = {
       },
       teams: {
         enabled: true,
+        allowRemovingAllTeams: false,
       },
     }),
     emailOTP({

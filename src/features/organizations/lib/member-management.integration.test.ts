@@ -12,7 +12,12 @@ const options = {
   secret: "member-management-test-secret-at-least-32-characters",
   baseURL: "http://localhost:3000",
   emailAndPassword: { enabled: true },
-  plugins: [organization({ membershipLimit: 100, teams: { enabled: true } })],
+  plugins: [
+    organization({
+      membershipLimit: 100,
+      teams: { enabled: true, allowRemovingAllTeams: false },
+    }),
+  ],
   logger: { level: "error" as const },
 };
 await (await getMigrations(options)).runMigrations();
@@ -352,5 +357,148 @@ describe("installed Better Auth member-management defaults", () => {
       headers: owner.headers,
       body: { organizationId: orgId, teamId, userId: actors[1].id },
     });
+  });
+});
+
+describe("installed Better Auth team deletion behavior", () => {
+  it.each([
+    { role: "owner", actorIndex: 0 },
+    { role: "admin", actorIndex: 1 },
+  ])(
+    "allows an organization $role to delete a team",
+    async ({ actorIndex }) => {
+      const owner = actors[0];
+      const actor = actors[actorIndex];
+      await auth.api.addTeamMember({
+        headers: owner.headers,
+        body: {
+          organizationId: orgId,
+          teamId: secondTeamId,
+          userId: actors[2].id,
+        },
+      });
+
+      await expect(
+        auth.api.removeTeam({
+          headers: actor.headers,
+          body: { teamId: secondTeamId, organizationId: orgId },
+        }),
+      ).resolves.toMatchObject({ message: "Team removed successfully." });
+
+      const remainingTeams = await auth.api.listOrganizationTeams({
+        headers: owner.headers,
+        query: { organizationId: orgId },
+      });
+      expect(remainingTeams).toHaveLength(2);
+      expect(remainingTeams.map((team) => team.id)).toContain(teamId);
+      expect(remainingTeams.map((team) => team.id)).not.toContain(secondTeamId);
+      const teamMemberships = database
+        .prepare(
+          'SELECT count(*) AS count FROM "teamMember" WHERE "teamId" = ?',
+        )
+        .get(secondTeamId) as { count: number };
+      expect(teamMemberships.count).toBe(0);
+      expect(
+        (
+          await auth.api.listMembers({
+            headers: actors[2].headers,
+            query: { organizationId: orgId },
+          })
+        ).total,
+      ).toBe(3);
+    },
+  );
+
+  it("rejects members and non-members from deleting teams", async () => {
+    await expect(
+      auth.api.removeTeam({
+        headers: actors[2].headers,
+        body: { teamId: secondTeamId, organizationId: orgId },
+      }),
+    ).rejects.toMatchObject({
+      body: {
+        code: "YOU_ARE_NOT_ALLOWED_TO_DELETE_TEAMS_IN_THIS_ORGANIZATION",
+      },
+    });
+    await expect(
+      auth.api.removeTeam({
+        headers: actors[3].headers,
+        body: { teamId: secondTeamId, organizationId: orgId },
+      }),
+    ).rejects.toMatchObject({
+      body: { code: "YOU_ARE_NOT_ALLOWED_TO_DELETE_THIS_TEAM" },
+    });
+    expect(
+      (
+        await auth.api.listOrganizationTeams({
+          headers: actors[0].headers,
+          query: { organizationId: orgId },
+        })
+      ).map((team) => team.id),
+    ).toEqual(expect.arrayContaining([teamId, secondTeamId]));
+  });
+
+  it("blocks deleting the last team and preserves it", async () => {
+    const owner = actors[0];
+    await auth.api.setActiveTeam({
+      headers: owner.headers,
+      body: { teamId: null },
+    });
+    await auth.api.removeTeam({
+      headers: owner.headers,
+      body: { teamId: secondTeamId, organizationId: orgId },
+    });
+    await auth.api.removeTeam({
+      headers: owner.headers,
+      body: { teamId, organizationId: orgId },
+    });
+    const [lastTeam] = await auth.api.listOrganizationTeams({
+      headers: owner.headers,
+      query: { organizationId: orgId },
+    });
+    assert(lastTeam);
+
+    await expect(
+      auth.api.removeTeam({
+        headers: owner.headers,
+        body: { teamId: lastTeam.id, organizationId: orgId },
+      }),
+    ).rejects.toMatchObject({ body: { code: "UNABLE_TO_REMOVE_LAST_TEAM" } });
+    expect(
+      (
+        await auth.api.listOrganizationTeams({
+          headers: owner.headers,
+          query: { organizationId: orgId },
+        })
+      ).map((team) => team.id),
+    ).toEqual([lastTeam.id]);
+  });
+
+  it("does not remove a team when the supplied organization is not its owner", async () => {
+    const foreignOrg = await auth.api.createOrganization({
+      headers: actors[3].headers,
+      body: { name: "Foreign", slug: crypto.randomUUID() },
+    });
+    assert(foreignOrg);
+    const [foreignTeam] = await auth.api.listOrganizationTeams({
+      headers: actors[3].headers,
+      query: { organizationId: foreignOrg.id },
+    });
+    assert(foreignTeam);
+
+    await expect(
+      auth.api.removeTeam({
+        headers: actors[0].headers,
+        body: { teamId: foreignTeam.id, organizationId: orgId },
+      }),
+    ).rejects.toMatchObject({ body: { code: "TEAM_NOT_FOUND" } });
+    expect(
+      (
+        await auth.api.listOrganizationTeams({
+          headers: actors[3].headers,
+          query: { organizationId: foreignOrg.id },
+        })
+      ).map((team) => team.id),
+    ).toContain(foreignTeam.id);
   });
 });
