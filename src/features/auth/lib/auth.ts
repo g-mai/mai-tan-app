@@ -20,6 +20,7 @@ import {
 } from "#/lib/db/schema";
 import { env } from "#/lib/env.server";
 import {
+  sendChangeEmailConfirmationEmail,
   sendInvitationEmail,
   sendResetPasswordEmail,
   sendVerificationOtpEmail,
@@ -106,16 +107,8 @@ const options = {
     },
     changeEmail: {
       enabled: true,
-      sendChangeEmailConfirmation: async (
-        {
-          user,
-          url,
-          token,
-        }: { user: { email: string }; url: string; token: string },
-        request: unknown,
-      ) => {
-        console.log("Sending change email verification email to", user.email);
-        // await sendVerifyEmail({ user, url, token });
+      sendChangeEmailConfirmation: async ({ user, newEmail, url }) => {
+        await sendChangeEmailConfirmationEmail({ user, newEmail, url });
       },
     },
   },

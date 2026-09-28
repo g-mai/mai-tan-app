@@ -36,7 +36,8 @@ export function ChangeEmailSection({ user }: { user: User }) {
           <DialogHeader>
             <DialogTitle>Change Email</DialogTitle>
             <DialogDescription>
-              You will receive a verification email to complete the process.
+              We will email your current address for approval, then send a
+              verification link to your new address.
             </DialogDescription>
           </DialogHeader>
           <form
@@ -55,7 +56,7 @@ export function ChangeEmailSection({ user }: { user: User }) {
 
             <form.AppForm>
               <form.SubscribeButton
-                label={isPending ? "Updating..." : "Update Email"}
+                label={isPending ? "Sending..." : "Request email change"}
               />
             </form.AppForm>
           </form>

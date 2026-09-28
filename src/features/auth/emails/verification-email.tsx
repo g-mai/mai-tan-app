@@ -19,13 +19,11 @@ export function VerificationEmailTemplate({
       <EmailHeading>Verify your email</EmailHeading>
       <p style={{ margin: "0 0 16px" }}>Hi {user.name},</p>
       <p style={{ margin: "0 0 16px" }}>
-        Thanks for signing up. Please confirm your email address to finish
-        setting up your account.
+        Please confirm this email address for your account.
       </p>
       <EmailButton href={url}>Verify email</EmailButton>
       <EmailMutedText>
-        If you didn't create an account with us, you can safely ignore this
-        email.
+        If you didn't request this email, you can safely ignore it.
       </EmailMutedText>
     </EmailLayout>
   );
