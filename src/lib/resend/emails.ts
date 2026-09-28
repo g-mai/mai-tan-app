@@ -1,4 +1,5 @@
 import { Resend } from "resend";
+import { ChangeEmailConfirmationTemplate } from "#/features/auth/emails/change-email-confirmation-email";
 import { ResetPasswordEmailTemplate } from "#/features/auth/emails/reset-password-email";
 import {
   VerificationEmailOTPTemplate,
@@ -127,6 +128,42 @@ export async function sendInvitationEmail({
   } catch (error) {
     console.error("Failed to send invitation email:", error);
     throw error; // Re-throw so Better Auth knows it failed
+  }
+}
+
+export async function sendChangeEmailConfirmationEmail({
+  user,
+  newEmail,
+  url,
+}: {
+  user: Pick<User, "name" | "email">;
+  newEmail: string;
+  url: string;
+}) {
+  if (skipVerificationEmail) return;
+
+  console.log("Sending change email confirmation to:", user.email);
+  try {
+    const { client: resend, fromAddress } = getResend();
+    const { data, error } = await resend.emails.send({
+      from: fromAddress,
+      to: [user.email],
+      subject: "Approve Your Email Change",
+      react: ChangeEmailConfirmationTemplate({ user, newEmail, url }),
+    });
+
+    if (error) {
+      console.error("Resend error:", error);
+      throw new Error(
+        `Failed to send change email confirmation: ${error.message}`,
+      );
+    }
+
+    console.log("Change email confirmation sent successfully:", data);
+    return { success: true, data };
+  } catch (error) {
+    console.error("Failed to send change email confirmation:", error);
+    throw error;
   }
 }
 
