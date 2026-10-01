@@ -1,0 +1,8 @@
+{
+  "worktree": {
+    "setup": [
+      "cp -a -- \"$PASEO_SOURCE_CHECKOUT_PATH/.env\" \"$PASEO_SOURCE_CHECKOUT_PATH/.dev.vars\" \"$PASEO_SOURCE_CHECKOUT_PATH/.wrangler\" .",
+      "pnpm install"
+    ]
+  }
+}
