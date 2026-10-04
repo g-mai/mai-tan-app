@@ -15,6 +15,7 @@ const { api, teamRead, orgRead, teamMembersRead, requestHeaders } = vi.hoisted(
       removeMember: vi.fn(),
       addTeamMember: vi.fn(),
       removeTeamMember: vi.fn(),
+      removeTeam: vi.fn(),
     },
     teamRead: vi.fn(),
     orgRead: vi.fn(),
@@ -74,7 +75,7 @@ import {
   updateOrganizationMemberRole,
 } from "./member-management.functions";
 import { membershipBatch } from "./member-management.server";
-import { getTeamMetadata } from "./team.functions";
+import { deleteTeam, getTeamMetadata } from "./team.functions";
 
 const roster = ["caller", "other", "owner"].map((userId) => ({
   id: `m-${userId}`,
@@ -113,6 +114,7 @@ beforeEach(() => {
     { id: "a", name: "Alpha" },
   ]);
   api.listInvitations.mockResolvedValue([]);
+  api.removeTeam.mockResolvedValue({ message: "Team removed successfully." });
 });
 
 describe("scoped reads", () => {
@@ -301,6 +303,37 @@ describe("scoped reads", () => {
 });
 
 describe("Better Auth write delegation", () => {
+  it("rejects an invalid team deletion contract before database or API calls", async () => {
+    await expect(async () =>
+      deleteTeam({ data: { teamId: "" } }),
+    ).rejects.toThrow();
+    expect(teamRead).not.toHaveBeenCalled();
+    expect(api.removeTeam).not.toHaveBeenCalled();
+  });
+  it("deletes a resolved team through Better Auth with explicit organization scope", async () => {
+    await expect(deleteTeam({ data: { teamId: "team" } })).resolves.toEqual({
+      organizationId: "scoped-org",
+    });
+    expect(api.removeTeam).toHaveBeenCalledWith({
+      headers: requestHeaders,
+      body: { teamId: "team", organizationId: "scoped-org" },
+    });
+  });
+  it("turns Better Auth's last-team rejection into an actionable message", async () => {
+    api.removeTeam.mockRejectedValue(
+      denied("UNABLE_TO_REMOVE_LAST_TEAM", "BAD_REQUEST"),
+    );
+    await expect(deleteTeam({ data: { teamId: "team" } })).rejects.toThrow(
+      "Every organization needs at least one team. Create another team before deleting this one.",
+    );
+  });
+  it("preserves Better Auth permission failures when deleting a team", async () => {
+    const error = denied(
+      "YOU_ARE_NOT_ALLOWED_TO_DELETE_TEAMS_IN_THIS_ORGANIZATION",
+    );
+    api.removeTeam.mockRejectedValue(error);
+    await expect(deleteTeam({ data: { teamId: "team" } })).rejects.toBe(error);
+  });
   it("forwards self-role changes directly with explicit scope and no membership pre-check", async () => {
     await updateOrganizationMemberRole({
       data: {

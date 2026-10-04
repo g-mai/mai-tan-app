@@ -28,10 +28,10 @@ export function useChangeEmail(userEmail: string) {
       return data;
     },
     onSuccess: () => {
-      toast.success("Check your mailbox to confirm new Email!", {
-        duration: 5000,
-        position: "top-center",
-      });
+      toast.success(
+        "Check your current email to approve the change, then verify your new address.",
+        { duration: 5000, position: "top-center" },
+      );
     },
     onError: (error: Error) => {
       console.error("Error updating email:", error);
