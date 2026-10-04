@@ -1,6 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { DangerAreaCard } from "#/components/shared/danger-area-card";
 import { Wip } from "#/components/shared/wip";
+import { DeleteOrganizationDialog } from "#/features/organizations/components/delete-organization-dialog";
 import { EditOrg } from "#/features/organizations/components/edit-org";
+import { useDeleteOrganization } from "#/features/organizations/hooks/useDeleteOrganization";
+import { findMemberRole, hasRole } from "#/features/organizations/lib/org";
 import { getOrganization } from "#/features/organizations/lib/org.functions";
 
 export const Route = createFileRoute("/_protected/organizations/$orgId/edit")({
@@ -13,12 +17,28 @@ export const Route = createFileRoute("/_protected/organizations/$orgId/edit")({
 
 function RouteComponent() {
   const org = Route.useLoaderData();
+  const { user } = Route.useRouteContext();
+  const deletion = useDeleteOrganization(org.id);
   const setOrg = () => {};
 
   return (
     <div className="flex flex-col gap-4">
       <Wip />
       <EditOrg org={org} setOrg={setOrg} />
+      {hasRole(findMemberRole(org.members, user.id), "owner") && (
+        <>
+          <DangerAreaCard
+            description="Permanently deletes this organization, its teams, members, and invitations. This cannot be undone."
+            buttonLabel="Delete organization"
+            disabled={deletion.isPending}
+            onClick={deletion.open}
+          />
+          <DeleteOrganizationDialog
+            action={deletion}
+            organizationName={org.name}
+          />
+        </>
+      )}
     </div>
   );
 }

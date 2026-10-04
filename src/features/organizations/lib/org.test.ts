@@ -3,6 +3,7 @@ import {
   canManage,
   findMemberRole,
   findSoleOwnedOrgs,
+  hasRole,
   pickActiveOrganizationId,
 } from "./org";
 
@@ -156,5 +157,16 @@ describe("canManage", () => {
     expect(canManage(null)).toBe(false);
     expect(canManage(undefined)).toBe(false);
     expect(canManage("")).toBe(false);
+  });
+});
+
+describe("hasRole", () => {
+  it("matches a role in a comma-joined role list", () => {
+    expect(hasRole("member,owner", "owner")).toBe(true);
+  });
+
+  it("does not treat administrators or members as owners", () => {
+    expect(hasRole("admin", "owner")).toBe(false);
+    expect(hasRole("member", "owner")).toBe(false);
   });
 });

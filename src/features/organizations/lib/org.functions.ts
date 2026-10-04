@@ -7,6 +7,56 @@ import { generateFakeMember } from "#/features/organizations/lib/faker-member";
 import { findSoleOwnedOrgs } from "#/features/organizations/lib/org";
 import { db } from "#/lib/db";
 import { user as userTable } from "#/lib/db/schema";
+import { getR2 } from "#/lib/storage/r2.server";
+
+async function deleteR2Prefix(
+  bucket: ReturnType<typeof getR2>["bucket"],
+  prefix: string,
+) {
+  let cursor: string | undefined;
+
+  do {
+    const page = await bucket.list({ prefix, cursor, limit: 1000 });
+    const keys = page.objects.map((object) => object.key);
+    if (keys.length > 0) await bucket.delete(keys);
+
+    if (page.truncated && !page.cursor) {
+      throw new Error("R2 returned a truncated page without a cursor");
+    }
+    cursor = page.truncated ? page.cursor : undefined;
+  } while (cursor);
+}
+
+async function deleteOrganizationImages(
+  organizationId: string,
+  teamIds: string[],
+) {
+  let bucket: ReturnType<typeof getR2>["bucket"];
+  try {
+    ({ bucket } = getR2());
+  } catch (error) {
+    console.error("Could not access R2 while deleting organization images", {
+      organizationId,
+      error,
+    });
+    return;
+  }
+
+  for (const prefix of [
+    `orgs/${organizationId}/`,
+    ...teamIds.map((teamId) => `teams/${teamId}/`),
+  ]) {
+    try {
+      await deleteR2Prefix(bucket, prefix);
+    } catch (error) {
+      console.error("Could not delete organization images from R2", {
+        organizationId,
+        prefix,
+        error,
+      });
+    }
+  }
+}
 
 /**
  * Drives the account-deletion warning: which organizations would be left with
@@ -38,6 +88,29 @@ export const listOrganizations = createServerFn({ method: "GET" }).handler(
     return orgs;
   },
 );
+
+export const deleteOrganization = createServerFn({ method: "POST" })
+  .validator(z.object({ organizationId: z.string().min(1) }))
+  .middleware([authMiddleware])
+  .handler(async ({ data }) => {
+    const headers = getRequestHeaders();
+    const teams = await auth.api.listOrganizationTeams({
+      headers,
+      query: { organizationId: data.organizationId },
+    });
+
+    await auth.api.deleteOrganization({
+      headers,
+      body: { organizationId: data.organizationId },
+    });
+
+    await deleteOrganizationImages(
+      data.organizationId,
+      teams.map((team) => team.id),
+    );
+
+    return { organizationId: data.organizationId };
+  });
 
 const getOrgSchema = z.object({
   id: z.string(),

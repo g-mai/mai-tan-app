@@ -502,3 +502,108 @@ describe("installed Better Auth team deletion behavior", () => {
     ).toContain(foreignTeam.id);
   });
 });
+
+describe("installed Better Auth organization deletion behavior", () => {
+  it("allows the owner to delete an organization and cascades its data", async () => {
+    const owner = actors[0];
+    const anotherOrg = await auth.api.createOrganization({
+      headers: owner.headers,
+      body: {
+        name: "Another organization",
+        slug: crypto.randomUUID(),
+      },
+    });
+    assert(anotherOrg);
+    await auth.api.setActiveOrganization({
+      headers: owner.headers,
+      body: { organizationId: orgId },
+    });
+    await auth.api.addTeamMember({
+      headers: owner.headers,
+      body: { organizationId: orgId, teamId, userId: actors[2].id },
+    });
+    await auth.api.createInvitation({
+      headers: owner.headers,
+      body: {
+        email: "pending@example.com",
+        role: "member",
+        organizationId: orgId,
+      },
+    });
+
+    await expect(
+      auth.api.deleteOrganization({
+        headers: owner.headers,
+        body: { organizationId: orgId },
+      }),
+    ).resolves.toMatchObject({ id: orgId });
+
+    const deletedOrg = database
+      .prepare('SELECT count(*) AS count FROM "organization" WHERE "id" = ?')
+      .get(orgId) as { count: number };
+    expect(deletedOrg.count).toBe(0);
+    for (const table of ["member", "invitation", "team"]) {
+      const row = database
+        .prepare(
+          `SELECT count(*) AS count FROM "${table}" WHERE "organizationId" = ?`,
+        )
+        .get(orgId) as { count: number };
+      expect(row.count, `${table} rows for deleted organization`).toBe(0);
+    }
+    const teamMembers = database
+      .prepare(
+        'SELECT count(*) AS count FROM "teamMember" WHERE "teamId" IN (?, ?)',
+      )
+      .get(teamId, secondTeamId) as { count: number };
+    expect(teamMembers.count).toBe(0);
+    expect(
+      (await auth.api.listOrganizations({ headers: owner.headers })).map(
+        (organization) => organization.id,
+      ),
+    ).toContain(anotherOrg.id);
+    const session = database
+      .prepare(
+        'SELECT "activeOrganizationId" FROM "session" WHERE "userId" = ?',
+      )
+      .get(owner.id) as { activeOrganizationId: string | null };
+    expect(session.activeOrganizationId).toBeNull();
+  });
+
+  it.each([
+    { role: "admin", actorIndex: 1 },
+    { role: "member", actorIndex: 2 },
+  ])(
+    "does not allow an organization $role to delete it",
+    async ({ actorIndex }) => {
+      await expect(
+        auth.api.deleteOrganization({
+          headers: actors[actorIndex].headers,
+          body: { organizationId: orgId },
+        }),
+      ).rejects.toMatchObject({
+        body: { code: "YOU_ARE_NOT_ALLOWED_TO_DELETE_THIS_ORGANIZATION" },
+      });
+      expect(
+        database
+          .prepare('SELECT "id" FROM "organization" WHERE "id" = ?')
+          .get(orgId),
+      ).toBeTruthy();
+    },
+  );
+
+  it("does not allow an outsider to delete an organization", async () => {
+    await expect(
+      auth.api.deleteOrganization({
+        headers: actors[3].headers,
+        body: { organizationId: orgId },
+      }),
+    ).rejects.toMatchObject({
+      body: { code: "USER_IS_NOT_A_MEMBER_OF_THE_ORGANIZATION" },
+    });
+    expect(
+      database
+        .prepare('SELECT "id" FROM "organization" WHERE "id" = ?')
+        .get(orgId),
+    ).toBeTruthy();
+  });
+});

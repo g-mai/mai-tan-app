@@ -1,4 +1,12 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { Button } from "#/components/ui/button";
+import {
+  Card,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "#/components/ui/card";
 import { DashboardHero } from "#/features/dashboard/components/dashboard-hero";
 import { DocsCard } from "#/features/dashboard/components/docs-card";
 import { InvitationsCard } from "#/features/dashboard/components/invitations-card";
@@ -42,6 +50,22 @@ function RouteComponent() {
         teams={teams}
         currentUserId={user.id}
       />
+
+      {!org && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Create an organization</CardTitle>
+            <CardDescription>
+              Create an organization to manage your members and teams.
+            </CardDescription>
+          </CardHeader>
+          <CardFooter>
+            <Button asChild>
+              <Link to="/organizations/new">Create an organization</Link>
+            </Button>
+          </CardFooter>
+        </Card>
+      )}
 
       {org && (
         <>

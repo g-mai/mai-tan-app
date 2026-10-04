@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { DangerAreaCard } from "#/components/shared/danger-area-card";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -9,13 +10,6 @@ import {
   AlertDialogTitle,
 } from "#/components/ui/alert-dialog";
 import { Button } from "#/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "#/components/ui/card";
 import { useDeleteAccount } from "#/features/auth/hooks/useDeleteAccount";
 import type { SoleOwnedOrg } from "#/features/organizations/lib/org";
 
@@ -54,23 +48,24 @@ export function DeleteAccountSection({
 
   return (
     <>
-      <Card className="border-destructive/50">
-        <CardHeader>
-          <CardTitle className="text-destructive">Delete account</CardTitle>
-          <CardDescription>
-            Permanently deletes your profile, your sessions and your
-            organization memberships. This cannot be undone.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Button variant="destructive" onClick={() => setOpen(true)}>
-            Delete my account
-          </Button>
-        </CardContent>
-      </Card>
+      <DangerAreaCard
+        description="Permanently deletes your profile, your sessions and your organization memberships. This cannot be undone."
+        buttonLabel="Delete my account"
+        disabled={isPending}
+        onClick={() => setOpen(true)}
+      />
 
-      <AlertDialog open={open} onOpenChange={setOpen}>
-        <AlertDialogContent>
+      <AlertDialog
+        open={open}
+        onOpenChange={(nextOpen) => {
+          if (nextOpen || !isPending) setOpen(nextOpen);
+        }}
+      >
+        <AlertDialogContent
+          onEscapeKeyDown={(event) => {
+            if (isPending) event.preventDefault();
+          }}
+        >
           <AlertDialogHeader>
             <AlertDialogTitle>Delete your account?</AlertDialogTitle>
             <AlertDialogDescription>
@@ -94,7 +89,9 @@ export function DeleteAccountSection({
               )}
             </form.AppField>
             <AlertDialogFooter>
-              <AlertDialogCancel type="button">Cancel</AlertDialogCancel>
+              <AlertDialogCancel type="button" disabled={isPending}>
+                Cancel
+              </AlertDialogCancel>
               {/* Not AlertDialogAction: it closes the dialog on click, which
                   would dismiss it before the mutation resolves. */}
               <Button type="submit" variant="destructive" disabled={isPending}>
