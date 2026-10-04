@@ -1,15 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { DangerAreaCard } from "#/components/shared/danger-area-card";
 import { PageTitle } from "#/components/shared/page-title";
 import { RouteError } from "#/components/shared/route-error";
 import { Wip } from "#/components/shared/wip";
-import { Button } from "#/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "#/components/ui/card";
 import { DeleteTeamDialog } from "#/features/organizations/components/delete-team-dialog";
 import { EditTeam } from "#/features/organizations/components/edit-team";
 import { useDeleteTeam } from "#/features/organizations/hooks/useDeleteTeam";
@@ -42,24 +35,12 @@ function RouteComponent() {
       {canManage(team.role) ? (
         <>
           <EditTeam team={team} />
-          <Card className="border-destructive/50">
-            <CardHeader>
-              <CardTitle className="text-destructive">Dangerous area</CardTitle>
-              <CardDescription>
-                Permanently deletes this team and removes its team memberships.
-                Members remain in the organization. This cannot be undone.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button
-                variant="destructive"
-                disabled={deletion.isPending}
-                onClick={deletion.open}
-              >
-                Delete team
-              </Button>
-            </CardContent>
-          </Card>
+          <DangerAreaCard
+            description="Permanently deletes this team and removes its team memberships. Members remain in the organization. This cannot be undone."
+            buttonLabel="Delete team"
+            disabled={deletion.isPending}
+            onClick={deletion.open}
+          />
           <DeleteTeamDialog action={deletion} teamName={team.name} />
         </>
       ) : (

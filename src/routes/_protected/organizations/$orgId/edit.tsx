@@ -1,13 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { DangerAreaCard } from "#/components/shared/danger-area-card";
 import { Wip } from "#/components/shared/wip";
-import { Button } from "#/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "#/components/ui/card";
 import { DeleteOrganizationDialog } from "#/features/organizations/components/delete-organization-dialog";
 import { EditOrg } from "#/features/organizations/components/edit-org";
 import { useDeleteOrganization } from "#/features/organizations/hooks/useDeleteOrganization";
@@ -34,24 +27,12 @@ function RouteComponent() {
       <EditOrg org={org} setOrg={setOrg} />
       {hasRole(findMemberRole(org.members, user.id), "owner") && (
         <>
-          <Card className="border-destructive/50">
-            <CardHeader>
-              <CardTitle className="text-destructive">Dangerous area</CardTitle>
-              <CardDescription>
-                Permanently deletes this organization, its teams, members, and
-                invitations. This cannot be undone.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button
-                variant="destructive"
-                disabled={deletion.isPending}
-                onClick={deletion.open}
-              >
-                Delete organization
-              </Button>
-            </CardContent>
-          </Card>
+          <DangerAreaCard
+            description="Permanently deletes this organization, its teams, members, and invitations. This cannot be undone."
+            buttonLabel="Delete organization"
+            disabled={deletion.isPending}
+            onClick={deletion.open}
+          />
           <DeleteOrganizationDialog
             action={deletion}
             organizationName={org.name}
