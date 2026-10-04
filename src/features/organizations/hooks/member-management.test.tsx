@@ -13,6 +13,7 @@ import type { MemberRow } from "#/features/organizations/lib/member-management";
 
 const {
   add,
+  deleteOrganization,
   deleteTeam,
   removeOrg,
   removeTeam,
@@ -23,6 +24,7 @@ const {
   error,
 } = vi.hoisted(() => ({
   add: vi.fn(),
+  deleteOrganization: vi.fn(),
   deleteTeam: vi.fn(),
   removeOrg: vi.fn(),
   removeTeam: vi.fn(),
@@ -38,6 +40,9 @@ vi.mock("#/features/organizations/lib/member-management.functions", () => ({
   removeTeamMembers: removeTeam,
   updateOrganizationMemberRole: updateRole,
 }));
+vi.mock("#/features/organizations/lib/org.functions", () => ({
+  deleteOrganization,
+}));
 vi.mock("#/features/organizations/lib/team.functions", () => ({
   deleteTeam,
 }));
@@ -46,12 +51,14 @@ vi.mock("@tanstack/react-router", () => ({
 }));
 vi.mock("sonner", () => ({ toast: { success, error, info: vi.fn() } }));
 
+import { DeleteOrganizationDialog } from "#/features/organizations/components/delete-organization-dialog";
 import { DeleteTeamDialog } from "#/features/organizations/components/delete-team-dialog";
 import { MemberResults } from "#/features/organizations/components/member-results";
 import { MemberTable } from "#/features/organizations/components/member-table";
 import { RemoveMembersDialog } from "#/features/organizations/components/remove-members-dialog";
 import { useDialogFocus } from "#/hooks/use-dialog-focus";
 import { useAddTeamMembers } from "./useAddTeamMembers";
+import { useDeleteOrganization } from "./useDeleteOrganization";
 import { useDeleteTeam } from "./useDeleteTeam";
 import { useMemberSearch, useMemberSelection } from "./useMemberSelection";
 import { useRemoveOrganizationMembers } from "./useRemoveOrganizationMembers";
@@ -87,6 +94,18 @@ function DeleteTeamHarness() {
         Open delete team
       </button>
       <DeleteTeamDialog action={action} teamName="Design" />
+    </>
+  );
+}
+
+function DeleteOrganizationHarness() {
+  const action = useDeleteOrganization("org");
+  return (
+    <>
+      <button type="button" onClick={action.open}>
+        Open delete organization
+      </button>
+      <DeleteOrganizationDialog action={action} organizationName="Mai Tan" />
     </>
   );
 }
@@ -258,6 +277,94 @@ describe("team deletion", () => {
       invalidate.mock.invocationCallOrder[0],
     );
     expect(success).toHaveBeenCalledWith("Team deleted.");
+  });
+});
+
+describe("organization deletion", () => {
+  it("cancels without sending a delete request", () => {
+    render(<DeleteOrganizationHarness />, { wrapper: Wrapper });
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "Open delete organization" }),
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Cancel" }));
+
+    expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument();
+    expect(deleteOrganization).not.toHaveBeenCalled();
+  });
+
+  it("shows the failure in the confirmation and keeps the dialog open", async () => {
+    deleteOrganization.mockRejectedValue(
+      new Error("Only the owner can delete this organization"),
+    );
+    render(<DeleteOrganizationHarness />, { wrapper: Wrapper });
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "Open delete organization" }),
+    );
+    expect(
+      screen.getByRole("heading", { name: "Delete Mai Tan?" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/invitations.*cannot be undone/i),
+    ).toBeInTheDocument();
+    fireEvent.click(
+      screen.getByRole("button", { name: "Delete organization" }),
+    );
+
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      "Only the owner can delete this organization",
+    );
+    expect(screen.getByRole("alertdialog")).toBeInTheDocument();
+    expect(deleteOrganization).toHaveBeenCalledWith({
+      data: { organizationId: "org" },
+    });
+    expect(navigate).not.toHaveBeenCalled();
+  });
+
+  it("disables dialog actions while deletion is pending", async () => {
+    let resolveDelete!: (result: { organizationId: string }) => void;
+    deleteOrganization.mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          resolveDelete = resolve;
+        }),
+    );
+    render(<DeleteOrganizationHarness />, { wrapper: Wrapper });
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "Open delete organization" }),
+    );
+    fireEvent.click(
+      screen.getByRole("button", { name: "Delete organization" }),
+    );
+
+    expect(
+      await screen.findByRole("button", { name: "Deleting…" }),
+    ).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Cancel" })).toBeDisabled();
+    await act(async () => resolveDelete({ organizationId: "org" }));
+  });
+
+  it("replaces the deleted detail route and refreshes session data", async () => {
+    deleteOrganization.mockResolvedValue({ organizationId: "org" });
+    const { result } = renderHook(() => useDeleteOrganization("org"), {
+      wrapper: Wrapper,
+    });
+
+    act(() => result.current.open());
+    act(() => result.current.submit());
+    await waitFor(() => expect(result.current.isPending).toBe(false));
+
+    expect(navigate).toHaveBeenCalledWith({
+      to: "/organizations",
+      replace: true,
+    });
+    expect(invalidate).toHaveBeenCalledWith({ sync: true });
+    expect(navigate.mock.invocationCallOrder[0]).toBeLessThan(
+      invalidate.mock.invocationCallOrder[0],
+    );
+    expect(success).toHaveBeenCalledWith("Organization deleted.");
   });
 });
 
