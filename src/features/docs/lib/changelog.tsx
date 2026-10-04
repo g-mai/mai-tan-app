@@ -11,8 +11,20 @@ export type ChangelogEntry = {
 /** Newest first. Entries carry markup, hence a .tsx data module. */
 export const CHANGELOG: ChangelogEntry[] = [
   {
-    version: "v0.1.5",
+    version: "v0.1.6",
     badge: "Latest",
+    changes: [
+      "Manage organization members and team memberships: search, add members to teams, change organization roles, and remove members individually or in batches.",
+      "Organization and team images now upload directly to Cloudflare R2 through the Worker binding, replacing the S3-compatible setup.",
+      "Organization owners can permanently delete an organization from its settings, including its teams, memberships, invitations, and stored images.",
+      "Organization owners and admins can delete teams with a confirmation dialog. Organization memberships are preserved, and the last team cannot be deleted.",
+      "Changing your email now sends an approval link to your current address, followed by a verification link to your new address.",
+      "Deletion dialogs stay open while an operation is pending and show errors when it fails.",
+      "The dashboard and organizations page now offer a create-organization button when you do not belong to any organizations.",
+    ],
+  },
+  {
+    version: "v0.1.5",
     changes: [
       <>
         The app now runs on <strong>Cloudflare Workers</strong>. A single{" "}
