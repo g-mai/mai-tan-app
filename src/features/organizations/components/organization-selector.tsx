@@ -1,7 +1,7 @@
 "use client";
 
 import { Link, useRouter } from "@tanstack/react-router";
-import { Check, ChevronsUpDown, Plus } from "lucide-react";
+import { Check, ChevronsUpDown, Plus, Settings } from "lucide-react";
 import type { Organization } from "#/features/auth/types";
 import { OrganizationLogo } from "#/features/organizations/components/organization-logo";
 import { Button } from "@/components/ui/button";
@@ -33,8 +33,6 @@ export function OrganizationSelector({
       </Link>
     );
   }
-
-  // TODO: add button to go to current org settings or show more info about current org
 
   const activeOrg =
     organizations.find((org) => org.id === activeOrganizationId) ??
@@ -120,12 +118,23 @@ export function OrganizationSelector({
           )}
         </DropdownMenuGroup>
         <DropdownMenuSeparator className="mx-0" />
-        <DropdownMenuItem asChild className="gap-2 rounded-lg p-2 text-sm">
-          <Link to="/organizations/new">
-            <Plus className="size-4" />
-            Create a new organization
-          </Link>
-        </DropdownMenuItem>
+        <DropdownMenuGroup>
+          <DropdownMenuItem asChild className="gap-2 rounded-lg p-2 text-sm">
+            <Link
+              to="/organizations/$orgId/edit"
+              params={{ orgId: activeOrg.id }}
+            >
+              <Settings aria-hidden="true" />
+              Organization settings
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild className="gap-2 rounded-lg p-2 text-sm">
+            <Link to="/organizations/new">
+              <Plus className="size-4" />
+              Create a new organization
+            </Link>
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>
   );

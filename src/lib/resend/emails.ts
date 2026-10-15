@@ -9,8 +9,6 @@ import { InvitationEmailTemplate } from "#/features/organizations/emails/invitat
 import { env } from "#/lib/env.server";
 import type { User } from "@/features/auth/types";
 
-// TODO: find better way to manage emails rather than having
-// all of them here in one file.
 let resend: Resend | undefined;
 let skipVerificationEmail = env.SKIP_VERIFICATION_EMAIL;
 

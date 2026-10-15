@@ -21,9 +21,9 @@ export const Route = createFileRoute("/_auth/reset-password")({
 
 function RouteComponent() {
   const { token } = Route.useSearch();
-  const { form, isPending } = useResetPassword(token);
+  const { form, isPending, isInvalidToken } = useResetPassword(token);
 
-  if (!token) {
+  if (!token || isInvalidToken) {
     return (
       <ScreenCard>
         <ScreenStrip

@@ -1,4 +1,4 @@
-import { useStore } from "@tanstack/react-form";
+import { useSelector } from "@tanstack/react-form";
 import { REGEXP_ONLY_DIGITS } from "input-otp";
 import { Button } from "#/components/ui/button";
 import {
@@ -47,8 +47,7 @@ export function TextField({
   prefix?: string;
 }) {
   const field = useFieldContext<string>();
-  // TODO: check useStore deprecation
-  const errors = useStore(field.store, (state) => state.meta.errors);
+  const errors = useSelector(field.store, (state) => state.meta.errors);
   const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
 
   const input = (
@@ -103,7 +102,7 @@ export function SelectField({
   options: { value: string; label: string }[];
 }) {
   const field = useFieldContext<string>();
-  const errors = useStore(field.store, (state) => state.meta.errors);
+  const errors = useSelector(field.store, (state) => state.meta.errors);
   const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
 
   return (
@@ -143,7 +142,7 @@ export function ColorField({
   description?: string;
 }) {
   const field = useFieldContext<string>();
-  const errors = useStore(field.store, (state) => state.meta.errors);
+  const errors = useSelector(field.store, (state) => state.meta.errors);
   const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
 
   return (
@@ -180,7 +179,7 @@ export function PasswordField({
   placeholder?: string;
 }) {
   const field = useFieldContext<string>();
-  const errors = useStore(field.store, (state) => state.meta.errors);
+  const errors = useSelector(field.store, (state) => state.meta.errors);
   const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
 
   return (
@@ -212,7 +211,7 @@ export function OtpField({
   onComplete?: () => void;
 }) {
   const field = useFieldContext<string>();
-  const errors = useStore(field.store, (state) => state.meta.errors);
+  const errors = useSelector(field.store, (state) => state.meta.errors);
   const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
 
   return (
