@@ -49,7 +49,6 @@ function RootDocument({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className="scroll-smooth" suppressHydrationWarning>
       <head>
-        {/* TODO server-side preferences for theme */}
         {/** biome-ignore lint/security/noDangerouslySetInnerHtml: todo */}
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
         <HeadContent />

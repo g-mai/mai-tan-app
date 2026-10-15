@@ -12,8 +12,6 @@ import { disableVerificationEmail } from "#/lib/resend/emails";
 
 const { users, organizations } = seedData;
 
-// TODO: add users to teams and organizations
-
 async function seed(dropAllTable = false) {
   if (dropAllTable) {
     await resetTables();

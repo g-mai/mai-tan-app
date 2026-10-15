@@ -22,7 +22,7 @@ export function useResetPassword(token: string) {
 
   type ResetPasswordFormData = z.infer<typeof resetPasswordFormSchema>;
 
-  const { mutate, isPending, isSuccess, isError, reset } = useMutation({
+  const { mutate, isPending, isSuccess, isError, error, reset } = useMutation({
     mutationFn: async (values: ResetPasswordFormData) => {
       const { data, error } = await resetPassword({
         newPassword: values.password,
@@ -41,7 +41,7 @@ export function useResetPassword(token: string) {
       router.navigate({ to: "/login" });
     },
     onError: (error) => {
-      // TODO: if error.code === INVALID_TOKEN, do something specific
+      if ("code" in error && error.code === "INVALID_TOKEN") return;
       console.error("Reset password error:", error);
       const message = error.message || "An error occurred. Please try again.";
       toast.error(message, {
@@ -72,6 +72,8 @@ export function useResetPassword(token: string) {
     isPending,
     isSuccess,
     isError,
+    isInvalidToken:
+      error !== null && "code" in error && error.code === "INVALID_TOKEN",
     handleReset,
   };
 }
