@@ -1,8 +1,8 @@
-# Mai Tan App - B2B SaaS Starter Kit - v 0.1.6
+# StartBetter - B2B SaaS Starter Kit - v 0.1.6
 
 A production-ready, feature-complete starter kit for building multi-tenant B2B SaaS applications. Built with TanStack Start, Better Auth, Drizzle ORM, and shadcn/ui.
 
-Demo: [CLICK HERE](https://tan.g-mai.dev/) to check it live!
+Demo: [CLICK HERE](https://startbetter.g-mai.dev/) to check it live!
 
 ## Features
 
@@ -79,8 +79,8 @@ starts as part of `pnpm dev`. A Cloudflare account is needed only to deploy.
 ### 1. Clone and install
 
 ```bash
-git clone https://github.com/g-mai/mai-tan-app
-cd mai-tan-app
+git clone https://github.com/g-mai/startbetter
+cd startbetter
 pnpm install
 ```
 
@@ -88,10 +88,10 @@ pnpm install
 
 There are two environment files, because two different runtimes read them:
 
-| File | Read by | Holds |
-| ---- | ------- | ----- |
-| `.env` | Node — Drizzle Kit and the Vite build | `CLOUDFLARE_*` for remote D1, `VITE_*`, Sentry build settings |
-| `.dev.vars` | The Worker, via Wrangler | Local Worker configuration and secrets |
+| File        | Read by                               | Holds                                                         |
+| ----------- | ------------------------------------- | ------------------------------------------------------------- |
+| `.env`      | Node — Drizzle Kit and the Vite build | `CLOUDFLARE_*` for remote D1, `VITE_*`, Sentry build settings |
+| `.dev.vars` | The Worker, via Wrangler              | Local Worker configuration and secrets                        |
 
 ```bash
 cp .env.example .env
@@ -139,14 +139,14 @@ Open [http://localhost:3000](http://localhost:3000) and register an account.
 
 ### Troubleshooting
 
-| Symptom | Cause and fix |
-| ------- | ------------- |
-| `Email is not configured` | Set `RESEND_API_KEY` before using registration or another email flow |
-| `Image storage is not configured` | Configure the `IMAGES` R2 binding and `R2_PUBLIC_URL` before uploading an avatar or logo |
-| `no such table: user` | Migrations never ran — `pnpm db:migrate:local` |
-| Changes to `.dev.vars` seem ignored | Wrangler reads it at startup only; restart `pnpm dev` |
-| `drizzle-kit` errors about account or token | The `CLOUDFLARE_*` values in `.env` are empty; they are needed only for remote D1 |
-| Port 3000 already allocated | Another process holds it; stop it, or change the port in the `dev` script |
+| Symptom                                     | Cause and fix                                                                            |
+| ------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `Email is not configured`                   | Set `RESEND_API_KEY` before using registration or another email flow                     |
+| `Image storage is not configured`           | Configure the `IMAGES` R2 binding and `R2_PUBLIC_URL` before uploading an avatar or logo |
+| `no such table: user`                       | Migrations never ran — `pnpm db:migrate:local`                                           |
+| Changes to `.dev.vars` seem ignored         | Wrangler reads it at startup only; restart `pnpm dev`                                    |
+| `drizzle-kit` errors about account or token | The `CLOUDFLARE_*` values in `.env` are empty; they are needed only for remote D1        |
+| Port 3000 already allocated                 | Another process holds it; stop it, or change the port in the `dev` script                |
 
 To start over with an empty database, delete the local D1 state and re-migrate:
 
@@ -159,24 +159,24 @@ pnpm db:migrate:local
 
 **`.env`** — Node-side, build and tooling:
 
-| Variable | Required | Notes |
-| -------- | -------- | ----- |
+| Variable                                                                 | Required           | Notes                                                                                                          |
+| ------------------------------------------------------------------------ | ------------------ | -------------------------------------------------------------------------------------------------------------- |
 | `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_DATABASE_ID`, `CLOUDFLARE_D1_TOKEN` | Only for remote D1 | Used by `drizzle.config.ts` for `pnpm db:studio` and any `drizzle-kit` command that hits the deployed database |
-| `VITE_APP_URL` | No | Exposed to the browser bundle; shown as the host affix on organization slugs |
-| `VITE_SENTRY_DSN`, `SENTRY_ORG`, `SENTRY_PROJECT`, `SENTRY_AUTH_TOKEN` | No | Reserved for the planned Sentry integration; currently unused |
+| `VITE_APP_URL`                                                           | No                 | Exposed to the browser bundle; shown as the host affix on organization slugs                                   |
+| `VITE_SENTRY_DSN`, `SENTRY_ORG`, `SENTRY_PROJECT`, `SENTRY_AUTH_TOKEN`   | No                 | Reserved for the planned Sentry integration; currently unused                                                  |
 
 **`.dev.vars`** — Worker runtime. In production, non-sensitive values belong in
 `wrangler.jsonc` and credentials are Worker secrets (`wrangler secret put <NAME>`), not a file:
 
-| Variable | Required | Notes |
-| -------- | -------- | ----- |
-| `BETTER_AUTH_URL` | Yes | Base URL of the app; also used to build invitation links |
-| `BETTER_AUTH_SECRET` | Yes | Signs sessions — `openssl rand -base64 32` |
-| `RESEND_API_KEY` | Only for email flows | Must be real to deliver email, and therefore to register |
-| `FROM_ADDRESS_EMAIL` | Only for email flows | Sender address used with `RESEND_API_KEY` |
-| `ADMIN_EMAIL` | No | Recipient for admin notification emails |
-| `R2_PUBLIC_URL` | Only for image uploads | Public image base URL; locally, use `http://localhost:3000/api/images` |
-| `SKIP_VERIFICATION_EMAIL` | No | `true` suppresses verification and invitation email sending |
+| Variable                  | Required               | Notes                                                                  |
+| ------------------------- | ---------------------- | ---------------------------------------------------------------------- |
+| `BETTER_AUTH_URL`         | Yes                    | Base URL of the app; also used to build invitation links               |
+| `BETTER_AUTH_SECRET`      | Yes                    | Signs sessions — `openssl rand -base64 32`                             |
+| `RESEND_API_KEY`          | Only for email flows   | Must be real to deliver email, and therefore to register               |
+| `FROM_ADDRESS_EMAIL`      | Only for email flows   | Sender address used with `RESEND_API_KEY`                              |
+| `ADMIN_EMAIL`             | No                     | Recipient for admin notification emails                                |
+| `R2_PUBLIC_URL`           | Only for image uploads | Public image base URL; locally, use `http://localhost:3000/api/images` |
+| `SKIP_VERIFICATION_EMAIL` | No                     | `true` suppresses verification and invitation email sending            |
 
 The database is not an environment variable. D1 arrives as the `DB` binding declared in
 `wrangler.jsonc`, which `src/lib/db/index.ts` reads from `cloudflare:workers`.
@@ -215,7 +215,7 @@ Prefer to let an agent do it? Paste the prompt below into Claude Code, Codex, or
 agent, from inside the directory where you want the project to live.
 
 ```
-Set up the mai-tan-app B2B SaaS starter kit for local development on this machine, end to end,
+Set up the startbetter B2B SaaS starter kit for local development on this machine, end to end,
 and stop to ask me only if a step genuinely cannot be completed without a decision from me.
 
 1. Check the prerequisites and report their versions: Node.js 22.22.2 or newer and pnpm 11 or
@@ -225,7 +225,7 @@ and stop to ask me only if a step genuinely cannot be completed without a decisi
 2. Confirm port 3000 is free. If it is taken, tell me what is holding it and stop rather than
    killing the process yourself.
 3. If the repository is not already in the current directory, clone
-   https://github.com/g-mai/mai-tan-app and cd into it. Then run `pnpm install`.
+   https://github.com/g-mai/startbetter and cd into it. Then run `pnpm install`.
 4. Create the two environment files from their templates, generating a real session secret in the
    same step:
    cp .env.example .env

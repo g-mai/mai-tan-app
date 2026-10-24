@@ -39,7 +39,7 @@ export function HomeHero() {
             <span className="text-primary">not the plumbing.</span>
           </h1>
           <p className="mt-6 max-w-[60ch] text-base text-muted-foreground leading-relaxed">
-            Mai Tan App is a working foundation for multi-tenant B2B SaaS.
+            StartBetter is a working foundation for multi-tenant B2B SaaS.
             Authentication, organizations, teams, onboarding, and email flows
             are already in place, so you can start on the part that is yours.
           </p>
@@ -52,7 +52,7 @@ export function HomeHero() {
               </Link>
             </Button>
             <a
-              href="https://github.com/g-mai/mai-tan-app"
+              href="https://github.com/g-mai/startbetter"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex min-h-10 items-center gap-2 rounded-md px-3 text-sm font-medium text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
@@ -88,7 +88,7 @@ export function HomeHero() {
               />
               <span className="ml-2 hidden min-w-0 items-center gap-1.5 truncate font-mono text-xs text-muted-foreground sm:flex">
                 <Lock aria-hidden="true" className="size-3.5 shrink-0" />
-                tan.g-mai.dev/acme-inc
+                startbetter.g-mai.dev/acme-inc
               </span>
             </div>
             <div className="grid min-h-70 grid-cols-1 sm:grid-cols-[132px_minmax(0,1fr)]">

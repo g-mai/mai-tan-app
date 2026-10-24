@@ -94,15 +94,15 @@ export function RunLocallyCard() {
           <div className="dark overflow-hidden rounded-lg border bg-background">
             <div className="flex h-8 items-center border-b px-3">
               <span className="font-mono text-2xs text-muted-foreground">
-                zsh — ~/mai-tan-app
+                zsh — ~/startbetter
               </span>
             </div>
             <div className="px-4 pt-3 pb-4 font-mono text-xs leading-[1.8] text-foreground wrap-anywhere">
               <Line comment># 1 · clone and install</Line>
               <Line glyph="$">
-                git clone https://github.com/g-mai/mai-tan-app
+                git clone https://github.com/g-mai/startbetter
               </Line>
-              <Line glyph="$">cd mai-tan-app && pnpm install</Line>
+              <Line glyph="$">cd startbetter && pnpm install</Line>
               <Line comment>
                 # 2 · env — local defaults plus a real session secret
               </Line>

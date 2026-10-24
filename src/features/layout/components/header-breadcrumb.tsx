@@ -41,7 +41,7 @@ export function HeaderBreadcrumb({ className }: { className?: string }) {
         to="/dashboard"
         className="shrink-0 text-muted-foreground transition-colors hover:text-foreground"
       >
-        mai_tan/app
+        StartBetter
       </Link>
       {segments.map((segment, index) => {
         const href = `/${segments.slice(0, index + 1).join("/")}`;

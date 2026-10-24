@@ -13,7 +13,7 @@ function RouteComponent() {
     <div className="flex flex-col gap-4">
       <PageTitle
         title="Introduction"
-        subtitle="What Mai Tan App is and what's included."
+        subtitle="What StartBetter is and what's included."
       />
 
       <WhatThisIsCard />

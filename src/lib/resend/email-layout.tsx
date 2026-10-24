@@ -54,7 +54,7 @@ export function EmailLayout({
               letterSpacing: "0.02em",
             }}
           >
-            Mai Tan
+            StartBetter
           </span>
         </div>
         <div
@@ -77,10 +77,10 @@ export function EmailLayout({
         >
           <p style={{ margin: 0 }}>
             <a
-              href="https://tan.g-mai.dev"
+              href="https://startbetter.g-mai.dev"
               style={{ color: MUTED_COLOR, textDecoration: "none" }}
             >
-              tan.g-mai.dev
+              startbetter.g-mai.dev
             </a>{" "}
             · Do not reply to this email.
           </p>

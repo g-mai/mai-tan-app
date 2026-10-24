@@ -17,7 +17,7 @@ BETTER_AUTH_SECRET=replace-with-a-random-32-byte-string
 
 # Resend — optional at boot; registration needs a real key to send its OTP
 RESEND_API_KEY=
-FROM_ADDRESS_EMAIL=Mai Tan <onboarding@resend.dev>
+FROM_ADDRESS_EMAIL=StartBetter <onboarding@resend.dev>
 ADMIN_EMAIL=admin@example.com
 
 # Cloudflare R2 — IMAGES is a bucket binding in wrangler.jsonc.

@@ -1,6 +1,6 @@
 /** Pasted into a coding agent to set the project up from scratch. */
 export const installPrompt = [
-  "Set up the mai-tan-app B2B SaaS starter kit for local development on this machine, end to end,",
+  "Set up the startbetter B2B SaaS starter kit for local development on this machine, end to end,",
   "and stop to ask me only if a step genuinely cannot be completed without a decision from me.",
   "",
   "1. Check the prerequisites and report their versions: Node.js 22.22.2 or newer and pnpm 11 or",
@@ -10,7 +10,7 @@ export const installPrompt = [
   "2. Confirm port 3000 is free. If it is taken, tell me what is holding it and stop rather than",
   "   killing the process yourself.",
   "3. If the repository is not already in the current directory, clone",
-  "   https://github.com/g-mai/mai-tan-app and cd into it. Then run `pnpm install`.",
+  "   https://github.com/g-mai/startbetter and cd into it. Then run `pnpm install`.",
   "4. Create the two environment files from their templates, generating a real session secret in the",
   "   same step:",
   "   cp .env.example .env",

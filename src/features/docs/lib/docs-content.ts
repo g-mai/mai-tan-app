@@ -43,7 +43,7 @@ export const PREREQUISITES = ["Node.js 22.22.2+", "pnpm 11+", "Port 3000 free"];
 
 export const INSTALL_STEPS = `# Clone the repository
 git clone <your-repo-url>
-cd mai-tan-app
+cd startbetter
 
 # Install dependencies
 pnpm install

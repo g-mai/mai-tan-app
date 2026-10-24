@@ -14,7 +14,7 @@ interface EmailTemplateProps {
 
 export function ResetPasswordEmailTemplate({ user, url }: EmailTemplateProps) {
   return (
-    <EmailLayout previewText="Reset your Mai Tan password">
+    <EmailLayout previewText="Reset your StartBetter password">
       <EmailHeading>Reset your password</EmailHeading>
       <p style={{ margin: "0 0 16px" }}>Hi {user.name},</p>
       <p style={{ margin: "0 0 16px" }}>

@@ -62,7 +62,7 @@ function ProtectedLayout() {
               Docs
             </Link>
             <a
-              href="https://github.com/g-mai/mai-tan-app"
+              href="https://github.com/g-mai/startbetter"
               target="_blank"
               rel="noopener noreferrer"
               className={headerLinkClassName}

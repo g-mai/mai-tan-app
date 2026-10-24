@@ -16,12 +16,12 @@ export function InvitationEmailTemplate({
 }) {
   return (
     <EmailLayout
-      previewText={`${inviterName} invited you to join ${organizationName} on Mai Tan`}
+      previewText={`${inviterName} invited you to join ${organizationName} on StartBetter`}
     >
       <EmailHeading>You've been invited to {organizationName}</EmailHeading>
       <p style={{ margin: "0 0 16px" }}>
         {inviterName} invited you to join <strong>{organizationName}</strong> on
-        Mai Tan.
+        StartBetter.
       </p>
       <EmailButton href={url}>Accept invitation</EmailButton>
       <EmailMutedText>

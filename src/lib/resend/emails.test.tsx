@@ -12,7 +12,7 @@ vi.mock("resend", () => ({
 vi.mock("#/lib/env.server", () => ({
   env: {
     RESEND_API_KEY: "test-key",
-    FROM_ADDRESS_EMAIL: "Mai Tan <hello@example.com>",
+    FROM_ADDRESS_EMAIL: "StartBetter <hello@example.com>",
     SKIP_VERIFICATION_EMAIL: false,
   },
 }));
@@ -38,7 +38,7 @@ describe("change-email delivery", () => {
 
     expect(mockSend).toHaveBeenCalledWith(
       expect.objectContaining({
-        from: "Mai Tan <hello@example.com>",
+        from: "StartBetter <hello@example.com>",
         to: ["old@example.com"],
         subject: "Approve Your Email Change",
       }),

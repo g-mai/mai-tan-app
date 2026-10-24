@@ -8,7 +8,7 @@
   "workers_dev": false,
   "preview_urls": false,
   "vars": {
-    "BETTER_AUTH_URL": "https://tan.g-mai.dev",
+    "BETTER_AUTH_URL": "https://startbetter.g-mai.dev",
     "SKIP_VERIFICATION_EMAIL": "false",
     "R2_PUBLIC_URL": "https://r2prod.g-mai.dev"
   },
@@ -29,7 +29,7 @@
   ],
   "routes":   [
     {
-    "pattern": "tan.g-mai.dev",
+    "pattern": "startbetter.g-mai.dev",
     "zone_name": "g-mai.dev",
     "custom_domain": true,
     "enabled": true,

@@ -16,7 +16,7 @@ export function ChangeEmailConfirmationTemplate({
   url: string;
 }) {
   return (
-    <EmailLayout previewText="Approve your Mai Tan email change">
+    <EmailLayout previewText="Approve your StartBetter email change">
       <EmailHeading>Approve your email change</EmailHeading>
       <p style={{ margin: "0 0 16px" }}>Hi {user.name},</p>
       <p style={{ margin: "0 0 16px" }}>

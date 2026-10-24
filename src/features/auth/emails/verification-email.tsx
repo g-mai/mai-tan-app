@@ -15,7 +15,7 @@ export function VerificationEmailTemplate({
   token: string;
 }) {
   return (
-    <EmailLayout previewText="Verify your email for Mai Tan">
+    <EmailLayout previewText="Verify your email for StartBetter">
       <EmailHeading>Verify your email</EmailHeading>
       <p style={{ margin: "0 0 16px" }}>Hi {user.name},</p>
       <p style={{ margin: "0 0 16px" }}>
@@ -37,7 +37,7 @@ export function VerificationEmailOTPTemplate({
   otp: string;
 }) {
   return (
-    <EmailLayout previewText={`Your Mai Tan verification code is ${otp}`}>
+    <EmailLayout previewText={`Your StartBetter verification code is ${otp}`}>
       <EmailHeading>Verify your email</EmailHeading>
       <p style={{ margin: "0 0 16px" }}>
         Enter this code to finish creating your account for {email}:

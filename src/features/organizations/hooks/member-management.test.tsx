@@ -105,7 +105,10 @@ function DeleteOrganizationHarness() {
       <button type="button" onClick={action.open}>
         Open delete organization
       </button>
-      <DeleteOrganizationDialog action={action} organizationName="Mai Tan" />
+      <DeleteOrganizationDialog
+        action={action}
+        organizationName="StartBetter"
+      />
     </>
   );
 }
@@ -303,7 +306,7 @@ describe("organization deletion", () => {
       screen.getByRole("button", { name: "Open delete organization" }),
     );
     expect(
-      screen.getByRole("heading", { name: "Delete Mai Tan?" }),
+      screen.getByRole("heading", { name: "Delete StartBetter?" }),
     ).toBeInTheDocument();
     expect(
       screen.getByText(/invitations.*cannot be undone/i),
